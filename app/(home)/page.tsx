@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ClickableCodeBlock } from './clickable-code-block';
+import { CopyBlock } from './copy-block';
 import { ConsoleCarousel } from './console-carousel';
 import { consoleScreens } from './console-screens';
 import { ScreenshotCarousel } from './screenshot-carousel';
@@ -47,7 +47,7 @@ export default function HomePage() {
         {/* Quick Install */}
         <div className="mt-12 mx-auto max-w-3xl rounded-lg bg-muted">
           <h3 className="font-semibold mb-4">Quick Install</h3>
-          <ClickableCodeBlock>pip install llms-py</ClickableCodeBlock>
+          <CopyBlock>pip install llms-py</CopyBlock>
         </div>
 
         {/* Console Carousel Section */}
@@ -59,7 +59,7 @@ export default function HomePage() {
 
         <div className="mt-12 mx-auto max-w-3xl rounded-lg bg-muted">
           <h3 className="font-semibold my-4">Run Server</h3>
-          <ClickableCodeBlock>llms --serve 8000</ClickableCodeBlock>
+          <CopyBlock>llms --serve 8000</CopyBlock>
         </div>
       </div>
 

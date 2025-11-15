@@ -9,7 +9,7 @@ interface ShellCommandProps {
     children: ReactNode
 }
 
-export const ClickableCodeBlock: FC<ShellCommandProps> = ({ className, children }) => {
+export const CopyBlock: FC<ShellCommandProps> = ({ className, children }) => {
     const [copied, setCopied] = useState(false)
     const commandRef = useRef<HTMLElement>(null)
 
@@ -92,4 +92,5 @@ export const ClickableCodeBlock: FC<ShellCommandProps> = ({ className, children 
         </div>
     )
 }
+
 

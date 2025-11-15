@@ -1,6 +1,6 @@
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import { Steps, Step } from 'fumadocs-ui/components/steps';
-import { ClickableCodeBlock } from '@/app/(home)/clickable-code-block';
+import { CopyBlock } from '@/app/(home)/copy-block';
 import type { MDXComponents } from 'mdx/types';
 
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
@@ -8,7 +8,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     ...defaultMdxComponents,
     Steps,
     Step,
-    ShellCommand: ClickableCodeBlock,
+    ShellCommand: CopyBlock,
     ...components,
   };
 }
