@@ -1,0 +1,336 @@
+---
+title: Multimodal Support
+description: Work with images, audio, and documents in llms.py
+---
+
+# Multimodal Support
+
+llms.py provides comprehensive support for multiple input modalities beyond just text, allowing you to process images, audio files, and documents with capable AI models.
+
+## Image Support 🖼️
+
+Process and analyze images with vision-capable models.
+
+### Features
+
+- **Image Analysis**: Describe, analyze, and extract information from images
+- **Multiple Formats**: PNG, WEBP, JPG, JPEG, GIF, BMP, TIFF, ICO
+- **Flexible Input**: Local files, remote URLs, or data URIs
+- **Auto-Conversion**: Automatic format conversion and resizing
+- **Drag & Drop**: Easy upload in the web UI
+
+### Using Images in CLI
+
+```bash
+# Local image file
+llms --image ./screenshot.png "What's in this image?"
+
+# Remote image URL
+llms --image https://example.com/photo.jpg "Describe this photo"
+
+# Data URI
+llms --image "data:image/png;base64,$(base64 -w 0 image.png)" "Analyze this"
+
+# With specific vision model
+llms -m gemini-2.5-flash --image chart.png "Analyze this chart"
+
+# Combined with system prompt
+llms -s "You are a data analyst" --image graph.png "What trends do you see?"
+```
+
+### Using Images in UI
+
+![Image Upload](/img/attach-image.webp)
+
+Simply drag and drop images into the chat or click the attach button to upload.
+
+### Vision-Capable Models
+
+Popular models that support image analysis:
+
+- **OpenAI**: GPT-4o, GPT-4o-mini, GPT-4.1
+- **Anthropic**: Claude Sonnet 4.0, Claude Opus 4.1
+- **Google**: Gemini 2.5 Pro, Gemini Flash
+- **Qwen**: Qwen2.5-VL, Qwen3-VL, QVQ-max
+- **Ollama**: qwen2.5vl, llava
+
+### Custom Image Template
+
+Use custom chat templates for image requests:
+
+```json
+{
+  "model": "qwen2.5vl",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "image_url",
+          "image_url": {
+            "url": ""
+          }
+        },
+        {
+          "type": "text",
+          "text": "Caption this image"
+        }
+      ]
+    }
+  ]
+}
+```
+
+```bash
+llms --chat image-request.json --image photo.jpg
+```
+
+## Audio Support 🎤
+
+Transcribe and analyze audio files with audio-capable models.
+
+### Features
+
+- **Transcription**: Convert speech to text
+- **Audio Analysis**: Summarize meetings, extract topics
+- **Multiple Formats**: MP3, WAV
+- **Flexible Input**: Local files, remote URLs, or base64 data
+- **Easy Upload**: Drag & drop in the web UI
+
+### Using Audio in CLI
+
+```bash
+# Transcribe audio using default template
+llms --audio ./recording.mp3
+
+# Local audio file with prompt
+llms --audio ./meeting.wav "Summarize this meeting recording"
+
+# Remote audio URL
+llms --audio https://example.org/podcast.mp3 "What are the key points?"
+
+# With specific audio model
+llms -m gpt-4o-audio-preview --audio interview.mp3 "Extract main topics"
+
+# Combined with system prompt
+llms -s "You're a transcription specialist" --audio talk.mp3 "Provide transcript"
+```
+
+### Using Audio in UI
+
+![Audio Upload](/img/attach-audio.webp)
+
+Drag and drop audio files or use the attach button to upload.
+
+### Audio-Capable Models
+
+Models that support audio processing:
+
+- **OpenAI**: gpt-4o-audio-preview
+- **Google**: gemini-2.5-pro, gemini-2.5-flash, gemini-2.5-flash-lite
+
+### Custom Audio Template
+
+```json
+{
+  "model": "gpt-4o-audio-preview",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_audio",
+          "input_audio": {
+            "data": "",
+            "format": "mp3"
+          }
+        },
+        {
+          "type": "text",
+          "text": "Please transcribe this audio"
+        }
+      ]
+    }
+  ]
+}
+```
+
+```bash
+llms --chat audio-request.json --audio speech.wav
+```
+
+## Document Support 📎
+
+Process and analyze documents, especially PDFs, with capable models.
+
+### Features
+
+- **PDF Processing**: Extract text, summarize content
+- **Data Extraction**: Pull specific information from documents
+- **Document Q&A**: Ask questions about document content
+- **Easy Upload**: Drag & drop in the web UI
+- **Batch Processing**: Upload multiple files
+
+### Using Documents in CLI
+
+```bash
+# Summarize using default template
+llms --file ./docs/handbook.pdf
+
+# Local PDF with prompt
+llms --file ./docs/policy.pdf "Summarize the key changes"
+
+# Remote PDF URL
+llms --file https://example.org/whitepaper.pdf "What are the main findings?"
+
+# With specific model
+llms -m gpt-5 --file ./policy.pdf "Summarize the key changes"
+llms -m gemini-flash-latest --file ./report.pdf "Extract action items"
+llms -m qwen2.5vl --file ./manual.pdf "List key sections"
+
+# Combined with system prompt
+llms -s "You're a compliance analyst" --file ./policy.pdf "Identify risks"
+```
+
+### Using Documents in UI
+
+![PDF Upload](/img/attach-pdf.webp)
+
+Drag and drop PDFs or other documents into the chat.
+
+### Document-Capable Models
+
+Models that support PDF and document processing:
+
+- **OpenAI**: gpt-5, gpt-5-mini, gpt-4o, gpt-4o-mini
+- **Google**: gemini-flash-latest, gemini-2.5-flash-lite
+- **Grok**: grok-4-fast (via OpenRouter)
+- **Qwen**: qwen2.5vl, qwen3-max, qwen3-vl:235b, qwen3-coder
+- **Others**: kimi-k2, glm-4.5-air, deepseek-v3.1:671b, llama4:400b
+
+### Custom File Template
+
+```json
+{
+  "model": "gpt-5",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "file",
+          "file": {
+            "filename": "",
+            "file_data": ""
+          }
+        },
+        {
+          "type": "text",
+          "text": "Please summarize this document"
+        }
+      ]
+    }
+  ]
+}
+```
+
+```bash
+llms --chat file-request.json --file ./docs/handbook.pdf
+```
+
+## Default Templates
+
+llms.py comes with default chat templates for each modality in `llms.json`:
+
+```json
+{
+  "defaults": {
+    "text": { ... },
+    "image": {
+      "model": "gemini-2.5-flash",
+      "messages": [...]
+    },
+    "audio": {
+      "model": "gpt-4o-audio-preview",
+      "messages": [...]
+    },
+    "file": {
+      "model": "gpt-5",
+      "messages": [...]
+    }
+  }
+}
+```
+
+These templates are used when you provide the respective file type without a custom template.
+
+## Image Limits & Auto-Conversion
+
+Configure image size limits and auto-conversion in `llms.json`:
+
+```json
+{
+  "convert": {
+    "max_image_size": 2048,
+    "max_image_length": 20971520,
+    "webp_quality": 90
+  }
+}
+```
+
+- Images exceeding `max_image_size` pixels are resized
+- Images exceeding `max_image_length` bytes are converted to WebP
+- Quality controlled by `webp_quality` (0-100)
+
+## Use Cases
+
+### Image Analysis
+- **Product Analysis**: Describe products from images
+- **Chart Reading**: Extract data from charts and graphs
+- **Document OCR**: Extract text from images of documents
+- **Visual Q&A**: Answer questions about image content
+
+### Audio Processing
+- **Meeting Transcription**: Convert meeting recordings to text
+- **Interview Analysis**: Extract key points from interviews
+- **Podcast Summaries**: Summarize podcast episodes
+- **Voice Notes**: Transcribe voice memos
+
+### Document Processing
+- **PDF Summarization**: Get concise summaries of long documents
+- **Contract Analysis**: Extract key terms from contracts
+- **Report Analysis**: Extract insights from reports
+- **Research Papers**: Summarize academic papers
+
+## Tips
+
+### For Best Results
+
+**Images:**
+- Use high-quality images for better analysis
+- Crop to focus on relevant content
+- Use appropriate models for the task (e.g., Gemini for diagrams)
+
+**Audio:**
+- Use clear audio with minimal background noise
+- Consider file size limits
+- MP3 is typically smaller than WAV
+
+**Documents:**
+- PDFs work best with text-based content
+- Consider page count and file size
+- Some models handle longer documents better
+
+### Performance
+
+- Larger files take longer to process
+- Consider using lighter models for simple tasks
+- Remote URLs may be slower due to download time
+
+## Next Steps
+
+<Cards>
+  <Card title="Web UI" href="/docs/features/web-ui" />
+  <Card title="CLI Reference" href="/docs/cli" />
+  <Card title="Configuration" href="/docs/configuration" />
+</Cards>

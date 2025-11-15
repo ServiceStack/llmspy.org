@@ -1,0 +1,214 @@
+---
+title: Quick Start
+description: Get started with llms.py in minutes
+---
+
+# Quick Start
+
+## 1. Initialize Configuration
+
+Create the default configuration file:
+
+```bash
+llms --init
+```
+
+This creates `~/.llms/llms.json` with all available providers and models.
+
+## 2. Enable Providers
+
+Enable providers that have their API keys set:
+
+```bash
+# Enable free providers
+llms --enable openrouter_free google_free groq
+
+# Enable paid providers
+llms --enable openai anthropic grok
+```
+
+## 3. Start the Server
+
+Launch the web UI and API server:
+
+```bash
+llms --serve 8000
+```
+
+This starts:
+- Web UI at `http://localhost:8000`
+- OpenAI-compatible API at `http://localhost:8000/v1/chat/completions`
+
+For detailed logging:
+
+```bash
+llms --serve 8000 --verbose
+```
+
+## 4. Use the CLI
+
+Ask questions directly from the command line:
+
+```bash
+# Simple query
+llms "What is the capital of France?"
+
+# With specific model
+llms -m grok-4-fast "Explain quantum computing"
+
+# With system prompt
+llms -s "You are a helpful coding assistant" "How do I reverse a string in Python?"
+
+# With image
+llms --image photo.jpg "What's in this image?"
+
+# With audio
+llms --audio recording.mp3 "Transcribe this audio"
+
+# With file
+llms --file document.pdf "Summarize this PDF"
+```
+
+## 5. Configure Default Model
+
+Set your preferred default model:
+
+```bash
+llms --default grok-4-fast
+```
+
+## Common CLI Examples
+
+### Text Generation
+
+```bash
+# Basic chat
+llms "Explain quantum computing in simple terms"
+
+# With specific model
+llms -m gemini-2.5-pro "Write a Python function to sort a list"
+
+# With system prompt
+llms -s "You are a quantum expert" "Explain quantum computing"
+
+# Display full JSON response
+llms "Hello" --raw
+```
+
+### Image Analysis
+
+```bash
+# Local image
+llms --image screenshot.png "What's in this image?"
+
+# Remote image
+llms --image https://example.com/photo.jpg "Describe this photo"
+
+# With specific vision model
+llms -m gemini-2.5-flash --image chart.png "Analyze this chart"
+```
+
+### Audio Transcription
+
+```bash
+# Transcribe audio
+llms --audio meeting.wav "Summarize this meeting recording"
+
+# With specific audio model
+llms -m gpt-4o-audio-preview --audio interview.mp3 "Extract main topics"
+```
+
+### Document Processing
+
+```bash
+# Summarize PDF
+llms --file report.pdf "Summarize the key points"
+
+# Extract data
+llms -m gemini-flash-latest --file policy.pdf "Extract action items"
+```
+
+## Using the Web UI
+
+Once the server is running, open `http://localhost:8000` in your browser.
+
+### Features
+
+- **Chat Interface**: ChatGPT-like interface for conversations
+- **Model Selection**: Choose from all enabled providers and models
+- **System Prompts**: Access 200+ professional system prompts
+- **File Attachments**: Upload images, audio, and documents
+- **Dark Mode**: Toggle between light and dark themes
+- **Analytics**: Track costs, tokens, and usage
+- **Search**: Find past conversations easily
+
+### Keyboard Shortcuts
+
+- `Enter` - Send message (or `Ctrl/Cmd + Enter` for new line)
+- `/` - Focus search
+- `Esc` - Close dialogs
+
+## OpenAI-Compatible API
+
+Use the server as an OpenAI-compatible endpoint:
+
+```bash
+curl -X POST http://localhost:8000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "grok-4-fast",
+    "messages": [
+      {"role": "user", "content": "Hello!"}
+    ]
+  }'
+```
+
+This works with any OpenAI-compatible client library.
+
+## Provider Management
+
+### List Providers
+
+```bash
+# List all providers
+llms --list
+llms ls
+
+# List specific providers
+llms ls groq anthropic
+```
+
+### Enable/Disable Providers
+
+```bash
+# Disable providers
+llms --disable openrouter_free codestral
+
+# Enable providers
+llms --enable openai grok
+```
+
+Providers are invoked in the order they're defined in `llms.json`. If one fails, it automatically tries the next available provider.
+
+## Check Provider Status
+
+Test provider connectivity and response times:
+
+```bash
+# Check all models for a provider
+llms --check groq
+
+# Check specific models
+llms --check groq kimi-k2 llama4:400b
+```
+
+This helps verify providers are configured correctly and shows their response times.
+
+## Next Steps
+
+<Cards>
+  <Card title="Web UI Features" href="/docs/features/web-ui" />
+  <Card title="Configuration" href="/docs/configuration" />
+  <Card title="CLI Reference" href="/docs/cli" />
+  <Card title="Multimodal Support" href="/docs/features/multimodal" />
+</Cards>

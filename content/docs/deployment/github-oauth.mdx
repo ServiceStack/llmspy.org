@@ -1,0 +1,349 @@
+---
+title: GitHub OAuth Setup
+description: Secure your llms.py deployment with GitHub OAuth authentication
+---
+
+# GitHub OAuth Setup
+
+Secure your llms.py deployment with GitHub OAuth authentication and optional user access restrictions.
+
+## Features
+
+- ✅ GitHub OAuth 2.0 integration
+- ✅ Secure session management
+- ✅ CSRF protection with state tokens
+- ✅ User profile display with avatar
+- ✅ Logout functionality
+- ✅ Optional user access restrictions
+- ✅ Environment variable support
+
+## Setup Instructions
+
+### 1. Create a GitHub OAuth App
+
+1. Go to [GitHub Settings → Developer settings → OAuth Apps](https://github.com/settings/developers)
+2. Click "New OAuth App"
+3. Fill in the application details:
+   - **Application name**: `llms.py` (or your preferred name)
+   - **Homepage URL**: `http://localhost:8000`
+   - **Authorization callback URL**: `http://localhost:8000/auth/github/callback`
+4. Click "Register application"
+5. Note down your **Client ID**
+6. Click "Generate a new client secret" and note down the **Client Secret**
+
+For production deployments, use your actual domain instead of localhost.
+
+### 2. Configure Environment Variables
+
+Set the following environment variables:
+
+```bash
+export GITHUB_CLIENT_ID="your_github_client_id_here"
+export GITHUB_CLIENT_SECRET="your_github_client_secret_here"
+
+# Optional - Comma or space separated list of allowed users
+export GITHUB_USERS="octocat mythz"
+```
+
+For permanent configuration, add these to your shell profile (`~/.bashrc`, `~/.zshrc`, etc.).
+
+### 3. Configure llms.json
+
+Enable OAuth in your `~/.llms/llms.json`:
+
+```json
+{
+  "auth": {
+    "enabled": true,
+    "github": {
+      "client_id": "$GITHUB_CLIENT_ID",
+      "client_secret": "$GITHUB_CLIENT_SECRET",
+      "redirect_uri": "http://localhost:8000/auth/github/callback",
+      "restrict_to": "$GITHUB_USERS"
+    }
+  }
+}
+```
+
+**Note**: The `$` prefix indicates environment variables that will be automatically expanded at runtime.
+
+**Optional**: The `restrict_to` field can be omitted to allow any GitHub user to authenticate.
+
+### 4. Start the Server
+
+```bash
+llms --serve 8000
+```
+
+Or with Docker:
+
+```bash
+docker run -p 8000:8000 \
+  -e GITHUB_CLIENT_ID="$GITHUB_CLIENT_ID" \
+  -e GITHUB_CLIENT_SECRET="$GITHUB_CLIENT_SECRET" \
+  -e GITHUB_USERS="$GITHUB_USERS" \
+  -e GROQ_API_KEY="$GROQ_API_KEY" \
+  ghcr.io/servicestack/llms:latest
+```
+
+## Usage
+
+### Signing In
+
+1. Navigate to `http://localhost:8000`
+2. Click "Sign in with GitHub"
+3. Authorize the application on GitHub
+4. You'll be redirected back to the application, now authenticated
+
+### Signing Out
+
+1. Click on your avatar in the top-right corner
+2. A dropdown menu will appear showing your profile info
+3. Click "Sign Out"
+
+### Restricted Access
+
+If `restrict_to` is configured, only specified GitHub users can access the application:
+
+```json
+{
+  "auth": {
+    "github": {
+      "restrict_to": "octocat mythz demisbellot"
+    }
+  }
+}
+```
+
+Users not in the list will see an "Access Denied" message after authenticating.
+
+## Configuration
+
+### Full Configuration Example
+
+```json
+{
+  "auth": {
+    "enabled": true,
+    "github": {
+      "client_id": "$GITHUB_CLIENT_ID",
+      "client_secret": "$GITHUB_CLIENT_SECRET",
+      "redirect_uri": "http://localhost:8000/auth/github/callback",
+      "restrict_to": "$GITHUB_USERS"
+    }
+  },
+  "providers": {
+    ...
+  }
+}
+```
+
+### Disable Authentication
+
+To disable authentication:
+
+```json
+{
+  "auth": {
+    "enabled": false,
+    "github": { ... }
+  }
+}
+```
+
+Or remove the entire `auth` section.
+
+### Production Configuration
+
+For production, update the `redirect_uri`:
+
+```json
+{
+  "auth": {
+    "github": {
+      "client_id": "$GITHUB_CLIENT_ID",
+      "client_secret": "$GITHUB_CLIENT_SECRET",
+      "redirect_uri": "https://yourdomain.com/auth/github/callback",
+      "restrict_to": "$GITHUB_USERS"
+    }
+  }
+}
+```
+
+Also update the callback URL in your GitHub OAuth App settings.
+
+## Architecture
+
+### Server Endpoints
+
+New authentication endpoints:
+
+- `GET /auth/github` - Initiates GitHub OAuth flow
+- `GET /auth/github/callback` - Handles OAuth callback
+- `GET /auth/session` - Validates session token
+- `POST /auth/logout` - Ends user session
+
+### Session Management
+
+- Sessions stored in-memory (`g_sessions` dictionary)
+- Session tokens are 32-byte URL-safe random strings
+- Sessions expire after 24 hours
+- CSRF protection using state tokens (expire after 10 minutes)
+
+### Authentication Flow
+
+1. User clicks "Sign in with GitHub"
+2. Redirected to `/auth/github`
+3. Server redirects to GitHub OAuth authorization
+4. User authorizes on GitHub
+5. GitHub redirects to `/auth/github/callback` with code
+6. Server exchanges code for access token
+7. Server fetches user info from GitHub API
+8. Server creates session and redirects to `/?session=TOKEN`
+9. Client validates session and stores user info
+10. User is authenticated
+
+### Session Data Structure
+
+```javascript
+{
+  "userId": "12345678",
+  "userName": "octocat",
+  "displayName": "The Octocat",
+  "profileUrl": "https://avatars.githubusercontent.com/u/583231",
+  "email": "octocat@github.com",
+  "sessionToken": "abc123...",
+  "created": 1234567890.123
+}
+```
+
+## Security
+
+### CSRF Protection
+
+- State tokens are generated for each OAuth flow
+- State tokens are validated on callback
+- Expired state tokens (>10 minutes) are automatically cleaned up
+
+### Session Security
+
+- Session tokens are cryptographically random (32 bytes)
+- Sessions expire after 24 hours
+- Expired sessions are automatically cleaned up
+- Session tokens transmitted via URL parameter (initial) and HTTP header (subsequent)
+
+### Best Practices
+
+1. **Use HTTPS in Production**: Always use TLS for production deployments
+2. **Rotate Secrets**: Regularly rotate GitHub OAuth client secrets
+3. **Environment Variables**: Never commit credentials to version control
+4. **Minimal Scope**: OAuth app only requests minimal required scopes
+5. **Session Expiry**: 24-hour expiry balances security and convenience
+
+## Troubleshooting
+
+### "GitHub OAuth not configured" error
+
+- Ensure `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` are set
+- Restart the server after setting environment variables
+- Verify environment variables are expanded in config
+
+### "Invalid state parameter" error
+
+- OAuth flow took longer than 10 minutes
+- Try the sign-in process again
+
+### "Invalid or expired session" error
+
+- Session expired (24-hour limit)
+- Sign in again to create a new session
+
+### "Access Denied" error
+
+- Your GitHub username is not in the `restrict_to` list
+- Contact the administrator to be added
+- Or remove `restrict_to` to allow all users
+
+### Callback URL mismatch
+
+- Ensure `redirect_uri` in `llms.json` matches GitHub OAuth App settings exactly
+- For localhost: `http://localhost:8000/auth/github/callback`
+- For production: `https://yourdomain.com/auth/github/callback`
+
+## Production Considerations
+
+### Persistent Sessions
+
+For production with multiple instances, consider:
+
+1. **Redis**: Store sessions in Redis for sharing across instances
+2. **Database**: Use PostgreSQL or similar for session storage
+3. **Sticky Sessions**: Configure load balancer for sticky sessions
+
+### HTTPS/TLS
+
+Always use HTTPS in production:
+
+1. **Certificate**: Obtain SSL/TLS certificate (Let's Encrypt)
+2. **Reverse Proxy**: Use nginx or Traefik with TLS termination
+3. **HSTS**: Enable HTTP Strict Transport Security
+4. **Secure Cookies**: Use secure flag for session cookies
+
+### Monitoring
+
+Monitor authentication:
+
+1. **Failed Attempts**: Track failed login attempts
+2. **Active Sessions**: Monitor active session count
+3. **Session Duration**: Track how long users stay authenticated
+4. **Access Logs**: Log authentication events
+
+## Docker Deployment
+
+With docker compose:
+
+```yaml
+version: '3.8'
+
+services:
+  llms:
+    image: ghcr.io/servicestack/llms:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
+      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
+      - GITHUB_USERS=${GITHUB_USERS}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - GROQ_API_KEY=${GROQ_API_KEY}
+    volumes:
+      - llms-data:/home/llms/.llms
+    restart: unless-stopped
+
+volumes:
+  llms-data:
+```
+
+Create `.env` file:
+
+```bash
+GITHUB_CLIENT_ID=your_client_id
+GITHUB_CLIENT_SECRET=your_client_secret
+GITHUB_USERS=octocat mythz
+OPENROUTER_API_KEY=sk-or-...
+GROQ_API_KEY=gsk_...
+```
+
+Start:
+
+```bash
+docker compose up -d
+```
+
+## Next Steps
+
+<Cards>
+  <Card title="Docker Deployment" href="/docs/deployment/docker" />
+  <Card title="Configuration" href="/docs/configuration" />
+  <Card title="Web UI" href="/docs/features/web-ui" />
+</Cards>

@@ -1,0 +1,240 @@
+---
+title: Web UI
+description: ChatGPT-like interface for all your LLMs
+---
+
+# Web UI
+
+llms.py includes a modern, fast, and privacy-focused web interface that provides a ChatGPT-like experience for accessing all your local and remote LLMs.
+
+## Overview
+
+The UI is built with simplicity and privacy in mind:
+
+- **No Build Tools**: Uses native ES modules
+- **No npm Dependencies**: Pure JavaScript
+- **Offline First**: Works entirely offline
+- **Privacy Focused**: All data stored locally in IndexedDB
+- **Fast & Lightweight**: Minimal footprint
+
+## Key Features
+
+### 🎨 Modern Interface
+
+Access all your LLMs through a clean, intuitive interface:
+
+![llms.py UI](/img/ai-chat-servicestack.webp)
+
+### 🌙 Dark Mode
+
+Built-in dark mode support that respects your system preference or can be toggled manually:
+
+![Dark Mode](/img/dark-attach-image.webp)
+
+### 📝 Rich Markdown & Syntax Highlighting
+
+Full markdown rendering with syntax highlighting for popular programming languages:
+
+![Syntax Highlighting](/img/llms-syntax.webp)
+
+Code blocks include:
+- Copy to clipboard on hover
+- Language detection
+- Line numbers
+- Syntax highlighting
+
+### 🔍 Search History
+
+Quickly find past conversations with built-in search:
+
+![Search History](/img/llms-search-python.webp)
+
+### 🎯 Smart Autocomplete
+
+Autocomplete for models and system prompts makes it easy to find what you need:
+
+![Autocomplete](/img/llms-autocomplete.webp)
+
+Features:
+- Filters to enabled providers only
+- Real-time search
+- Keyboard navigation
+- Recently used models
+
+### 📚 System Prompt Library
+
+Access 200+ professional system prompts for various use cases:
+
+![System Prompts](/img/llms-system-prompt.webp)
+
+Categories include:
+- Technical assistance
+- Creative writing
+- Data analysis
+- Code review
+- Translation
+- And many more...
+
+Customize prompts in `~/.llms/ui.json`:
+
+```json
+{
+  "prompts": [
+    {
+      "id": "it-expert",
+      "name": "Act as an IT Expert",
+      "value": "I want you to act as an IT Expert..."
+    }
+  ]
+}
+```
+
+### ⚙️ Advanced Settings
+
+Fine-tune AI requests with advanced options:
+
+![Settings](/img/llms-settings.webp)
+
+Available parameters:
+- **Temperature** (0-2): Control response randomness
+- **Max Completion Tokens**: Limit response length
+- **Seed**: For deterministic outputs
+- **Top P** (0-1): Nucleus sampling
+- **Frequency Penalty** (-2.0 to 2.0): Reduce repetition
+- **Presence Penalty** (-2.0 to 2.0): Encourage new topics
+- **Stop Sequences**: Control where generation stops
+- **Reasoning Effort**: For reasoning models
+- **Top Logprobs** (0-20): Token probability analysis
+
+### 🎭 Reasoning Support
+
+Specialized rendering for reasoning models with thinking processes:
+
+![Reasoning](/img/llms-reasoning.webp)
+
+Shows:
+- Thinking process (collapsed by default)
+- Final response
+- Clear separation between reasoning and output
+
+### 📊 Token Metrics
+
+See token usage for every message and conversation:
+
+![Token Usage](/img/llms-tokens-usage.webp)
+
+Displayed metrics:
+- Per-message token count
+- Thread total tokens
+- Input vs output tokens
+- Total cost
+- Response time
+
+### ✏️ Edit & Redo
+
+Edit previous messages or retry with different parameters:
+
+- **Edit**: Modify user messages and rerun
+- **Redo**: Regenerate AI responses
+- Hover over messages to see options
+
+### 💾 Export/Import
+
+Backup and transfer your chat history:
+
+- **Export**: Save all conversations to JSON
+- **Import**: Restore from backup
+- Hold `ALT` while clicking Export to include analytics
+- Transfer between browsers or instances
+
+### 🔌 Enable/Disable Providers
+
+Manage which providers are active in real-time:
+
+![Providers](/img/llms-providers.webp)
+
+- Toggle providers on/off
+- Providers are tried in order
+- Automatic failover if one fails
+- See which models are available per provider
+
+## Configuration
+
+### UI Configuration
+
+Customize the UI via `~/.llms/ui.json`:
+
+```json
+{
+  "prompts": [...],
+  "defaultModel": "grok-4-fast",
+  "theme": "auto"
+}
+```
+
+### Server Configuration
+
+Start the server with custom options:
+
+```bash
+# Basic server
+llms --serve 8000
+
+# With verbose logging
+llms --serve 8000 --verbose
+
+# Custom root directory for UI files
+llms --serve 8000 --root /path/to/ui
+```
+
+## Storage
+
+All data is stored in browser IndexedDB:
+
+- **Conversations**: All chat threads and messages
+- **Activity Logs**: Request history for analytics
+- **Settings**: UI preferences
+- **User Profile**: If using OAuth
+
+Data is tied to the browser origin (`http://localhost:PORT`), so running on different ports creates separate databases.
+
+## Privacy
+
+The UI is designed with privacy as a priority:
+
+- ✅ No external requests (except to configured LLM providers)
+- ✅ No tracking or analytics
+- ✅ No ads
+- ✅ No sign-ups required
+- ✅ All data stored locally
+- ✅ Works entirely offline
+- ✅ Open source
+
+## Performance
+
+- Fast initial load
+- Instant search
+- Smooth scrolling
+- Efficient rendering
+- Minimal memory footprint
+
+## Browser Support
+
+Works with modern browsers supporting:
+- ES Modules
+- IndexedDB
+- Fetch API
+- CSS Grid/Flexbox
+
+Tested on:
+- Chrome/Edge (recommended)
+- Firefox
+- Safari
+
+## Next Steps
+
+<Cards>
+  <Card title="Multimodal Support" href="/docs/features/multimodal" />
+  <Card title="Analytics" href="/docs/features/analytics" />
+  <Card title="Configuration" href="/docs/configuration" />
+</Cards>

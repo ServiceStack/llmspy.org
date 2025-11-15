@@ -1,0 +1,479 @@
+---
+title: Providers
+description: Multi-provider support with intelligent routing and failover
+---
+
+# Providers
+
+llms.py supports multiple LLM providers with intelligent routing, automatic failover, and unified configuration.
+
+## Supported Providers
+
+llms.py supports 160+ models across 10+ provider types:
+
+### Cloud Providers (Free Tiers)
+
+Perfect for getting started without API costs:
+
+- **OpenRouter** (Free Models)
+- **Groq**
+- **Google AI Studio** (Free)
+- **Codestral**
+
+### Premium Cloud Providers
+
+For production workloads:
+
+- **OpenAI**
+- **Anthropic**
+- **Google (Paid)**
+- **Grok (X.AI)**
+- **Qwen (Alibaba)**
+- **Z.ai**
+- **Mistral**
+- **OpenRouter** (Paid Models)
+
+### Local Providers
+
+For privacy and cost savings:
+
+- **Ollama**
+
+### Custom Providers
+
+Add any OpenAI-compatible API endpoint.
+
+## Provider Configuration
+
+Each provider is configured in `~/.llms/llms.json`:
+
+```json
+{
+  "providers": {
+    "groq": {
+      "enabled": true,
+      "type": "OpenAiProvider",
+      "base_url": "https://api.groq.com/openai",
+      "api_key": "$GROQ_API_KEY",
+      "models": {
+        "llama3.3:70b": "llama-3.3-70b-versatile",
+        "kimi-k2": "moonshotai/kimi-k2-instruct-0905"
+      },
+      "pricing": {
+        "llama3.3:70b": {
+          "input": 0.40,
+          "output": 1.20
+        }
+      },
+      "default_pricing": {
+        "input": 0.05,
+        "output": 0.10
+      }
+    }
+  }
+}
+```
+
+### Configuration Fields
+
+- **enabled**: Whether the provider is active
+- **type**: Provider class (OpenAiProvider, GoogleProvider, OllamaProvider)
+- **base_url**: API endpoint URL
+- **api_key**: API key (supports environment variables with `$VAR_NAME`)
+- **models**: Model name mappings (local name → provider name)
+- **pricing**: Cost per 1M tokens (input/output) for each model
+- **default_pricing**: Fallback pricing if model not listed
+
+## Environment Variables
+
+Set API keys as environment variables:
+
+```bash
+export OPENROUTER_API_KEY="sk-or-..."
+export GROQ_API_KEY="gsk_..."
+export GOOGLE_FREE_API_KEY="AIza..."
+export ANTHROPIC_API_KEY="sk-ant-..."
+export OPENAI_API_KEY="sk-..."
+export GROK_API_KEY="xai-..."
+export DASHSCOPE_API_KEY="sk-..."  # Qwen
+export ZAI_API_KEY="sk-..."
+export MISTRAL_API_KEY="..."
+```
+
+Reference in config with `$` prefix:
+
+```json
+{
+  "api_key": "$GROQ_API_KEY"
+}
+```
+
+## Provider Types
+
+### OpenAI Provider
+
+Generic provider for OpenAI-compatible APIs:
+
+```json
+{
+  "type": "OpenAiProvider",
+  "base_url": "https://api.openai.com",
+  "api_key": "$OPENAI_API_KEY"
+}
+```
+
+Used by:
+- OpenAI
+- Anthropic
+- OpenRouter
+- Grok
+- Groq
+- Qwen
+- Z.ai
+- Mistral
+- Codestral
+
+### Google Provider
+
+Native Google Gemini API:
+
+```json
+{
+  "type": "GoogleProvider",
+  "base_url": "https://generativelanguage.googleapis.com",
+  "api_key": "$GOOGLE_API_KEY"
+}
+```
+
+Handles Google-specific request/response format.
+
+### Ollama Provider
+
+Local Ollama provider with auto-discovery:
+
+```json
+{
+  "type": "OllamaProvider",
+  "base_url": "http://localhost:11434",
+  "models": {},
+  "all_models": true
+}
+```
+
+- **all_models**: Auto-discover installed models
+- **models**: Restrict to specific models if needed
+
+## Intelligent Routing
+
+### Provider Order
+
+Providers are tried in the order they appear in `llms.json`:
+
+```json
+{
+  "providers": {
+    "groq": { ... },           // Tried first (free)
+    "openrouter_free": { ... }, // Tried second (free)
+    "openai": { ... }           // Tried last (paid)
+  }
+}
+```
+
+### Automatic Failover
+
+If a provider fails, the next available provider is automatically tried:
+
+1. Request sent to first enabled provider with the model
+2. If it fails, try next enabled provider
+3. Continue until success or all providers exhausted
+4. Return error if no providers succeed
+
+### Model Mapping
+
+Use unified model names across providers:
+
+```json
+{
+  "providers": {
+    "groq": {
+      "models": {
+        "kimi-k2": "moonshotai/kimi-k2-instruct-0905"
+      }
+    },
+    "openrouter": {
+      "models": {
+        "kimi-k2": "moonshotai/kimi-k2"
+      }
+    }
+  }
+}
+```
+
+Request with `-m kimi-k2` works with either provider.
+
+## Managing Providers
+
+### Enable/Disable via CLI
+
+```bash
+# Enable providers
+llms --enable groq openai
+
+# Disable providers
+llms --disable ollama
+
+# Enable multiple
+llms --enable openrouter_free google_free groq codestral
+
+# Disable multiple
+llms --disable openai anthropic grok
+```
+
+### Enable/Disable in UI
+
+Toggle providers in the web UI:
+
+![Providers UI](/img/llms-providers.webp)
+
+- Click to enable/disable
+- See available models per provider
+- Changes persist to config file
+
+### List Providers
+
+```bash
+# List all providers
+llms --list
+llms ls
+
+# List specific providers
+llms ls groq anthropic
+```
+
+Shows:
+- Enabled/disabled status
+- Available models
+- API key configuration status
+
+## Provider Details
+
+### OpenRouter
+
+Access 100+ models from various providers:
+
+```json
+{
+  "openrouter_free": {
+    "enabled": true,
+    "type": "OpenAiProvider",
+    "base_url": "https://openrouter.ai/api",
+    "api_key": "$OPENROUTER_API_KEY",
+    "models": {
+      "grok-4": "x-ai/grok-4",
+      "llama4:400b": "meta-llama/llama-4-maverick"
+    }
+  }
+}
+```
+
+**Free Models Available**: Yes
+**API Key**: Required (free tier available)
+
+### Groq
+
+Fast inference with competitive pricing:
+
+```json
+{
+  "groq": {
+    "enabled": true,
+    "type": "OpenAiProvider",
+    "base_url": "https://api.groq.com/openai",
+    "api_key": "$GROQ_API_KEY",
+    "models": {
+      "llama3.3:70b": "llama-3.3-70b-versatile",
+      "kimi-k2": "moonshotai/kimi-k2-instruct-0905"
+    }
+  }
+}
+```
+
+**Free Tier**: Yes
+**API Key**: Required
+
+### Google (Free)
+
+Google AI Studio with free tier:
+
+```json
+{
+  "google_free": {
+    "enabled": true,
+    "type": "GoogleProvider",
+    "base_url": "https://generativelanguage.googleapis.com",
+    "api_key": "$GOOGLE_FREE_API_KEY",
+    "models": {
+      "gemini-2.5-flash": "gemini-2.5-flash-002"
+    }
+  }
+}
+```
+
+**Free Tier**: Yes (generous limits)
+**API Key**: Required
+
+### OpenAI
+
+Official OpenAI models:
+
+```json
+{
+  "openai": {
+    "enabled": false,
+    "type": "OpenAiProvider",
+    "base_url": "https://api.openai.com",
+    "api_key": "$OPENAI_API_KEY",
+    "models": {
+      "gpt-5": "gpt-5",
+      "gpt-4o": "gpt-4o"
+    }
+  }
+}
+```
+
+**Free Tier**: No
+**API Key**: Required
+
+### Anthropic (Claude)
+
+Claude models:
+
+```json
+{
+  "anthropic": {
+    "enabled": false,
+    "type": "OpenAiProvider",
+    "base_url": "https://api.anthropic.com",
+    "api_key": "$ANTHROPIC_API_KEY",
+    "models": {
+      "claude-sonnet-4-0": "claude-sonnet-4-0"
+    }
+  }
+}
+```
+
+**Free Tier**: No
+**API Key**: Required
+
+### Grok (X.AI)
+
+X.AI's Grok models:
+
+```json
+{
+  "grok": {
+    "enabled": false,
+    "type": "OpenAiProvider",
+    "base_url": "https://api.x.ai",
+    "api_key": "$GROK_API_KEY",
+    "models": {
+      "grok-4": "grok-4",
+      "grok-4-fast": "grok-4-fast"
+    }
+  }
+}
+```
+
+**Free Tier**: No
+**API Key**: Required
+
+### Ollama (Local)
+
+Local models with Ollama:
+
+```json
+{
+  "ollama": {
+    "enabled": false,
+    "type": "OllamaProvider",
+    "base_url": "http://localhost:11434",
+    "models": {},
+    "all_models": true
+  }
+}
+```
+
+**Cost**: Free (local)
+**API Key**: Not required
+**Setup**: Requires Ollama installed and running
+
+## Custom Providers
+
+Add any OpenAI-compatible provider:
+
+```json
+{
+  "providers": {
+    "my_custom_provider": {
+      "enabled": true,
+      "type": "OpenAiProvider",
+      "base_url": "https://my-api.example.com",
+      "api_key": "$MY_API_KEY",
+      "models": {
+        "custom-model": "provider-model-name"
+      },
+      "pricing": {
+        "custom-model": {
+          "input": 1.00,
+          "output": 2.00
+        }
+      }
+    }
+  }
+}
+```
+
+## Checking Provider Status
+
+Test provider connectivity:
+
+```bash
+# Check all models for a provider
+llms --check groq
+
+# Check specific models
+llms --check groq kimi-k2 llama4:400b gpt-oss:120b
+```
+
+Shows:
+- ✅ Working models with response times
+- ❌ Failed models with error messages
+- Provider availability
+
+## Best Practices
+
+### Cost Optimization
+
+1. **Free First**: Enable free providers before paid ones
+2. **Local When Possible**: Use Ollama for privacy/cost
+3. **Monitor Costs**: Use analytics to track spending
+
+### Reliability
+
+1. **Multiple Providers**: Enable multiple providers for failover
+2. **Test Regularly**: Use `--check` to verify connectivity
+3. **Monitor Performance**: Track response times in analytics
+
+### Security
+
+1. **Environment Variables**: Never commit API keys
+2. **Minimal Permissions**: Use least-privilege API keys
+3. **Rotate Keys**: Regularly rotate API keys
+
+## Next Steps
+
+<Cards>
+  <Card title="Configuration" href="/docs/configuration" />
+  <Card title="Analytics" href="/docs/features/analytics" />
+  <Card title="CLI Reference" href="/docs/cli" />
+</Cards>
