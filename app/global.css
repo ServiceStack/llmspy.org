@@ -7,6 +7,7 @@
   --color-fd-card: rgb(241 245 249); /* slate-100 for sidebar */
   --color-fd-primary: rgb(15 23 42); /* slate-900 for better contrast */
   --color-fd-muted: rgb(226 232 240); /* slate-200 - same as active menu item */
+  --color-fd-muted-foreground: rgb(100 116 139); /* slate-500 - one more tad lighter */
 }
 
 /* Code block background color - target all elements */
