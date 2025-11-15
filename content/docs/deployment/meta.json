@@ -1,0 +1,8 @@
+{
+  "title": "Deployment",
+  "pages": [
+    "index",
+    "docker",
+    "github-oauth"
+  ]
+}

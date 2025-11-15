@@ -1,0 +1,212 @@
+---
+title: Deployment
+description: Deploy llms.py to production
+---
+
+# Deployment
+
+llms.py can be deployed in various ways depending on your needs.
+
+## Deployment Options
+
+### Docker (Recommended)
+
+The easiest way to deploy llms.py:
+
+- Pre-built images on GitHub Container Registry
+- Multi-architecture support (amd64, arm64)
+- docker compose for easy orchestration
+- Persistent storage with volumes
+
+[Learn more about Docker deployment →](/docs/deployment/docker)
+
+### Python Package
+
+Install and run as a Python package:
+
+```bash
+pip install llms-py
+llms --serve 8000
+```
+
+### From Source
+
+Clone and run from source:
+
+```bash
+git clone https://github.com/ServiceStack/llms
+cd llms
+python -m llms.main --serve 8000
+```
+
+## Security
+
+### GitHub OAuth
+
+Secure your deployment with GitHub OAuth authentication:
+
+- User authentication via GitHub
+- Optional user access restrictions
+- Session management
+- CSRF protection
+
+[Learn more about GitHub OAuth →](/docs/deployment/github-oauth)
+
+### API Key Management
+
+Best practices for managing API keys:
+
+1. **Use Environment Variables**: Never commit API keys
+2. **Rotate Regularly**: Change keys periodically
+3. **Least Privilege**: Use minimal permissions
+4. **Separate Keys**: Different keys for dev/prod
+
+### Network Security
+
+For production deployments:
+
+1. **Use HTTPS**: Always use TLS in production
+2. **Firewall**: Restrict access to necessary ports
+3. **Reverse Proxy**: Use nginx or similar
+4. **Rate Limiting**: Prevent abuse
+
+## Production Checklist
+
+- [ ] Set all required API keys as environment variables
+- [ ] Configure GitHub OAuth (if needed)
+- [ ] Set up HTTPS/TLS
+- [ ] Configure firewall rules
+- [ ] Set up monitoring
+- [ ] Configure backup for `~/.llms/` directory
+- [ ] Test failover between providers
+- [ ] Review and optimize provider order
+- [ ] Set up log rotation
+- [ ] Configure resource limits
+
+## Monitoring
+
+### Health Checks
+
+Docker images include built-in health checks:
+
+```bash
+docker ps  # Check container status
+docker inspect --format='{{json .State.Health}}' container-name
+```
+
+### Logs
+
+View server logs:
+
+```bash
+# Docker
+docker logs llms-server
+
+# docker compose
+docker compose logs -f
+
+# Direct
+llms --serve 8000 --verbose
+```
+
+### Provider Status
+
+Check provider connectivity:
+
+```bash
+llms --check groq
+llms --check openai anthropic
+```
+
+## Scaling
+
+### Multiple Instances
+
+Run multiple instances behind a load balancer:
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  llms-1:
+    image: ghcr.io/servicestack/llms:latest
+    ports:
+      - "8001:8000"
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+
+  llms-2:
+    image: ghcr.io/servicestack/llms:latest
+    ports:
+      - "8002:8000"
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+```
+
+### Load Balancing
+
+Use nginx, Traefik, or similar for load balancing.
+
+## Backup & Recovery
+
+### Configuration Backup
+
+Backup configuration files:
+
+```bash
+# Backup
+tar -czf llms-backup.tar.gz ~/.llms/
+
+# Restore
+tar -xzf llms-backup.tar.gz -C ~/
+```
+
+### Docker Volumes
+
+For Docker deployments, backup volumes:
+
+```bash
+# Backup
+docker run --rm -v llms-data:/data -v $(pwd):/backup \
+  ubuntu tar czf /backup/llms-data-backup.tar.gz /data
+
+# Restore
+docker run --rm -v llms-data:/data -v $(pwd):/backup \
+  ubuntu tar xzf /backup/llms-data-backup.tar.gz -C /
+```
+
+## Troubleshooting
+
+### Common Issues
+
+**Port already in use:**
+```bash
+# Use different port
+llms --serve 3000
+```
+
+**API keys not working:**
+```bash
+# Verify environment variables
+env | grep API_KEY
+
+# Check config
+llms ls
+```
+
+**Provider failures:**
+```bash
+# Check provider status
+llms --check provider-name
+
+# Enable verbose logging
+llms --serve 8000 --verbose
+```
+
+## Next Steps
+
+<Cards>
+  <Card title="Docker Deployment" href="/docs/deployment/docker" />
+  <Card title="GitHub OAuth" href="/docs/deployment/github-oauth" />
+  <Card title="Configuration" href="/docs/configuration" />
+</Cards>

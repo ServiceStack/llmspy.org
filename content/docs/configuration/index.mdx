@@ -1,0 +1,216 @@
+---
+title: Configuration
+description: Configure llms.py providers, models, and settings
+---
+
+# Configuration
+
+llms.py uses a simple JSON configuration file to manage providers, models, and defaults.
+
+## Configuration File
+
+The main configuration file is `~/.llms/llms.json`. It's automatically created on first run with sensible defaults.
+
+### Initialize Configuration
+
+```bash
+llms --init
+```
+
+This creates `~/.llms/llms.json` with the latest default configuration.
+
+### Configuration Structure
+
+```json
+{
+  "defaults": {
+    "headers": { ... },
+    "text": { ... },
+    "image": { ... },
+    "audio": { ... },
+    "file": { ... }
+  },
+  "providers": {
+    "groq": { ... },
+    "openai": { ... },
+    ...
+  }
+}
+```
+
+## Defaults Section
+
+### Headers
+
+Common HTTP headers for all requests:
+
+```json
+{
+  "defaults": {
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
+```
+
+### Chat Templates
+
+Default request templates for different modalities:
+
+```json
+{
+  "defaults": {
+    "text": {
+      "model": "grok-4-fast",
+      "messages": [
+        {"role": "user", "content": ""}
+      ],
+      "temperature": 0.7
+    },
+    "image": {
+      "model": "gemini-2.5-flash",
+      "messages": [ ... ]
+    },
+    "audio": {
+      "model": "gpt-4o-audio-preview",
+      "messages": [ ... ]
+    },
+    "file": {
+      "model": "gpt-5",
+      "messages": [ ... ]
+    }
+  }
+}
+```
+
+### Conversion Settings
+
+Image conversion and limits:
+
+```json
+{
+  "convert": {
+    "max_image_size": 2048,
+    "max_image_length": 20971520,
+    "webp_quality": 90
+  }
+}
+```
+
+## Providers Section
+
+Each provider requires specific configuration. See the [Providers](/docs/features/providers) page for details.
+
+### Basic Provider
+
+```json
+{
+  "providers": {
+    "groq": {
+      "enabled": true,
+      "type": "OpenAiProvider",
+      "base_url": "https://api.groq.com/openai",
+      "api_key": "$GROQ_API_KEY",
+      "models": {
+        "llama3.3:70b": "llama-3.3-70b-versatile"
+      },
+      "pricing": {
+        "llama3.3:70b": {
+          "input": 0.40,
+          "output": 1.20
+        }
+      }
+    }
+  }
+}
+```
+
+## UI Configuration
+
+The UI configuration is stored in `~/.llms/ui.json`:
+
+```json
+{
+  "prompts": [
+    {
+      "id": "it-expert",
+      "name": "Act as an IT Expert",
+      "value": "I want you to act as an IT Expert..."
+    }
+  ],
+  "defaultModel": "grok-4-fast",
+  "theme": "auto"
+}
+```
+
+## Environment Variables
+
+### API Keys
+
+Reference environment variables in config with `$` prefix:
+
+```json
+{
+  "api_key": "$GROQ_API_KEY"
+}
+```
+
+Set in your shell:
+
+```bash
+export GROQ_API_KEY="gsk_..."
+```
+
+### Other Settings
+
+```bash
+# Enable verbose logging
+export VERBOSE=1
+```
+
+## Custom Configuration Path
+
+Use a custom configuration file:
+
+```bash
+llms --config /path/to/custom-config.json "Hello"
+```
+
+## Configuration Management
+
+### View Configuration
+
+```bash
+# List providers and models
+llms --list
+
+# List specific providers
+llms ls groq anthropic
+```
+
+### Enable/Disable Providers
+
+```bash
+# Enable providers
+llms --enable groq openai
+
+# Disable providers
+llms --disable ollama
+```
+
+### Set Default Model
+
+```bash
+llms --default grok-4-fast
+```
+
+This updates `defaults.text.model` in the config file.
+
+## Next Steps
+
+<Cards>
+  <Card title="Providers" href="/docs/features/providers" />
+  <Card title="CLI Reference" href="/docs/cli" />
+  <Card title="Features" href="/docs/features" />
+</Cards>

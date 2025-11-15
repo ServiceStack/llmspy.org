@@ -1,0 +1,128 @@
+---
+title: Installation
+description: How to install llms.py
+---
+
+# Installation
+
+## Using pip
+
+The easiest way to install llms.py is using pip:
+
+```bash
+pip install llms-py
+```
+
+## Using Docker
+
+### Pre-built Docker Images
+
+Pull and run the latest image:
+
+```bash
+docker pull ghcr.io/servicestack/llms:latest
+docker run -p 8000:8000 -e GROQ_API_KEY=$GROQ_API_KEY ghcr.io/servicestack/llms:latest
+```
+
+### Using docker compose (Recommended)
+
+1. Download the docker-compose.yml file:
+
+```bash
+curl -O https://raw.githubusercontent.com/ServiceStack/llms/refs/heads/main/docker-compose.yml
+```
+
+2. Create a `.env` file with your API keys:
+
+```bash
+OPENROUTER_API_KEY=sk-or-...
+GROQ_API_KEY=gsk_...
+GOOGLE_FREE_API_KEY=AIza...
+```
+
+3. Start the service:
+
+```bash
+docker compose up -d
+```
+
+### Build from Source
+
+If you've cloned the repository:
+
+```bash
+git clone https://github.com/ServiceStack/llms
+cd llms
+docker compose -f docker-compose.local.yml up -d --build
+```
+
+## Setting Up API Keys
+
+Set environment variables for the providers you want to use:
+
+```bash
+export OPENROUTER_API_KEY="sk-or-..."
+export GROQ_API_KEY="gsk_..."
+export GOOGLE_FREE_API_KEY="AIza..."
+export ANTHROPIC_API_KEY="sk-ant-..."
+export OPENAI_API_KEY="sk-..."
+export GROK_API_KEY="xai-..."
+export DASHSCOPE_API_KEY="sk-..."  # Qwen
+export ZAI_API_KEY="sk-..."
+export MISTRAL_API_KEY="..."
+```
+
+### API Key Reference
+
+| Provider | Environment Variable | Description |
+|----------|---------------------|-------------|
+| openrouter_free | `OPENROUTER_API_KEY` | OpenRouter FREE models |
+| groq | `GROQ_API_KEY` | Groq API key |
+| google_free | `GOOGLE_FREE_API_KEY` | Google FREE API key |
+| codestral | `CODESTRAL_API_KEY` | Codestral API key |
+| ollama | N/A | No API key required |
+| openrouter | `OPENROUTER_API_KEY` | OpenRouter API key |
+| google | `GOOGLE_API_KEY` | Google API key |
+| anthropic | `ANTHROPIC_API_KEY` | Anthropic API key |
+| openai | `OPENAI_API_KEY` | OpenAI API key |
+| grok | `GROK_API_KEY` | Grok (X.AI) API key |
+| qwen | `DASHSCOPE_API_KEY` | Qwen (Alibaba) key |
+| z.ai | `ZAI_API_KEY` | Z.ai API key |
+| mistral | `MISTRAL_API_KEY` | Mistral API key |
+
+## Verification
+
+After installation, verify it's working:
+
+```bash
+# Check version
+llms --help
+
+# Initialize configuration
+llms --init
+
+# List available providers
+llms --list
+```
+
+## Updating
+
+To update to the latest version:
+
+```bash
+pip install llms-py --upgrade
+```
+
+For Docker:
+
+```bash
+docker pull ghcr.io/servicestack/llms:latest
+```
+
+## Next Steps
+
+<Cards>
+  <Card title="Quick Start" href="/docs/getting-started/quick-start" />
+  <Card title="Configuration" href="/docs/configuration" />
+  <Card title="Docker Deployment" href="/docs/deployment/docker" />
+</Cards>
