@@ -35,7 +35,8 @@ const Brand = {
         <button type="button" @click="$router.push('/')" class="...">
             🎄 {{ $state.title }} 🎄
         </button>
-    </div>`
+    </div>
+    `,
 }
 
 const Welcome = {
@@ -217,6 +218,48 @@ export default {
         ctx.state.greetings = await ext.getJson("/greetings.json")
     }
 }
+```
+
+## 7. Programmatic Chat Completions
+
+You can use the chat API within your components to generate text using the configured LLMs. This is useful for creating dynamic content like stories, summaries, or finding information.
+
+### Example: Generating a Story
+
+The `XmasPage` component uses `ctx.chat.completion` to generate a Christmas story on mount.
+
+```js
+onMounted(async () => {
+    // 1. Find an available model
+    const freeStoryModelNames = ['Kimi K2 0905', 'Kimi K2 Instruct', 'Kimi K2 (free)', 'Kimi Dev 72b (free)', 'GPT OSS 120B']
+    const availableStoryModel = freeStoryModelNames.map(name => ctx.chat.getModel(name)).find(x => !!x)
+    
+    if (!availableStoryModel) {
+        console.log('No story models available')
+        return
+    }
+
+    story.value = `Santa is busy writing a christmas story...`
+
+    // 2. Create the request
+    const request = ctx.chat.createRequest({
+        model: availableStoryModel,
+        text: `Write a short, feel-good Christmas story set on a quiet winter evening. Focus on simple kindness, cozy details, and gentle magic—twinkling lights, warm drinks, falling snow, and a small act of generosity that brings people together. Keep the tone hopeful and comforting, with a soft, joyful ending that leaves the reader smiling.`,
+        systemPrompt: santaSystemPrompt,
+    })
+
+    // 3. Execute completion
+    const api = await ctx.chat.completion({
+        request
+    })
+
+    // 4. Handle response
+    if (api.response) {
+        story.value = ctx.chat.getAnswer(api.response)
+    } else if (api.error) {
+        story.value = api.error.message
+    }
+})
 ```
 
 ## Full Example Component: Top Panel
