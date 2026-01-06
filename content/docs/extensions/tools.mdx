@@ -1,0 +1,130 @@
+---
+title: Tool Support
+description: Support for Python function calling (Tools), allowing LLMs to interact with your local environment and custom logic.
+---
+
+## Python Function Tools
+Define tools using standard Python functions. The system automatically generates tool definitions from your function's signature, type hints, and docstrings:
+
+```python
+def get_current_time(tz_name: Optional[str] = None) -> str:
+    """
+    Get current time in ISO-8601 format.
+
+    Args:
+        tz_name: Optional timezone name (e.g. 'America/New_York'). Defaults to UTC.
+    """
+    if tz_name:
+        try:
+            tz = ZoneInfo(tz_name)
+        except Exception:
+            return f"Error: Invalid timezone '{tz_name}'"
+    else:
+        tz = timezone.utc
+
+    return datetime.now(tz).isoformat()
+```
+
+### Register tools for function calling
+
+You can register simple functions or provide manual definitions for complex cases.
+
+### Implicit Tool Definition
+
+Register your tools within an extension's `install` method using `ctx.register_tool`.
+
+```python
+def install(ctx):
+    # Automatic definition from function signature
+    ctx.register_tool(get_current_time)
+```
+
+### Explicit Tool Definition
+
+When more fine-grain configuration is needed you can use an explicit tool definition instead, e.g:
+
+```python
+ctx.register_tool(
+    get_current_time,
+    {
+        "type": "function",
+        "function": {
+            "name": "get_current_time",
+            "description": "Get current time in ISO-8601 format.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "tz_name": {
+                        "type": "string",
+                        "description": "timezone name (e.g. 'America/New_York')",
+                        "default": "UTC"
+                    }
+                },
+                "required": []
+            }
+        }
+    })
+```
+
+## UI Management
+
+**Dedicated Tools Page** 
+
+View all registered tools and their definitions at `/tools` page via the left sidebar link:
+
+[![](/img/llms-tools-page.webp)](/img/llms-tools-page.webp)
+
+**Top Panel Tools Selector** 
+
+- **One-Click Enable/Disable**: Use the new Tool Selector in the chat interface (top-right) to control which tools are available to the model
+- **Granular Control**: Select "All", "None", or specific tools for each chat session
+
+[![](/img/llms-tools-top.webp)](/img/llms-tools-top.webp)
+
+When tools are used within AI Requests a special UI is used to render tool calls and responses.
+
+---
+
+## Available Tools
+
+All available tools are maintained in the GitHub [llmspy organization](https://github.com/orgs/llmspy/repositories) repositories:
+
+| Tool | Description |
+|------|-------------|
+| `duckduckgo` | Add web search tool capabilities using Duck Duck Go |
+
+**List available extensions:**
+
+```bash
+llms --add
+```
+
+**Install the [duckduckgo](https://github.com/llmspy/duckduckgo/blob/main/__init__.py) extension and its `web_search` tool:**
+
+```bash
+llms --add duckduckgo
+```
+
+This registers the `web_search` tool allowing LLMs to perform web searches using Duck Duck Go.
+
+```python
+def web_search(query: str, max_results: int | None = 10, page: int = 1) -> Dict[str, Any]:
+```
+
+### Installing external Extensions and Tools
+
+Installing an extension clones it into your `~/.llms/extensions` folder and installs any Python `requirements.txt` dependencies. You can remove an extension by deleting the folder from `~/.llms/extensions`.
+
+**Install 3rd-party extensions:**
+```bash
+llms --add <user>/<repo>
+```
+
+**Manual installation:**
+```bash
+git clone https://github.com/<user>/<repo> ~/.llms/extensions/<repo>
+```
+
+--- 
+
+🤝 Feel free to submit pull requests to add new extensions to the [llmspy organization](https://github.com/orgs/llmspy/repositories) to make your extension easily discoverable to everyone.

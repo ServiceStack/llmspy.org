@@ -13,7 +13,12 @@ description: Major release focused on extensibility, expanded provider support, 
 | **New Model Selector** | Redesigned full-featured dialog with search, filtering, sorting, and favorites |
 | **Image Generation** | Built-in support for Google, OpenAI, OpenRouter, Chutes, and Nvidia |
 | **Audio Generation** | TTS support for Gemini 2.5 Flash/Pro Preview models |
-| **Improved Caching** | Persistent image/file caching with optimized storage |
+| **Media Gallery** | Beautiful UI to browse generated portrait/landscape images and audio generations |
+| **Run Code UI** | Execute Python, JavaScript, TypeScript and C# code scripts in a CodeMirror editor |
+| **Calculator UI** | Beautiful UX Friendly UI to evaluate python math expressions |
+| **KaTeX Support** | Support for beautiful rendering of LaTeX math expressions |
+| **SQLite Storage** | Migrated from IndexedDB to server SQLite for robust persistence and concurrent usage |
+| **Asset Caching** | Persistent image/file file caching with metadata |
 
 ---
 
@@ -35,13 +40,27 @@ description: Major release focused on extensibility, expanded provider support, 
 
 ## Rewritten for Extensibility
 
-A major rewrite of llms has been completed to make it extensible and allow for easy addition of new features. 
+llms.py has been rewritten from the ground-up with extensibility a **core concept** where all [major UI and Server features](https://github.com/ServiceStack/llms/tree/main/llms/extensions) now layer on their encapsulated functionality by using the public Client & Server Extensibility APIs.
 
-Most built-in UI components have been [refactored into modules](https://github.com/ServiceStack/llms/tree/main/llms/ui/modules) utilizing the same extensibility APIs that any extension can use, where in addition to adding new pages and features, they can also **replace existing components** by registering new Vue components with the same name.
+Extensions are just folders that can add both Server and UI features using the public client and server extensibility APIs. Built-in features are just extensions in the repo's [llms/extensions](https://github.com/ServiceStack/llms/tree/main/llms/extensions) folder which can be overridden by adding them to your local `~/.llms/extensions` folder.
 
-Likewise, the server has adopted a **server extension model**, that all major provider implementations now use where they're dropped into the [llms/providers](https://github.com/ServiceStack/llms/tree/main/llms/providers) folder and automatically loaded and registered at runtime.
+llms includes support for installing and uninstalling extensions from any GitHub repository. For better discoverability, non built-in extensions are maintained in the [github.com/llmspy](https://github.com/orgs/llmspy/repositories) organization repositories which anyone else is welcome to contribute their repos to for increased discoverability.
 
-This approach allows [main.py](https://github.com/ServiceStack/llms/blob/main/llms/main.py) to retain a **lean functional core in a single file** whilst still being fully extensible and lays the foundation for **rapid development of new optional features** - both from the core team and external 3rd party extensions - enabling the community to extend llms.py in new unanticipated ways.
+UI components are now registered and referenced as Global Vue components, which can be easily replaced by registering Vue components with the same name as done in the [xmas](https://github.com/llmspy/xmas/blob/main/ui/index.mjs) extension demo.
+
+This approach allows [main.py](https://github.com/ServiceStack/llms/blob/main/llms/main.py) to retain a **lean functional core in a single file** whilst still being fully extensible and lays the foundation for **rapid development of new features** - both from the core team and external 3rd party extensions - enabling the community to extend llms.py in new unanticipated ways.
+
+## Server SQLite and Cached File Storage persistence
+
+Another major change is the migration from client-side IndexedDB storage to a robust server-side SQLite solution. This architectural shift ensures better data consistency, improved performance, and enables parallel executions and multi-device access to your chat history.
+
+To keep the database efficient and portable, binary assets (images, audio, etc.) are not stored directly in the SQLite database, Instead all generated assets are stored in the local file system cache at `~/.llms/cache` and only **relative URLs** referencing these assets are stored in the database.
+
+#### Concurrency Model
+To ensure data integrity and high performance without complex locking mechanisms, the system utilizes a **single background thread** for managing all write operations to the database. This design improves concurrency handling and eliminates database locking issues during high-load scenarios.
+
+#### Multi-Tenancy & Security
+When authentication is enabled, data isolation is automatically enforced. All core tables, including `threads` and `requests`, are scoped to the authenticated user, ensuring that users can only access their own data.
 
 ---
 
@@ -49,23 +68,25 @@ This approach allows [main.py](https://github.com/ServiceStack/llms/blob/main/ll
 
 The most significant change is the migration to utilize the same [models.dev](https://models.dev) open provider and model catalogue as used and maintained by [OpenCode](https://opencode.ai).
 
-llms provider configuration is now a **superset** of `models.dev/api.json` where its definitions are merged, allowing you to enable providers using just `"enabled": true` where it inherits all standard provider configurations from models.dev.
+**llms.json** provider configuration is now a **superset** of `models.dev/api.json` where its definitions are merged, allowing you to enable providers using just `"enabled": true` to inherit provider configurations from **models.dev**
 
 ### 🌐 Expanded Provider Support
 
 The switch to [models.dev](https://models.dev) greatly expands the model selection to over **530 models** from **23 different providers**, including new support for:
 
-| Provider | Models | Provider | Models |
-|----------|--------|----------|--------|
-| Alibaba | 39 | Hugging Face | 14 |
-| Chutes | 56 | LMStudio | local |
-| DeepSeek | 2 | MiniMax | 1 |
-| Fireworks AI | 12 | Moonshot AI | 5 |
-| GitHub Copilot | 27 | Nvidia | 24 |
-| GitHub Models | 55 | Zai | 6 |
-| | | Zai Coding Plan | 6 |
+| Provider       | Models   | Provider        | Models   |
+|----------------|----------|-----------------|----------|
+| Alibaba        | 39       | Hugging Face    | 14       |
+| Chutes         | 56       | Zai Coding Plan | 6        |
+| DeepSeek       | 2        | MiniMax         | 1        |
+| Fireworks AI   | 12       | Moonshot AI     | 5        |
+| GitHub Copilot | 27       | Nvidia          | 24       |
+| GitHub Models  | 55       | Zai             | 6        |
+| LMStudio       | local    | Ollama          | local    |
 
-> 💡 Please [raise an issue](https://github.com/ServiceStack/llms/issues) to add support for any missing providers from [models.dev](https://models.dev) you would like to use.
+Non OpenAI Compatible LLM and Image generation providers are maintained in the [providers](https://github.com/ServiceStack/llms/tree/main/llms/extensions/providers) extension, registered using the `ctx.add_provider()` API.
+
+<Tip>💡 [Raise an issue](https://github.com/ServiceStack/llms/issues) to add support for any missing providers from [models.dev](https://models.dev) you would like to use.</Tip>
 
 ### 🔄 Automatic Provider Updates
 
@@ -75,13 +96,12 @@ This actively maintained list of available providers and models are automaticall
 llms --update-providers
 ```
 
-As an optimziation only the providers that are referenced in your `llms.json` are saved. Any additional providers you want to use that are not included in models.dev can be added to your `~/.llms/providers-extra.json`, which get merged into your `providers.json` on every update.
+As an optimization only the providers that are referenced in your `llms.json` are saved. Any additional providers you want to use that are not included in models.dev can be added to your `~/.llms/providers-extra.json`, which get merged into your `providers.json` on every update.
 
 This keeps your local configuration file lightweight by only including the providers that are available for use.
 
 ### Configuration Examples
 
-#### 1. Simple Enable
 Enable providers by ID — all configuration is automatically inherited:
 
 ```json
@@ -91,139 +111,88 @@ Enable providers by ID — all configuration is automatically inherited:
 }
 ```
 
-#### 2. Custom Configuration
-Overlay custom settings like `temperature`, custom check requests, and provider-specific configuration:
-
-```json
-{
-  "github-models": {
-    "enabled": false,
-    "check": {
-      "messages": [{ "role": "user", "content": [{ "type": "text", "text": "1+1=" }] }]
-    }
-  },
-  "minimax": {
-    "enabled": true,
-    "temperature": 1.0
-  },
-  "google": {
-    "enabled": true,
-    "map_models": {
-      "gemini-flash-latest": "gemini-flash-latest",
-      "gemini-flash-lite-latest": "gemini-flash-lite-latest",
-      "gemini-2.5-pro": "gemini-2.5-pro",
-      "gemini-2.5-flash": "gemini-2.5-flash"
-    },
-    "safety_settings": [{
-      "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-      "threshold": "BLOCK_ONLY_HIGH"
-    }],
-    "thinking_config": {
-      "thinkingBudget": 1024,
-      "includeThoughts": true
-    }
-  }
-}
-```
-
-#### 3. Model Mapping (`map_models`)
-Use `map_models` to explicitly whitelist and map specific models. Only the models listed here will be enabled for the provider, using definitions from models.dev:
-
-```json
-{
-  "alibaba": {
-    "enabled": true,
-    "map_models": {
-      "qwen3-max": "qwen3-max",
-      "qwen-max": "qwen-max",
-      "qwen-plus": "qwen-plus"
-    },
-    "enable_thinking": false
-  }
-}
-```
-
-#### 4. Custom Provider & Model Definitions
-Fully define custom OpenAI-compatible providers and models that aren't in models.dev. For example, adding Mistral's free `codestral` endpoint:
-
-```json
-{
-  "codestral": {
-    "enabled": true,
-    "id": "codestral",
-    "npm": "codestral",
-    "api": "https://codestral.mistral.ai/v1",
-    "env": ["CODESTRAL_API_KEY"],
-    "models": {
-      "codestral-latest": {
-        "id": "codestral-latest",
-        "name": "Codestral",
-        "cost": { "input": 0.0, "output": 0.0 }
-      }
-    }
-  }
-}
-```
-
-> 💡 **Tip:** To enable access to new models for existing providers while waiting for them to be added to models.dev, add them to your `~/.llms/providers-extra.json`, where they'll be merged into your `providers.json` when updated.
-
-#### 5. NPM SDK Alignment
-The provider configuration is closely aligned with the models.dev npm configuration. The `"npm"` field maps the provider configuration to the correct Python provider implementation. This generic mapping allows for flexible provider support, including **Anthropic Chat Completion** requests, which are correctly handled for both **Anthropic** and **MiniMax** providers.
-
-#### 6. Ecosystem Compatibility
-By standardizing on models.dev definitions, the project now shares a compatible configuration model with other AI tools like **OpenCode**. This includes the standardization of environment variables using the `"env"` property, ensuring simpler and more portable configuration across different tools.
+See [Configuration](/docs/configuration) docs for more info.
 
 ---
 
 ## New Model Selector UI
 
-With over 530 models from 23 providers now available, discovering and selecting the right model required a complete overhaul. The Model Selector has been completely redesigned as a full-featured dialog offering:
+With over 530 models from 23 providers now available, discovering and selecting the right model required a complete overhaul. 
+The Model Selector has been completely redesigned as a full-featured dialog offering:
 
-### 🔍 Smart Search & Discovery
-- **Full-text Search**: Instantly search across model names, IDs, and providers
-- **Real-time Filtering**: Results update as you type with no lag
-- **Model Count Display**: See how many models match your current filters
+- **🔍 Smart Search & Discovery** - Instantly search across model names, IDs, and providers
+- **🎯 Advanced Filtering** - Filter by name, providers & input and output modalities
+- **📊 Flexible Sorting** - Sort by Knowledge Cutoff, Release Date, Last Updated & Context
+- **⭐ Favorites System** - Star model card to add/remove to favorites quick list
+- **💎 Rich Model Cards** - In depth model overview at a glance
 
-### 🎯 Advanced Filtering
-- **Provider Filtering**: Click any provider to show only their models, with model counts displayed for each
-- **Modality Filtering**: Filter by input/output capabilities (text, image, audio, video, PDF)
-- **Favorites Tab**: Quick access to your most-used models with a dedicated favorites view
-- **Unavailable Favorites**: Gracefully handles favorited models whose providers are disabled
+<a href="/docs/features/model-selector">
+<img src="/img/model-selector.webp" class="mx-auto my-4 max-w-2xl rounded-lg hover:shadow border border-gray-200 dark:border-gray-700"/></a>
 
-### 📊 Flexible Sorting
-Sort models by multiple criteria with ascending/descending toggle:
-- **Knowledge Cutoff**: Find models with the most recent training data
-- **Release Date**: Discover the newest models
-- **Last Updated**: See which models are actively maintained
-- **Cost**: Sort by input or output token pricing
-- **Context Window**: Find models with the largest context limits
-- **Name**: Classic alphabetical sorting
+Where providers can be quickly enabled or disabled to customize which models are available:
 
-### ⭐ Favorites System
-- **One-Click Favoriting**: Star icon on each model card
-- **Persistent Storage**: Favorites saved to localStorage
-- **Smart Defaults**: Favorites tab shown by default when you have favorites
-- **Easy Management**: Remove favorites from any view
+<a href="/docs/features/model-selector">
+<img src="/img/model-selector-providers.webp" class="mx-auto my-4 max-w-2xl rounded-lg hover:shadow border border-gray-200 dark:border-gray-700"/></a>
 
-### 💎 Rich Model Cards
-Each model displays comprehensive information at a glance:
-- **Provider Icon**: Visual identification of the model's provider
-- **Cost Information**: Input/output pricing per 1M tokens with "FREE" badge for free models
-- **Context Limits**: Maximum context window and output token limits
-- **Knowledge Cutoff**: Training data recency
-- **Capabilities**: Visual badges for reasoning and tool calling support
-- **Modality Icons**: Input/output support for image, audio, video, and PDF
+See [Model Selector](/docs/features/model-selector) docs for more info.
 
 ---
 
 ## Extensions System
 
-To keep the core lightweight while enabling limitless enhancements, we've introduced a flexible **Extensions system** inspirted by ComfyUI Custom Nodes. This allows you to add features, register new provider implementations, extend, replace, and customize the UI with your own custom features.
+To keep the core lightweight while enabling limitless enhancements, we've implemented a flexible **Extensions system** inspired by ComfyUI Custom Nodes. This allows adding new features, pages and toolbar icons, register new provider implementations, extend, replace, and customize the UI with your own custom features.
 
 ### Installation
 Extensions can be installed from GitHub or by creating a local folder:
-- **GitHub**: Clone extensions into `~/.llms/extensions` (e.g., `git clone https://github.com/user/repo ~/.llms/extensions/my_extension`)
 - **Local**: Simply create a folder in `~/.llms/extensions/my_extension`
+- **GitHub**: Clone extensions into `~/.llms/extensions`, e.g:
+
+```
+git clone https://github.com/user/repo ~/.llms/extensions/my_extension
+```
+
+### Managing Extensions
+
+**List available extensions:**
+```bash
+llms --add
+```
+
+Output:
+
+```
+Available extensions:
+  xmas         Example of utilizing the Extensions APIs to give llms.py some Christmas spirit
+  duckduckgo   Add web search tool capabilities using Duck Duck Go
+
+Usage:
+  llms --add <extension>
+  llms --add <github-user>/<repo>
+```
+
+**Install an extension:**
+```bash
+llms --add duckduckgo
+```
+
+**Install a 3rd-party extension:**
+```bash
+llms --add my_user/my_extension
+```
+
+<Info>Clones the GitHub repo into `~/.llms/extensions/my_extension` and installs any `requirements.txt` dependencies.</Info>
+
+**List installed extensions:**
+```bash
+llms --remove
+```
+
+**Remove an extension:**
+```bash
+llms --remove system_prompts
+```
+
+See [Extensions](/docs/extensions) docs for more details.
 
 ### How it Works (Server)
 Extensions are Python modules that plug into the server lifecycle using special hooks defined in their `__init__.py`:
@@ -235,6 +204,8 @@ Extensions are Python modules that plug into the server lifecycle using special 
 | `__run__(ctx)` | Execute custom logic when running in CLI mode |
 
 The `ctx` parameter provides access to the `ExtensionContext`.
+
+See [Server Extensions](/docs/extensions/server) docs for more details.
 
 ### How it Works (UI)
 
@@ -258,106 +229,94 @@ export default {
 }
 ```
 
-### Example: [`xmas`](https://github.com/llmspy/xmas) extension
-The `xmas` extension demonstrates these capabilities where it utilizes the Extensions APIs to give llms.py a splash of Christmas spirit. It uses `__install__` to register an API endpoint and a UI extension for its UI features.
+See [UI Extensions](/docs/extensions/ui) docs for more details.
 
-### Server API
+### Example: xmas extension
+The [xmas](https://github.com/llmspy/xmas) extension demonstrates these capabilities where it utilizes the Extensions APIs to give llms.py a splash of Christmas spirit. It uses `__install__` to register an API endpoint and a UI extension for its UI features.
 
-**[__init__.py](https://github.com/llmspy/xmas/blob/main/__init__.py)**
+### Replacing Core Components
 
-The xmas extension uses the `__install__` hook which runs after providers are configured to add new Server functionality by registering new aiohttp web application handlers.
+All UI features of xmas is implemented in its [ui/index.mjs](https://github.com/llmspy/xmas/blob/main/ui/index.mjs)
+which overrides default `Brand` and `Welcome` components by registering components with the same name, e.g:
 
-For example this registers both **GET** and **POST** handlers to a new `/ext/xmas/greet` endpoint to return new Xmas greeting:
+```js
+const Brand = {
+    template: `
+    <div class="flex-shrink-0 p-2 border-b border-gray-200 dark:border-gray-700 select-none">
+        <button type="button" @click="$router.push('/')" class="...">
+            🎄 {{ $state.title }} 🎄
+        </button>
+    </div>
+    `,
+}
+const Welcome = {
+    template: `<!-- Custom Welcome Screen -->`,
+    setup() { /* ... */ }
+}
 
-```python
-def install(ctx):
-    async def greet(request):
-        nonlocal count
-        name = request.query.get('name')
-        if not name:
-            data = await request.post()
-            name = data.get('name')
-
-        if not name:
-            name = 'Stranger'
-
-        greeting = greetings[count % len(greetings)]
-        count += 1
-        return web.json_response({"result":f"Hello {name}, {greeting}"})
-
-    ctx.add_get("greet", greet)
-    ctx.add_post("greet", greet)
-
-
-# register install extension handler
-__install__ = install
+export default {
+    install(ctx) {
+        ctx.components({
+            // Replaces built-in UI Components
+            Brand,
+            Welcome,
+            // Registers other custom components used in this UI Extension
+            XmasPage,
+            XmasTopPanel,
+        })
+    }
+}
 ```
 
-## UI Extensions
+To change both the home page and brand on the top-left to give every page title a festive touch:
 
-[/ui/index.mjs](https://github.com/llmspy/xmas/blob/main/ui/index.mjs)
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'xmas home': '/img/llms-xmas-home.webp',
+}} />
 
+It also demonstrates adding a new icon on the left sidebar to open its custom Xmas page component and a top-panel component to display its "Ask Santa" portal:
 
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'xmas page': '/img/llms-xmas-page.webp',
+    'Ask Santa panel': '/img/llms-xmas-top.webp',
+}} />
 
-### Managing Extensions
+The Xmas page calls a custom API endpoint registered in its `__install__` hook to return a custom festive greeting, whilst the top-panel modifies chat requests while its Top Panel is open to add a Santa system prompt which is enough to implement its "Ask Santa" feature.
 
-**List available extensions:**
-```bash
-llms --add
-```
-
-Output:
-
-```
-Available extensions:
-  core_tools       Essential tools for memory, file operations, math expressions and code execution
-  system_prompts   Enables and includes collection of awesome system prompts
-  duckduckgo       Add web search tool capabilities using Duck Duck Go
-  xmas             Example of utilizing the Extensions APIs to give llms.py some Christmas spirit
-
-Usage:
-  llms --add <extension>
-llms --add <github-user>/<repo>
-```
-
-**Install an extension:**
-```bash
-llms --add core_tools
-```
-
-**Install a 3rd-party extension:**
-```bash
-llms --add my_user/my_extension
-```
-> Clones the GitHub repo into `~/.llms/extensions/my_extension` and installs any `requirements.txt` dependencies.
-
-**List installed extensions:**
-```bash
-llms --remove
-```
-
-**Remove an extension:**
-```bash
-llms --remove system_prompts
-```
+Smart generation models like Nano Banana's **gemini-2.5-flash-image** perform exceptionally well here as they're able to answer your kids questions with rich, detailed responses and image outputs.
 
 ---
 
 ## Tool Support
 
-New in v3 is **first-class support for Python function calling (Tools)**, allowing LLMs to interact with your local environment and custom logic.
+This release also includes **first-class support for Python function calling (Tools)**, allowing LLMs to interact with your local environment and custom functionality. 
 
-### 1. Python Function Tools
-Define tools using standard Python functions. The system automatically generates tool definitions from your function's signature, type hints, and docstrings:
+Tools can be defined using standard Python functions where its tool definition can be implicitly defined from its function's signature, type hints, and docstrings:
 
 ```python
-def get_current_time(timezone: str = "UTC") -> str:
-    """Get current time in the specified timezone"""
-    return f"The time is {datetime.now().strftime('%I:%M %p')} {timezone}"
+def get_current_time(tz_name: Optional[str] = None) -> str:
+    """
+    Get current time in ISO-8601 format.
+
+    Args:
+        tz_name: Optional timezone name (e.g. 'America/New_York'). Defaults to UTC.
+    """
+    if tz_name:
+        try:
+            tz = ZoneInfo(tz_name)
+        except Exception:
+            return f"Error: Invalid timezone '{tz_name}'"
+    else:
+        tz = timezone.utc
+
+    return datetime.now(tz).isoformat()
 ```
 
-### 2. Registration
-Register your tools within an extension's `install` method. You can register simple functions or provide manual definitions for complex cases:
+### Register tools for function calling
+
+#### Implicit Tool Definition
+
+Tools can be registered within an extension's `install` hook using `ctx.register_tool`:
 
 ```python
 def install(ctx):
@@ -365,10 +324,121 @@ def install(ctx):
     ctx.register_tool(get_current_time)
 ```
 
-### 3. UI Management
-- **One-Click Enable/Disable**: Use the new Tool Selector in the chat interface (top-right) to control which tools are available to the model
+#### Explicit Tool Definition
+
+When more fine-grain configuration is needed you can use an explicit tool definition instead, e.g:
+
+```python
+ctx.register_tool(
+    get_current_time,
+    {
+        "type": "function",
+        "function": {
+            "name": "get_current_time",
+            "description": "Get current time in ISO-8601 format.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "tz_name": {
+                        "type": "string",
+                        "description": "timezone name (e.g. 'America/New_York')",
+                        "default": "UTC"
+                    }
+                },
+                "required": []
+            }
+        }
+    })
+```
+
+### UI Management
+
 - **Dedicated Tools Page**: View all registered tools and their definitions at `/tools` or via the sidebar link
+- **One-Click Enable/Disable**: Use the Tool Selector in the top-right to control which tools to use per request
 - **Granular Control**: Select "All", "None", or specific tools for each chat session
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Select tool': '/img/llms-tools-top.webp',
+    'Tools Page': '/img/llms-tools-page.webp',
+}} />
+
+## Core Tools
+
+The built-in [core_tools](https://github.com/ServiceStack/llms/blob/main/llms/extensions/core_tools/__init__.py) extension provides essential functionality for LLMs to interact with their environment, perform calculations, and manage persistent data.
+
+### Memory Tools
+
+Functions for persistent key-value storage.
+
+* `memory_read` - Read a value from persistent memory.
+* `memory_write` - Write a value to persistent memory.
+
+### File System Tools
+
+All file system operations are restricted to the current working directory for safety.
+
+* `read_file` - Read a text file from disk.
+* `write_file` - Write text to a file (overwrites existing content).
+* `list_directory` - List directory contents including file names, sizes, and modification times.
+* `glob_paths` - Find files and directories matching a glob pattern.
+
+<a href="/docs/extensions/tools">
+<img src="/img/tool-files.webp" class="mx-auto my-4 max-w-2xl rounded-lg hover:shadow border border-gray-200 dark:border-gray-700"/></a>
+
+### Utilities
+
+* `get_current_time` - Get the current time in ISO-8601 format.
+
+<a href="/docs/extensions/tools">
+<img src="/img/llms-tools-get_current_time.webp" class="my-4 rounded-lg hover:shadow border border-gray-200 dark:border-gray-700"/></a>
+
+### Math & Logic
+
+* `calc` - Evaluate a mathematical expression. Supports arithmetic, comparison, boolean operators, and common math functions.
+
+<a href="/docs/extensions/tools">
+<img src="/img/llm-tool-call.webp" class="mx-auto my-4 max-w-2xl rounded-lg hover:shadow border border-gray-200 dark:border-gray-700"/></a>
+
+### Code Execution Tools
+
+LLMS includes a suite of tools for executing code in various languages within a sandboxed environment. These tools are designed to allow the agent to run scripts, perform calculations, and verify logic safely.
+
+#### Supported Languages
+
+* `run_python(code)` - Executes Python code.
+* `run_javascript(code)` - Executes JavaScript code (uses `bun` or `node`).
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Run Python': '/img/tool-python.webp',
+    'Run JavaScript': '/img/tool-javascript.webp',
+}} />
+
+* `run_typescript(code)` - Executes TypeScript code (uses `bun` or `node`).
+* `run_csharp(code)` - Executes C# code (uses `dotnet run` with .NET 10+ single-file support).
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Run TypeScript': '/img/tool-typescript.webp',
+    'Run C#': '/img/tool-csharp.webp',
+}} />
+
+## Calculator UIs
+
+As some of the core tools are particularly useful on their own, dedicated UIs has been added for the `calc` tool with support for evaluating mathematical python expressions which supports arithmetic, comparison, boolean operators, and `math.*` functions and constants and python list comprehensions.
+
+<a href="/docs/extensions/tools">
+<img src="/img/run-calc.webp" class="mx-auto my-4 max-w-2xl rounded-lg hover:shadow border border-gray-200 dark:border-gray-700"/></a>
+
+Whilst the `run_python` tools provides a scratch pad for running stand-alone Python, JavaScript, TypeScript, and C# code.
+
+## Run Python, JavaScript, TypeScript & C# programs
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Run Python': '/img/run-python.webp',
+    'Run JavaScript': '/img/run-javascript.webp',
+    'Run TypeScript': '/img/run-typescript.webp',
+    'Run C#': '/img/run-csharp.webp',
+}} />
+
 
 ---
 
@@ -378,17 +448,27 @@ All available tools are maintained in the GitHub [llmspy organization](https://g
 
 | Tool | Description |
 |------|-------------|
-| `core_tools` | Core System Tools providing essential file operations, memory persistence, math expression evaluation, and code execution |
 | `duckduckgo` | Add web search capabilities using DuckDuckGo |
-| `system_prompts` | Enables and includes a collection of awesome system prompts |
 | `xmas` | Example of utilizing the Extensions APIs to give llms.py some Christmas spirit |
 
 **Install a tool:**
 ```bash
-llms --add core_tools
+llms --add duckduckgo
 ```
 
-Installing an extension clones it into your `~/.llms/extensions` folder and installs any Python `requirements.txt` dependencies. You can remove an extension by deleting the folder from `~/.llms/extensions`.
+Installing an extension clones it into your `~/.llms/extensions` folder and installs any Python `requirements.txt` dependencies. You can remove an extension by deleting the folder from `~/.llms/extensions` or by using:
+
+**List installed extensions:**
+
+```bash
+llms --remove
+```
+
+**Remove installed extensions:**
+
+```bash
+llms --remove duckduckgo
+```
 
 **Install 3rd-party extensions:**
 ```bash
@@ -400,7 +480,7 @@ llms --add <user>/<repo>
 git clone https://github.com/<user>/<repo> ~/.llms/extensions/<repo>
 ```
 
-> 🤝 Feel free to submit pull requests to add new extensions to the [llmspy organization](https://github.com/orgs/llmspy/repositories) to make your extension easily discoverable to everyone.
+<Tip>🤝 Feel free to submit pull requests to add new extensions to the [llmspy organization](https://github.com/orgs/llmspy/repositories) to make your extension easily discoverable to everyone.</Tip>
 
 ---
 
@@ -408,15 +488,17 @@ git clone https://github.com/<user>/<repo> ~/.llms/extensions/<repo>
 
 v3 includes built-in support for image generation models on:
 
-| Provider | Status |
-|----------|--------|
-| Google | ✅ Supported |
-| OpenAI | ✅ Supported |
+| Provider   | Status |
+|------------|--------|
+| Google     | ✅ Supported |
+| OpenAI     | ✅ Supported |
 | OpenRouter | ✅ Supported |
-| Chutes | ✅ Supported |
-| Nvidia | ✅ Supported |
+| Chutes     | ✅ Supported |
+| Nvidia     | ✅ Supported |
 
-> ⚠️ Since there is no standard way to generate images, this required a custom implementation for each provider.
+<img src="/img/generate-image.webp" class="my-4 rounded-lg hover:shadow border border-gray-200 dark:border-gray-700"/>
+
+<Info>⚠️ Since there is no standard way to generate images, this required a custom implementation for each provider.</Info>
 
 ### Command-Line Usage
 
@@ -424,6 +506,16 @@ Generate images using the `--out image` modifier:
 
 ```bash
 llms --out image "cat in a hat"
+```
+
+**Output:**
+
+```
+Here's a cat in a hat for you!
+
+Saved files:
+/home/mythz/.llms/cache/ba/ba951f1054cfbf7b9d0bb8d5bc1d9fe1cbc15de0ee63c881b9256d691db4cd2e.png
+http://localhost:8000//~cache/ba/ba951f1054cfbf7b9d0bb8d5bc1d9fe1cbc15de0ee63c881b9256d691db4cd2e.png
 ```
 
 This uses the `out:image` chat template in `llms.json` by default.
@@ -437,7 +529,7 @@ llms -m "gemini-2.5-flash-image" --out image "cat in a hat"
 llms -m "Gemini 2.5 Flash Image" --out image "cat in a hat"
 ```
 
-> 📁 All generated images are saved to the `~/.llms/cache` folder using their SHA-256 hash as the filename.
+<Info>📁 All generated images are saved to the `~/.llms/cache` folder using their SHA-256 hash as the filename.</Info>
 
 ---
 
@@ -449,6 +541,8 @@ v3 includes built-in support for audio generation with Google's new Text-to-Spee
 |-------|-------------|
 | **Gemini 2.5 Flash Preview TTS** | Fast, lightweight TTS |
 | **Gemini 2.5 Pro Preview TTS** | High-quality TTS |
+
+<img src="/img/generate-audio.webp" class="my-4 rounded-lg hover:shadow border border-gray-200 dark:border-gray-700"/>
 
 ### UI & Command-Line Usage
 
@@ -548,3 +642,9 @@ llms --serve 8000
 
 **Happy holidays from the llms.py team!** 🎄
 
+
+---
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'New Model Selector': '/img/model-selector.webp',
+}} />

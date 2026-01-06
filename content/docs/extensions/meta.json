@@ -2,7 +2,10 @@
   "title": "Extensions",
   "defaultOpen": true,
   "pages": [
+    "index",
+    "server",
     "ui",
-    "server"
+    "tools",
+    "core-tools"
   ]
 }

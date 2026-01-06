@@ -1,5 +1,5 @@
 ---
-title: UI Extensions API
+title: UI Extensions
 description: This guide provides a walkthrough of the LLM UI Extensions API which allows you to customize the UI, add new pages, modify the layout, and intercept chat functionality.
 ---
 
@@ -27,12 +27,12 @@ export default {
 }
 ```
 
-## 1. Registering Components
+## Registering Components
 
 You can register custom Vue components to be used throughout the application or to replace existing ones. This is done using `ctx.components()`.
 
 ### Replacing Core Components
-Overrides default `Brand`, `Welcome`, and `HomeTools` components by registering components with the same name.
+Overrides default `Brand` and `Welcome` components by registering components with the same name.
 
 ```js
 const Brand = {
@@ -48,9 +48,6 @@ const Welcome = {
     template: `<!-- Custom Welcome Screen -->`,
     setup() { /* ... */ }
 }
-const HomeTools = {
-    template: `<DarkModeToggle class="mt-4" />`,
-}
 
 export default {
     install(ctx) {
@@ -58,7 +55,6 @@ export default {
             // Replaces built-in UI Components
             Brand,
             Welcome,
-            HomeTools,
             // Registers other custom components used in this UI Extension
             XmasPage,
             XmasTopPanel,
@@ -66,6 +62,10 @@ export default {
     }
 }
 ```
+
+The result of which is a festive makeover with the Brand title on the top right, sporting Christmas trees, a modified home welcome screen with a random assortment of Christmas emojis and links to Xmas extension page and top panel features:
+
+![](/img/llms-xmas-home.webp)
 
 ## Full Example Component: Top Panel
 
@@ -88,7 +88,7 @@ const XmasTopPanel = {
 }
 ```
 
-## 2. Adding Navigation Icons
+## Adding Navigation Icons
 
 ### Left Sidebar Icons
 Use `ctx.setLeftIcons(icons)` to add icons to the left sidebar.
@@ -107,11 +107,32 @@ ctx.setLeftIcons({
 })
 ```
 
-### Top Bar Icons
+## Adding New Pages & Routes
+
+You can push new route definitions directly to `ctx.routes`.
+
+```js
+const XmasPage = {
+    template: `...` 
+}
+
+ctx.routes.push({ 
+    path: '/xmas', 
+    component: XmasPage, 
+    meta: { title: `Merry Christmas!` } 
+})
+```
+
+Which results in a new `/xmas` page accessible via the left sidebar icon:
+
+![](/img/llms-xmas-page.webp)
+
+## Top Bar Icons
 Use `ctx.setTopIcons(icons)` to add icons to the top navigation bar.
 
-*   `component`: The Vue component for the icon button.
-*   `isActive`: A function receiving layout parts like `{ top }` to determine active state.
+- `component` - The Vue component for the icon button.
+
+- `isActive` - A function receiving layout parts like `{ top }` to determine active state.
 
 ```js
 ctx.setTopIcons({
@@ -137,70 +158,35 @@ ctx.setTopIcons({
 })
 ```
 
-## 3. Adding New Pages & Routes
+Which results in opening a festive Top Panel when clicked that opens a direct line to Santa Claus by way of adding a custom system prompt to new chat requests when its top panel is open:
 
-You can push new route definitions directly to `ctx.routes`.
+![](/img/llms-xmas-top.webp)
 
-```js
-const XmasPage = {
-    template: `<div>Merry Christmas!</div>` 
-}
+Smart generation models like Nano Banana's `gemini-2.5-flash-image` perform exceptionally well here as they're able to answer your kids questions with rich, detailed responses and image outputs.
 
-ctx.routes.push({ 
-    path: '/xmas', 
-    component: XmasPage, 
-    meta: { title: `Merry Christmas!` } 
-})
-```
+## Chat & Thread Integration
 
-## 4. Controlling Layout & Logic
-
-### Router Hooks
-Intercept navigation changes using `ctx.onRouterBeforeEach`. This is useful for managing UI state based on the current page.
-
-```js
-// Auto hide top panel on non-chat pages
-ctx.onRouterBeforeEach((to, from) => {
-    if (to.path !== '/' && !to.path.startsWith('/c/')) {
-        ctx.toggleTop('XmasTopPanel', false)
-    }
-})
-```
-
-### Styling Interception
-Use `ctx.onClass` to dynamically modify CSS classes for layout elements (like `body` or `page`).
-
-```js
-ctx.onClass((id, cls) => {
-    // Only apply custom styles on the home page
-    if (ctx.router.currentRoute.value?.path !== '/') return
-
-    // Add festive background colors to the page container
-    if (id == 'page') {
-        return cls + ' bg-slate-50! dark:bg-slate-950!'
-    }
-})
-```
-
-## 5. Chat & Thread Integration
-
-You can intercept and modify chat behavior to create custom personas or functionality.
+The xmas extension achieves this by intercepting chat requests and injecting a Santa system prompt to modify the chat behavior to create custom Santa persona.
 
 ### Thread Creation Filters
-Use `ctx.createThreadFilters` to modify new threads as they are created.
+
+Use `ctx.createThreadFilters` to modify new Chat threads as they are created.
 
 ```js
 const santaSystemPrompt = `You are Santa Claus...`
 const isTopOpen = () => ctx.layout.top === 'XmasTopPanel'
 
 ctx.createThreadFilters.push(thread => {
-    // Only apply if our specific UI panel is open
+    // Only save custom system prompt if our specific UI panel is open
     if (!isTopOpen()) return
     thread.systemPrompt = santaSystemPrompt
 })
 ```
 
+This attaches the Santa system prompt to the new thread which will include it in all subsequent chat requests for that thread.
+
 ### Chat Request Filters
+
 Use `ctx.chatRequestFilters` to modify the request body before it is sent to the LLM.
 
 ```js
@@ -216,73 +202,438 @@ ctx.chatRequestFilters.push(({ request, thread }) => {
 })
 ```
 
-## 6. Backend Integration
+## Controlling Layout & Logic
 
-### Extension Scope
-Use `ctx.scope(id)` to create a scoped helper for standard API interactions. It handles base URLs and state injection.
+### Router Hooks
+
+Intercept navigation changes using `ctx.onRouterBeforeEach`. This is useful for managing UI state based on the current page.
 
 ```js
+// Auto hide top panel on non-chat pages
+ctx.onRouterBeforeEach((to, from) => {
+    if (to.path !== '/' && !to.path.startsWith('/c/')) {
+        ctx.toggleTop('XmasTopPanel', false)
+    }
+})
+```
+
+### Styling Interception
+
+Use `ctx.onClass` to dynamically modify CSS classes for layout elements (like `body` or `page`).
+
+```js
+ctx.onClass((id, cls) => {
+    // Only apply custom styles on the home page
+    if (ctx.router.currentRoute.value?.path !== '/') return
+
+    // Add festive background colors to the page container
+    if (id == 'page') {
+        return cls + ' bg-slate-50! dark:bg-slate-950!'
+    }
+})
+```
+
+## Backend Integration
+
+### Extension Scope
+
+Use `ctx.scope(id)` to create a scoped helper for standard API interactions that's scoped to the extension allowing you to use `/path` to access extension APIs that are prefixed at `/ext/{extension}`. 
+
+```js
+// Scope for 'xmas' extension
+let ext
+
 export default {
     install(ctx) {
-        // Create scope for 'xmas' extension
-        let ext = ctx.scope('xmas') 
-        
-        // ...
-        
-        // Use 'ext' to make requests to /api/ext/xmas/greet
-        async function onSubmit(e) {
-            const form = new FormData(e.target)
-            const res = await ext.postForm('/greet', {
-                body: form
-            })
-            // ...
-        }
+        ext = ctx.scope('xmas')  // create extension scope
+        //...
     },
+
     async load(ctx) {
-        // Load initial data
-        let ext = ctx.scope('xmas')
-        ctx.state.greetings = await ext.getJson("/greetings.json")
+        // GET /ext/xmas/greetings.json
+        const api = await ext.getJson("/greetings.json")
+
+        const greetings = api.response
+        if (greetings) {
+            // maintain in local reactive state in (localized to extension)
+            ext.state.greetings = greetings
+
+            // maintain in global reactive state
+            ctx.state.greetings = greetings
+        } else {
+            ctx.setError(api.error)
+        }
     }
 }
 ```
 
-## 7. Programmatic Chat Completions
+### fetch APIs
+
+The `get`, `delete`, `post`, `put`, `patch` and `postForm` methods return `fetch` responses.
+
+### JSON ApiResult APIs
+
+All `*Json` API variants (e.g. `getJson`, `postJson`) automatically parse JSON responses and return standardized `ApiResult` which either returns successful JSON responses in `api.response` or errors in `api.error`.
+
+### POST HTML Forms
+
+Example of using standard HTML Forms to call an Extension's Server API.
+
+```html
+<form @submit.prevent="onSubmit" class="...">
+    <input name="name" v-model="ext.prefs.name" .../>
+    <button type="submit" class="...">
+        Greet
+    </button>
+</form>
+```
+
+Use Extension `prefs` for maintaining extension state that you would like to persist to localStorage at `llms.<scope>`, e.g. `llms.xmas`. By default it returns an empty `{}` reactive object that your input components can bind to directly. 
+
+Call `ext.savePrefs()` to save the current prefs to `localStorage`. There's also `ext.setPrefs({ ... })` to populate the prefs with additional info before saving.
+
+Submit a HTML Form with:
+
+```js
+ext.postForm(path, { 
+    body: new FormData(e.target)
+}) 
+```
+
+Which POST's all the HTML Form's Input values to `/ext/xmas/greet` as **multipart/form-data**
+
+```js
+async function onSubmit(e) {
+    generateStory()
+    ext.savePrefs() // saves {"name":"..."} to localStorage['llms.xmas']
+    const form = new FormData(e.target)
+    // POST /ext/xmas/greet (multipart/form-data)
+    const res = await ext.postForm('/greet', {
+        body: form
+    })
+    try {
+        result.value = (await res.json()).result
+    } catch (e) {
+        result.value = `${e}`
+    }
+}
+```
+
+This calls the [extensions server endpoint](/docs/extensions/server#register-get-and-post-api-endpoints) to return the next Christmas Greeting:
+
+```python
+count = 0
+async def greet(request):
+    nonlocal count
+    data = await request.post()
+    name = data.get('name')
+    greeting = greetings[count % len(greetings)]
+    count += 1
+    return web.json_response({"result":f"Hello {name}, {greeting}"})
+
+ctx.add_post("greet", greet)
+```
+
+## Programmatic Chat Completions
 
 You can use the chat API within your components to generate text using the configured LLMs. This is useful for creating dynamic content like stories, summaries, or finding information.
 
 ### Example: Generating a Story
 
-The `XmasPage` component uses `ctx.chat.completion` to generate a Christmas story on mount.
+The `XmasPage` component uses `ctx.chat.completion` to generate a Christmas story on load.
 
 ```js
-onMounted(async () => {
-    // 1. Find an available model
-    const storyModelNames = ['Kimi K2 0905', 'Kimi K2 Instruct', 'Kimi K2 (free)', 'GPT OSS 120B']
-    const availableStoryModel = storyModelNames.map(name => ctx.chat.getModel(name)).find(x => !!x)
+async function generateStory() {
+    const freeStoryModelNames = ['Kimi K2 0905', 'Kimi K2 Instruct', 'Kimi K2 (free)', 'Kimi Dev 72b (free)', 'GPT OSS 120B']
+    const availableStoryModel = freeStoryModelNames.map(name => ctx.chat.getModel(name)).find(x => !!x)
     if (!availableStoryModel) {
         console.log('No story models available')
         return
     }
-
-    story.value = `Santa is busy writing a christmas story...`
-
-    // 2. Create the request
+    ext.state.story = `Santa begins to tell you a christmas story...`
     const request = ctx.chat.createRequest({
         model: availableStoryModel,
-        text: `Write a short, feel-good Christmas story set on a quiet winter evening...`,
+        text: `Write a short, feel-good Christmas story set on a quiet winter evening. Focus on simple kindness, cozy details, and gentle magic—twinkling lights, warm drinks, falling snow, and a small act of generosity that brings people together. Keep the tone hopeful and comforting, with a soft, joyful ending that leaves the reader smiling.`,
         systemPrompt: santaSystemPrompt,
     })
-
-    // 3. Execute completion
     const api = await ctx.chat.completion({
         request
     })
-
-    // 4. Handle response
     if (api.response) {
-        story.value = ctx.chat.getAnswer(api.response)
+        ext.state.story = ctx.chat.getAnswer(api.response)
     } else if (api.error) {
-        story.value = api.error.message
+        ext.state.story = api.error.message
+    }
+}
+
+onMounted(() => {
+    if (!ext.state.story) {
+        generateStory()
     }
 })
 ```
+
+## Making AI Requests
+
+There are 2 APIs to make API calls:
+
+### Synchronous API
+
+To make a synchronous chat completion request use:
+
+```js
+await ctx.chat.completion({ request, thread })
+```
+
+This makes a standard chat completion request that doesn't return until the full response is received.
+
+### Asynchronous API
+
+To start a new Chat Thread use:
+
+```js
+await ctx.threads.startNewThread({ title, model })
+```
+
+Which creates and returns a new empty Thread in the Server then navigates the UI to the new thread page.
+
+Then to begin processing an asynchronous chat completion request use:
+
+```js
+await ctx.threads.queueChat({ request, thread })
+```
+
+This starts a background thread on the server to process the chat request and returns immediately with the updated thread containing the pending user message. 
+
+When viewing an incomplete (i.e. pending thread) thread, the UI automatically polls for updates to the thread and displays the updated response as they arrive.
+
+### Args
+- `request`: The OpenAI chat request object `{ model, messages, temperature, ... }`
+- `thread`: The chat thread object.
+
+---
+
+
+# UI Extensions API
+
+The UI Extensions API starts from `AppContext` which is available via the `ctx` singleton provider. An extension-scoped API can be created with `ext = ctx.scope(extensionName)`.
+
+The `ctx` object provides access to the application state, routing, AI client, formatting utilities, and UI layout controls. It is globally available in Vue components as `$ctx` and can be imported in other modules.
+
+## AppContext
+
+The global application context, typically accessed as `ctx`.
+
+### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `app` | `Vue.App` | The Vue application instance. |
+| `routes` | `Object` | Access to application routes. |
+| `ai` | `JsonApiClient` | The configured AI client for making API requests. |
+| `fmt` | `Object` | Formatting utilities (e.g., date formats, currency). |
+| `utils` | `Object` | General utility functions. |
+| `state` | `Object` (Reactive) | Global reactive state object. |
+| `events` | `EventBus` | Event bus for publishing and subscribing to global events. |
+| `prefs` | `Object` (Reactive) | User preferences, persisted to local storage. |
+| `layout` | `Object` (Reactive) | UI layout configuration (e.g., visibility of sidebars). |
+
+### Global Helpers (Vue)
+
+These properties are available globally in Vue templates and components:
+
+*   `$ctx`: The `AppContext` instance.
+*   `$prefs`: Alias for `ctx.prefs`.
+*   `$state`: Alias for `ctx.state`.
+*   `$layout`: Alias for `ctx.layout`.
+*   `$ai`: Alias for `ctx.ai`.
+*   `$fmt`: Alias for `ctx.fmt`.
+*   `$utils`: Alias for `ctx.utils`.
+
+### Methods
+
+#### `scope(extensionName)`
+Creates an extension-scoped context.
+*   **extensionName**: `string` - Unique identifier for the extension.
+*   **Returns**: `ExtensionScope`
+
+#### `getPrefs()`
+Returns the reactive preferences object.
+
+#### `setPrefs(prefs)`
+Updates the user preferences.
+*   **prefs**: `Object` - Partial preferences object to merge.
+
+#### `setState(state)`
+Updates the global state.
+*   **state**: `Object` - Partial state object to merge.
+
+#### `setError(error, msg?)`
+Sets a global error state.
+*   **error**: `Error` - The error object.
+*   **msg**: `string` (Optional) - Contextual message.
+
+#### `clearError()`
+Clears the global error state.
+
+#### `toast(msg)`
+Displays a toast notification.
+*   **msg**: `string` - Message to display.
+
+#### `to(route)`
+Navigates to a specific route.
+*   **route**: `string | Object` - The route path or route object.
+
+### Layout & UI Methods
+
+#### `setTopIcons(icons)`
+Registers icons for the top header bar.
+*   **icons**: `Object` - Map of icon definitions.
+
+#### `setLeftIcons(icons)`
+Registers icons for the left sidebar.
+*   **icons**: `Object` - Map of icon definitions.
+
+#### `component(name, component?)`
+Registers or retrieves a global component.
+*   **name**: `string` - Component name.
+*   **component**: `Component` (Optional) - Vue component to register.
+
+#### `components(components)`
+Registers multiple components at once.
+*   **components**: `Object` - Map of component names to Vue components.
+
+#### `modals(modals)`
+Registers modal components.
+*   **modals**: `Object` - Map of modal names to components.
+
+#### `openModal(name)`
+Opens a registered modal.
+*   **name**: `string` - Name of the modal to open.
+*   **Returns**: `Component` - The modal component instance.
+
+#### `closeModal(name)`
+Closes a specific modal.
+*   **name**: `string` - Name of the modal to close.
+
+#### `toggleLayout(key, toggle?)`
+Toggles visibility of a layout element.
+*   **key**: `string` - Layout key (e.g., 'left', 'right').
+*   **toggle**: `boolean` (Optional) - Force specific state.
+
+#### `layoutVisible(key)`
+Checks if a layout element is visible.
+*   **key**: `string`
+*   **Returns**: `boolean`
+
+#### `toggleTop(name, toggle?)`
+Toggles the active top view.
+*   **name**: `string` - Name of the top view.
+*   **toggle**: `boolean` (Optional) - Force specific state.
+
+#### `togglePath(path, toggle?)`
+Toggles navigation to a specific path, typically used for sidebar toggles.
+*   **path**: `string` - URL path.
+*   **toggle**: `boolean` (Optional) - Force specific state.
+
+### HTTP Methods -> fetch Response
+
+* `get(url, options)`
+* `delete(url, options)`
+* `post(url, options)`
+* `put(url, options)`
+* `patch(url, options)`
+* `postForm(url, options)`
+
+### HTTP JSON Methods -> ApiResult(response | error)
+
+* `getJson(url, options)`
+* `deleteJson(url, options)`
+* `postJson(url, options)`
+* `putJson(url, options)`
+* `patchJson(url, options)`
+
+---
+
+## ExtensionScope
+
+Returned by `ctx.scope(name)`. Provides utilities scoped to a specific extension, including scoped local storage, error handling, and API endpoints.
+
+### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `id` | `string` | Extension ID/Name. |
+| `ctx` | `AppContext` | Reference to the parent context. |
+| `baseUrl` | `string` | Base URL for extension API requests (`/api/ext/{id}`). |
+| `storageKey` | `string` | Key prefix for local storage (`llms.{id}`). |
+| `state` | `Object` (Reactive) | Local reactive state for the extension. |
+| `prefs` | `Object` (Reactive) | Scoped preferences, persisted to `llms.{id}`. |
+
+### Methods
+
+#### `getPrefs()`
+Returns the extension's reactive preferences.
+
+#### `setPrefs(prefs)`
+Updates and saves the extension's preferences.
+*   **prefs**: `Object` - Partial object to merge.
+
+#### `savePrefs()`
+Force saves the current preferences to local storage.
+
+#### `setError(e, msg?)`
+Sets an error found within the extension. Automatically prefixes the message with the extension ID.
+*   **e**: `Error`
+*   **msg**: `string` (Optional)
+
+#### `clearError()`
+Clears the global error.
+
+#### `toast(msg)`
+Displays a toast notification.
+
+### Scoped HTTP Methods
+
+These methods automatically prepend the extension's `baseUrl` to the request URL.
+
+#### `get(url, options)`
+Makes a raw GET request relative to the extension's base URL.
+
+#### `getJson(url, options)`
+Makes a GET request expecting JSON relative to the extension's base URL.
+
+#### `post(url, options)`
+Makes a raw POST request relative to the extension's base URL.
+
+#### `postJson(url, body)`
+Makes a POST request sending JSON data.
+*   **url**: `string`
+*   **body**: `Object | FormData`
+
+#### `postForm(url, options)`
+Makes a POST request with form data.
+
+#### `post(url, options)`
+Makes a raw PUT request relative to the extension's base URL.
+
+#### `putJson(url, body)`
+Makes a PUT request sending JSON data.
+
+#### `patch(url, options)`
+Makes a raw PATCH request relative to the extension's base URL.
+
+#### `patchJson(url, body)`
+Makes a PATCH request sending JSON data.
+
+#### `delete(url, options)`
+Makes a DELETE request.
+
+#### `deleteJson(url, options)`
+Makes a DELETE request expecting JSON response.
+
+#### `createJsonResult(res)`
+Helper to create a standardized JSON result object from a response.
+
+#### `createErrorResult(e)`
+Helper to create a standardized error result object from an exception.

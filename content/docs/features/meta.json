@@ -5,6 +5,7 @@
     "cli",
     "web-ui",
     "analytics",
-    "providers"
+    "katex",
+    "model-selector"
   ]
 }

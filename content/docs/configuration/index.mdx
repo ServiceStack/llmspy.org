@@ -7,33 +7,66 @@ description: Simple JSON configuration file to manage providers, models, and def
 
 The main configuration file is `~/.llms/llms.json`. It's automatically created on first run with sensible defaults.
 
-### Initialize Configuration
-
-If you need to reset the configuration, you can initialize it again:
-
-```bash
-llms --init
-```
-
 This creates `~/.llms/llms.json` with the latest default configuration.
 
 ### Configuration Structure
 
 ```json
 {
+  "auth": { },
+  "disable_extensions": [],
   "defaults": {
     "headers": { ... },
     "text": { ... },
     "image": { ... },
     "audio": { ... },
-    "file": { ... }
+    "file": { ... },
+    "out:image": { },
+    "out:audio": { }
   },
   "providers": {
-    "groq": { ... },
-    "openai": { ... },
+    "openai": { "enabled": true },
+    "xai": { "enabled": true }
     ...
   }
 }
+```
+
+### Auth Configuration
+
+Enable GitHub OAuth by enabling `"auth"` and populating the GitHub OAuth Environment Variables:
+
+```json
+{
+  "auth": {
+    "enabled": true,
+    "github": {
+      "client_id": "GITHUB_CLIENT_ID",
+      "client_secret": "GITHUB_CLIENT_SECRET",
+      "redirect_uri": "http://localhost:8000/auth/github/callback",
+      "restrict_to": "GITHUB_USERS"
+    }
+  }
+}
+```
+
+### Disable Extensions
+
+Only built-in extensions or extensions in your local `~/.llms/extensions` folder are loaded by default. To disable built-in extensions or temporarily disable local extensions, add their folder names to:
+
+```json
+{
+  "disable_extensions": [
+    "xmas",
+    "duckduckgo"
+  ]
+}
+```
+
+Alternatively you can set the `LLMS_DISABLE` environment variable with a comma-separated list of extension names to disable.
+
+```bash
+export LLMS_DISABLE="xmas,duckduckgo"
 ```
 
 ## Defaults Section
@@ -67,7 +100,7 @@ Default request templates for different modalities:
       "temperature": 0.7
     },
     "image": {
-      "model": "gemini-2.5-flash",
+      "model": "gemini-flash-lite-latest",
       "messages": [ ... ]
     },
     "audio": {
@@ -77,10 +110,22 @@ Default request templates for different modalities:
     "file": {
       "model": "gpt-5",
       "messages": [ ... ]
+    },
+    "out:image": {
+      "model": "gemini-2.5-flash-image",
+      "modalities": [ "image", "text" ].
+      "image_config": { "aspect_ratio": "9:16" },
+      "messages": [ ... ],
+    },
+    "out:audio": {
+      "model": "gemini-2.5-flash-preview-tts",
+      "modalities": [ "audio" ]
     }
   }
 }
 ```
+
+The `out:image` and `out:audio` are used for Image and Audio generation.
 
 ### Conversion Settings
 
@@ -96,62 +141,126 @@ Image conversion and limits:
 }
 ```
 
-## Providers Section
+### Provider Configuration
 
-Each provider requires specific configuration. See the [Providers](/docs/features/providers) page for details.
-
-### Basic Provider
+#### 1. Simple Enable
+Enable providers by ID — all configuration is automatically inherited:
 
 ```json
 {
-  "providers": {
-    "groq": {
-      "enabled": true,
-      "type": "OpenAiProvider",
-      "base_url": "https://api.groq.com/openai",
-      "api_key": "$GROQ_API_KEY",
-      "models": {
-        "llama3.3:70b": "llama-3.3-70b-versatile"
-      },
-      "pricing": {
-        "llama3.3:70b": {
-          "input": 0.40,
-          "output": 1.20
-        }
+  "openai": { "enabled": true },
+  "xai": { "enabled": true }
+}
+```
+
+#### 2. Custom Configuration
+Overlay custom settings like `temperature`, custom check requests, and provider-specific configuration:
+
+```json
+{
+  "github-models": {
+    "enabled": false,
+    "check": {
+      "messages": [{ "role": "user", "content": [{ "type": "text", "text": "1+1=" }] }]
+    }
+  },
+  "minimax": {
+    "enabled": true,
+    "temperature": 1.0
+  },
+  "google": {
+    "enabled": true,
+    "map_models": {
+      "gemini-flash-latest": "gemini-flash-latest",
+      "gemini-flash-lite-latest": "gemini-flash-lite-latest",
+      "gemini-2.5-pro": "gemini-2.5-pro",
+      "gemini-2.5-flash": "gemini-2.5-flash"
+    },
+    "safety_settings": [{
+      "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+      "threshold": "BLOCK_ONLY_HIGH"
+    }],
+    "thinking_config": {
+      "thinkingBudget": 1024,
+      "includeThoughts": true
+    }
+  }
+}
+```
+
+#### 3. Model Mapping (`map_models`)
+Use `map_models` to explicitly whitelist and map specific models. Only the models listed here will be enabled for the provider, using definitions from models.dev:
+
+```json
+{
+  "alibaba": {
+    "enabled": true,
+    "map_models": {
+      "qwen3-max": "qwen3-max",
+      "qwen-max": "qwen-max",
+      "qwen-plus": "qwen-plus"
+    },
+    "enable_thinking": false
+  }
+}
+```
+
+#### 4. Custom Provider & Model Definitions
+
+Fully define custom OpenAI-compatible providers and models that aren't in models.dev. 
+For example, adding Mistral's free `codestral` endpoint:
+
+```json
+{
+  "codestral": {
+    "enabled": true,
+    "id": "codestral",
+    "npm": "codestral",
+    "api": "https://codestral.mistral.ai/v1",
+    "env": ["CODESTRAL_API_KEY"],
+    "models": {
+      "codestral-latest": {
+        "id": "codestral-latest",
+        "name": "Codestral",
+        "cost": { "input": 0.0, "output": 0.0 }
       }
     }
   }
 }
 ```
 
-## UI Configuration
+> 💡 **Tip:** To enable access to new models for existing providers while waiting for them to be added to models.dev, add them to your `~/.llms/providers-extra.json`, where they'll be merged into your `providers.json` when updated.
 
-The UI configuration is stored in `~/.llms/ui.json`:
+#### 5. NPM SDK Alignment
+The provider configuration is closely aligned with the models.dev npm configuration. The `"npm"` field maps the provider configuration to the correct Python provider implementation. This generic mapping allows for flexible provider support, including **Anthropic Chat Completion** requests, which are correctly handled for both **Anthropic** and **MiniMax** providers.
 
-```json
-{
-  "prompts": [
-    {
-      "id": "it-expert",
-      "name": "Act as an IT Expert",
-      "value": "I want you to act as an IT Expert..."
-    }
-  ],
-  "defaultModel": "grok-4-fast",
-  "theme": "auto"
-}
-```
+#### 6. Ecosystem Compatibility
+By standardizing on models.dev definitions, the project now shares a compatible configuration model with other AI tools like **OpenCode**. This includes the standardization of environment variables using the `"env"` property, ensuring simpler and more portable configuration across different tools.
 
 ## Environment Variables
 
 ### API Keys
 
-Reference environment variables in config with `$` prefix:
+llms.py uses the same API Keys used in models.dev's `env` provider configuration, currently supported providers:
 
-```json
-{
-  "api_key": "$GROQ_API_KEY"
-}
+```bash
+OPENROUTER_API_KEY     # OpenRouter
+GEMINI_API_KEY         # Gemini (Google)
+ANTHROPIC_API_KEY      # Claude (Anthropic)
+OPENAI_API_KEY         # Open AI
+GROQ_API_KEY           # Groq API
+ZHIPU_API_KEY          # Z.ai Coding Plan
+MINIMAX_API_KEY        # MiniMax
+DASHSCOPE_API_KEY      # Qwen (Alibaba)
+XAI_API_KEY            # Grok (X.AI)
+NVIDIA_API_KEY         # NVidia NIM
+GITHUB_TOKEN           # GitHub Copilot Models
+MISTRAL_API_KEY        # Mistral
+DEEPSEEK_API_KEY       # DeepSeek
+CHUTES_API_KEY         # chutes.ai OSS LLM and Image Models
+HF_TOKEN               # Hugging Face
+FIREWORKS_API_KEY      # fireworks.ai OSS Models
+LMSTUDIO_API_KEY       # Placeholder for local LM Studio
 ```
 
 Set in your shell:
@@ -165,6 +274,9 @@ export GROQ_API_KEY="gsk_..."
 ```bash
 # Enable verbose logging
 export VERBOSE=1
+
+# Enable DEBUG logging
+export DEBUG=1
 ```
 
 ## Custom Configuration Path

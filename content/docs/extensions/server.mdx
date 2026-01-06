@@ -1,27 +1,75 @@
 ---
-title: Server Extensions API
+title: Server Extensions
 description: This guide provides a walkthrough of the LLM Server Extensions API
 ---
 
-xmas __init__.py:
+To keep the core lightweight while enabling limitless enhancements, the flexible **Extensions system** (inspired by ComfyUI Custom Nodes) can be used to add features, register new provider implementations, extend, replace, and customize the UI with your own custom features.
 
-Example of creating a simple extension that adds a greet endpoint to the server.
+### Installation
+
+Extensions can be installed from GitHub or by creating a local folder:
+- **Local**: Simply create a folder in `~/.llms/extensions/my_extension`
+- **GitHub**: Clone GitHub Repo extensions into `~/.llms/extensions` e.g:
+
+```bash
+git clone https://github.com/user/my_extension ~/.llms/extensions/my_extension
+```
+
+### How it Works (Server)
+Extensions are Python modules that plug into the server lifecycle using hooks defined in their `__init__.py`:
+
+| Hook | Purpose |
+|------|---------|
+| `__parser__(parser)` | Add custom CLI arguments for custom CLI functionality |
+| `__install__(ctx)`   | Enhance the server instance (routes, providers, filters, etc.) |
+| `__run__(ctx)`       | Execute custom logic when running in CLI mode (to implement `__parser__` args) |
+
+- The `ctx` parameter provides access to the `ExtensionContext`
+- The `__install__` hook runs after providers are configured but before server is run
+
+### How it Works (UI)
+
+Extensions can also include frontend components:
+
+1. **Placement**: Add a `ui` folder within your extension directory
+2. **Access**: Static files in this folder are automatically served at `/ext/<extension_name>/*`
+3. **Integration**: Create a `ui/index.mjs` file. This is the entry point and must export an `install` function:
+
+```javascript
+// Vue 3 Component
+const MyComponent = {
+    template: `...`
+}
+
+// ui/index.mjs
+export default {
+    install(ctx) {
+        // Register or replace components, add routes, etc.
+        ctx.components({ MyComponent })
+    }
+}
+```
+
+
+## Register GET and POST API Endpoints
+
+Custom server API endpoints are registered at `/ext/<extension_name>/*`
+
+[xmas __init__.py](https://github.com/llmspy/xmas/blob/main/__init__.py):
+
+Example of creating a simple extension that adds a greet endpoint to the server:
 
 ```python
-# runs after providers are configured but before server is run
 def install(ctx):
-
-    # Load greetings
-    # Load greetings
+    # Load greetings from extension's `./ui/greetings.json`
     greetings_path = Path(__file__).parent / 'ui' / 'greetings.json'
     if greetings_path.exists():
-        with open(greetings_path, 'r') as f:
+        with open(greetings_path) as f:
             greetings = json.load(f)
     else:
         greetings = ["Merry Christmas!"]
 
     count = 0
-
     async def greet(request):
         nonlocal count
         name = request.query.get('name')
@@ -36,35 +84,54 @@ def install(ctx):
         count += 1
         return web.json_response({"result":f"Hello {name}, {greeting}"})
 
-    ctx.add_get("greet", greet)
-    ctx.add_post("greet", greet)
+    # Extension endpoints registered at /ext/xmas/*
+    ctx.add_get("greet", greet)   # GET  /ext/xmas/greet
+    ctx.add_post("greet", greet)  # POST /ext/xmas/greet
+```
 
+The [xmas/ui/greetings.json](https://github.com/llmspy/xmas/blob/main/ui/greetings.json) static file is automatically available from `/ext/xmas/greetings.json`.
 
+Example of using making Chat Completion requests inside an endpoint:
+
+```python
+    async def story(request):
+        model = request.query.get("model")
+        chat = ctx.chat_request(template="text", model=model, text="Tell me a short Christmas tale")
+        response = await ctx.chat_completion(chat)
+        return web.json_response(response)
+
+    ctx.add_get("story", story)  # GET /ext/xmas/story
+```
+
+The `chat_request` uses chat templates configured in your `llms.json` **defaults** configuration:
+ - **chat** - Chat template for text requests (default)
+ - **image** - Chat template for image input requests
+ - **audio** - Chat template for audio input requests
+ - **file** - Chat template for file input requests (e.g. PDFs)
+ - **out:image** - Chat template for image generation requests
+ - **out:audio** - Chat template for audio generation requests
+
+Finally, connect it to the install hook to be able to run the extension:
+
+```python
 # register install extension handler
 __install__ = install
 ```
 
-system_tools __init__.py:
+## Example endpoint returning user-specific data
 
-Example that adds and endpoint that returns User system prompts. First checks if user is signed in (Github OAuth), then returns prompts for that user if exists, otherwise returns default prompts from all users or default prompts in this extension.
+[system_tools __init__.py](https://github.com/llmspy/system_prompts/blob/main/__init__.py):
+
+This extension first checks if user is signed in (Github OAuth), then returns prompts for that user if exists, otherwise returns default prompts from all users or default prompts in this extension.
 
 ```python
-default_prompts = [
-    {"name": "Helpful Assistant", "prompt": "You are a helpful assistant."},
-]
-
-# runs after providers are configured but before server is run
 def install(ctx):
-    # helper to get user or default prompts
     def get_user_prompts(request):
-        candidate_paths = []
-        # check if user is signed in
-        username = ctx.get_username(request)
+        candidate_paths = []        
+        username = ctx.get_username(request) # check if user is signed in
         if username:
             # if signed in (Github OAuth), return the prompts for this user if exists
-            candidate_paths.append(
-                os.path.join(Path.home(), ".llms", "user", username, "system_prompts", "prompts.json")
-            )
+            candidate_paths.append(os.path.join(Path.home(), ".llms", "user", username, "system_prompts", "prompts.json"))
         # return default prompts for all users if exists
         candidate_paths.append(os.path.join(Path.home(), ".llms", "user", "default", "system_prompts", "prompts.json"))
         # otherwise return the default prompts from this repo
@@ -83,23 +150,20 @@ def install(ctx):
         prompts_json = get_user_prompts(request)
         return web.json_response(prompts_json)
 
+    # Extension endpoint registered at /ext/system_prompts/prompts.json
     ctx.add_get("prompts.json", get_prompts)
-
-
-# register install extension handler
-__install__ = install
 ```
 
+### Register custom tool with 3rd Party extension
 
-duckduckgo __init__.py:
+Example of creating a tool extension that adds a web search tool to the server. 
+Uses [requirements.txt](https://github.com/llmspy/duckduckgo/blob/main/requirements.txt) to install 3rd Party `ddgs` dependency.
 
-Example of creating a tool extension that adds a web search tool to the server. Uses requirements.txt to install 3rd Party ddgs dependency.
+[duckduckgo __init__.py](https://github.com/llmspy/duckduckgo/blob/main/__init__.py)
 
 ```python
-from typing import Any, Dict
-
 from ddgs import DDGS
-
+from typing import Any, Dict
 
 def web_search(query: str, max_results: int | None = 10, page: int = 1) -> Dict[str, Any]:
     """
@@ -116,19 +180,19 @@ def web_search(query: str, max_results: int | None = 10, page: int = 1) -> Dict[
     except Exception as e:
         return {"query": query, "error": str(e)}
 
-
 def install(ctx):
     ctx.register_tool(web_search)
-
 
 __install__ = install
 ```
 
-See [core_tools](https://github.com/llmspy/core_tools/blob/main/__init__.py) for more tool examples.
+See [Tool Support Docs](/docs/extensions/tools) and [core_tools implementation](https://github.com/llmspy/core_tools/blob/main/__init__.py) for more examples.
 
 ## Custom Provider Implementation example
 
-Example of creating a custom provider that extends the GeneratorBase class to add support for OpenRouter image generation.
+[providers/openrouter.py](https://github.com/ServiceStack/llms/blob/main/llms/providers/openrouter.py)
+
+Example of creating a custom provider that extends the `GeneratorBase` class to add support for image generation in  **OpenRouter**.
 
 ```python
 def install(ctx):
@@ -214,4 +278,220 @@ This new implementation can be used by registering it as the **image** modality 
 }
 ```
 
-Find more Provider implementations in [providers](https://github.com/ServiceStack/llms/tree/main/llms/providers) folder.
+Find more Provider implementations in the [providers](https://github.com/ServiceStack/llms/tree/main/llms/extensions/providers) extension.
+
+---
+
+# Server Extensions API
+
+Server Extensions allow you to extend the functionality of the LLM Server by registering new providers, UI extensions, HTTP routes, and hooking into the chat pipeline.
+
+The Public API surface is exposed via the `ExtensionContext` class in [main.py](https://github.com/ServiceStack/llms/blob/main/llms/main.py) which provides access to the Server's functionality.
+
+```python
+// __init__.py
+def install(ctx):
+    # ctx is an instance of ExtensionContext
+    ...
+```
+
+## Logging & Debugging
+
+Methods for logging information to the console with the extension name prefix.
+
+### `log(message)`
+Log a message to stdout if verbose mode is enabled.
+- **message**: `str` - The message to log.
+
+### `log_json(obj)`
+Log a JSON object to stdout if verbose mode is enabled.
+- **obj**: `Any` - The object to serialize and log.
+
+### `dbg(message)`
+Log a debug message to stdout if debug mode is enabled.
+- **message**: `str` - The debug message.
+
+### `err(message, e)`
+Log an error message and exception trace.
+- **message**: `str` - The error description.
+- **e**: `Exception` - The exception object.
+
+## Registration & Configuration
+
+Methods to register various extension components.
+
+### `add_provider(provider)`
+Register a new LLM provider.
+- **provider**: `class` - The provider class to register.
+
+### `register_ui_extension(index)`
+Register a UI extension that will be loaded in the browser.
+- **index**: `str` - Relative path to the index file (e.g. "index.html" or "app.mjs") within the extension directory.
+
+### `register_tool(func, tool_def=None)`
+Register a function as a tool that can be used by LLMs.
+- **func**: `callable` - The Python function to register.
+- **tool_def**: `dict` (Optional) - Manual tool definition. If None, it's generated from the function signature.
+
+### `add_static_files(ext_dir)`
+Serve static files from a directory.
+- **ext_dir**: `str` - Absolute path to the directory containing static files.
+
+### `register_shutdown_handler(handler)`
+Register a callback to be called when the server shuts down.
+- **handler**: `callable` - The function to call on shutdown.
+
+## Index Page
+
+Modify the main index.html page served to the browser.
+
+### `add_importmaps(dict)`
+Add entries to the browser's import map, allowing you to map package names to URLs.
+- **dict**: `dict` - A dictionary of import map entries (e.g. `{"vue": "/ui/lib/vue.mjs"}`).
+
+### `add_index_header(html)`
+Inject HTML into the `<head>` section of the main index page.
+- **html**: `str` - The HTML string to inject.
+
+### `add_index_footer(html)`
+Inject HTML into the end of the `<body>` section of the main index page.
+- **html**: `str` - The HTML string to inject.
+
+
+## HTTP Routes
+
+Register custom HTTP endpoints. All paths are prefixed with `/ext/{extension_name}`.
+
+### `add_get(path, handler, **kwargs)`
+Register a GET route.
+- **path**: `str` - The sub-path for the route.
+- **handler**: `callable` - Async function taking `request` and returning `web.Response`.
+
+### `add_post(path, handler, **kwargs)`
+Register a POST route.
+- **path**: `str` - The sub-path for the route.
+- **handler**: `callable` - Async function taking `request` and returning `web.Response`.
+
+### `add_put(path, handler, **kwargs)`
+Register a PUT route.
+
+### `add_delete(path, handler, **kwargs)`
+Register a DELETE route.
+
+### `add_patch(path, handler, **kwargs)`
+Register a PATCH route.
+
+## Chat & LLM Interaction
+
+Methods to interact with the LLM chat pipeline.
+
+### `chat_request(template=None, text=None, model=None, system_prompt=None)`
+Create a new chat request object, typically to be sent to `chat_completion`.
+- **template**: `str` (Optional) - Template ID to use.
+- **text**: `str` (Optional) - User message text.
+- **model**: `str` (Optional) - Model identifier.
+- **system_prompt**: `str` (Optional) - System prompt to use.
+
+### `chat_completion(chat, context=None)`
+Execute a chat completion request against the configured LLM.
+- **chat**: `dict` - The chat request object.
+- **context**: `dict` (Optional) - execution context.
+- **Returns**: `ChatResponse` - The LLM's response.
+
+### `chat_to_prompt(chat)`
+Convert a chat object to a prompt string (depends on configured prompts).
+
+### `chat_to_system_prompt(chat)`
+Extract or generate the system prompt from a chat object.
+
+### `chat_response_to_message(response)`
+Convert a provider's raw response to a standard message format.
+
+### `last_user_prompt(chat)`
+Get the last user message from a chat history.
+
+## Filters
+
+Hooks to intercept and modify the chat lifecycle.
+
+### `register_chat_request_filter(handler)`
+Register a filter to modify chat requests before they are processed.
+- **handler**: `callable(request)`
+
+### `register_chat_tool_filter(handler)`
+Register a filter to modify or restrict tools available to the LLM.
+- **handler**: `callable(tools, context)`
+
+### `register_chat_response_filter(handler)`
+Register a filter to modify chat responses before they are returned to the client.
+- **handler**: `callable(response, context)`
+
+### `register_chat_error_filter(handler)`
+Register a filter to handle or transform exceptions during chat.
+- **handler**: `callable(error, context)`
+
+### `register_cache_saved_filter(handler)`
+Register a filter called when a response is saved to cache.
+- **handler**: `callable(context)`
+
+## Authentication & User Context
+
+Access user session and authentication information.
+
+### `check_auth(request)`
+Check if the request is authenticated.
+- **Returns**: `(bool, dict)` - Tuple of `(is_authenticated, user_data)`.
+
+### `get_session(request)`
+Get the session data for the current request.
+- **Returns**: `dict` or `None`.
+
+### `get_username(request)`
+Get the authenticated username from the request.
+- **Returns**: `str` or `None`.
+
+### `get_user_path(username=None)`
+Get the absolute path to a user's data directory.
+- **username**: `str` (Optional) - Specific username, otherwise uses current context or default.
+
+## Files & Storage
+
+Utilities for file handling and caching.
+
+### `text_from_file(path)`
+Read text content from a file.
+
+### `save_image_to_cache(base64_data, filename, image_info)`
+Save a base64 encoded image to the media cache.
+
+### `save_bytes_to_cache(bytes_data, filename, file_info)`
+Save raw bytes to the media cache.
+
+### `get_cache_path(path="")`
+Get the absolute path to the global cache directory.
+
+### `to_file_info(chat, info=None, response=None)`
+Helper to create file metadata info from a chat context.
+
+### `cache_message_inline_data(message)`
+Process a message to extract inline data (like images) to cache and replace with URLs.
+
+## Utilities
+
+### `get_config()`
+Get the global server configuration object.
+
+### `get_providers()`
+Get a list of all registered provider handlers.
+
+### `get_provider(name)`
+Get a specific provider instance by name.
+
+### `to_content(result)`
+Convert a result object (e.g. from a tool) into a standard content string format.
+
+### `error_response(e, stacktrace=False)`
+Create a standardized error HTTP response from an exception.
+
+### `should_cancel_thread(context)`
+Check if the current processing thread has been flagged for cancellation.

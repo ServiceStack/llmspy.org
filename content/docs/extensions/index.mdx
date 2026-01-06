@@ -1,0 +1,201 @@
+---
+title: Extensions Overview
+description: Flexible extensions system for adding features, custom pages, toolbar icons, provider implementations, and UI customizations
+---
+
+## Extensions System
+
+To keep the core lightweight while enabling limitless enhancements, we've implemented a flexible **Extensions system** inspired by ComfyUI Custom Nodes. This allows adding new features, pages and toolbar icons, register new provider implementations, extend, replace, and customize the UI with your own custom features.
+
+### Installation
+Extensions can be installed from GitHub or by creating a local folder:
+- **Local**: Simply create a folder in `~/.llms/extensions/my_extension`
+- **GitHub**: Clone extensions into `~/.llms/extensions`, e.g:
+
+```
+git clone https://github.com/user/repo ~/.llms/extensions/my_extension
+```
+
+### Managing Extensions
+
+**List available extensions:**
+```bash
+llms --add
+```
+
+Output:
+
+```
+Available extensions:
+  xmas         Example of utilizing the Extensions APIs to give llms.py some Christmas spirit
+  duckduckgo   Add web search tool capabilities using Duck Duck Go
+
+Usage:
+  llms --add <extension>
+  llms --add <github-user>/<repo>
+```
+
+**Install an extension:**
+```bash
+llms --add duckduckgo
+```
+
+**Install a 3rd-party extension:**
+```bash
+llms --add my_user/my_extension
+```
+
+<Info>Clones the GitHub repo into `~/.llms/extensions/my_extension` and installs any `requirements.txt` dependencies.</Info>
+
+**List installed extensions:**
+```bash
+llms --remove
+```
+
+**Remove an extension:**
+```bash
+llms --remove system_prompts
+```
+
+### How it Works (Server)
+Extensions are Python modules that plug into the server lifecycle using special hooks defined in their `__init__.py`:
+
+| Hook | Purpose |
+|------|---------|
+| `__parser__(parser)` | Add custom CLI arguments |
+| `__install__(ctx)` | Enhance the server instance (routes, providers, filters, etc.) |
+| `__run__(ctx)` | Execute custom logic when running in CLI mode |
+
+The `ctx` parameter provides access to the `ExtensionContext`.
+
+### How it Works (UI)
+
+Extensions can also include frontend components:
+
+1. **Placement**: Add a `ui` folder within your extension directory
+2. **Access**: Files in this folder are automatically served at `/ext/<extension_name>/*`
+3. **Integration**: Create a `ui/index.mjs` file. This is the entry point and must export an `install` function:
+
+```javascript
+const MyComponent = {
+    template: `...`
+}
+
+// ui/index.mjs
+export default {
+    install(ctx) {
+        // Register or replace components, add routes, etc.
+        ctx.components({ MyComponent })
+    }
+}
+```
+
+### Example: [`xmas`](https://github.com/llmspy/xmas) extension
+The `xmas` extension demonstrates these capabilities where it utilizes the Extensions APIs to give llms.py a splash of Christmas spirit. It uses `__install__` to register an API endpoint and a UI extension for its UI features.
+
+### Server API
+
+**[__init__.py](https://github.com/llmspy/xmas/blob/main/__init__.py)**
+
+The xmas extension uses the `__install__` hook which runs after providers are configured to add new Server functionality by registering new aiohttp web application handlers.
+
+For example this registers both **GET** and **POST** handlers to a new `/ext/xmas/greet` endpoint to return new Xmas greeting:
+
+```python
+def install(ctx):
+    async def greet(request):
+        nonlocal count
+        name = request.query.get('name')
+        if not name:
+            data = await request.post()
+            name = data.get('name')
+
+        if not name:
+            name = 'Stranger'
+
+        greeting = greetings[count % len(greetings)]
+        count += 1
+        return web.json_response({"result":f"Hello {name}, {greeting}"})
+
+    ctx.add_get("greet", greet)
+    ctx.add_post("greet", greet)
+
+
+# register install extension handler
+__install__ = install
+```
+
+See [Server Extensions](/docs/extensions/server) docs for more details.
+
+## UI Extensions
+
+[/ui/index.mjs](https://github.com/llmspy/xmas/blob/main/ui/index.mjs)
+
+```js
+export default {
+    install(ctx) {        
+        ext = ctx.scope('xmas') // create extension scope
+
+        ctx.components({
+            Brand,     // Replaces built-in UI Components
+            Welcome,
+            XmasPage,  // Registers other custom components used in this UI Extension
+            XmasTopPanel,
+        })
+        
+        ctx.setLeftIcons({ // Add icon to left sidebar enabling access to XmasPage component
+            xmas: {
+                component: {
+                    template: `<button @click="$ctx.togglePath('/xmas')">🎄</button>`
+                },
+                isActive({ path }) { return path === '/xmas' }
+            }
+        })
+
+        // Register route to XmasPage component
+        ctx.routes.push({ path: '/xmas', component: XmasPage, meta: { title: `Merry Christmas!` } })
+
+        ctx.onRouterBeforeEach((to, from) => { // Auto hide top panel on non chat pages
+            if (to.path !== '/' && !to.path.startsWith('/c/')) {
+                ctx.toggleTop('XmasTopPanel', false)
+            }
+        })
+    },
+}
+```
+
+Any async tasks like loading data from the server can be done in the `load` function where it's loaded concurrently with all other extension `load` functions:
+
+```csharp
+async load(ctx) {
+    // GET /ext/xmas/greetings.json
+    const greetings = await ext.getJson("/greetings.json")
+
+    // maintain in local reactive state in (localized to extension)
+    ext.state.greetings = greetings
+
+    // maintain in global reactive state
+    ctx.state.greetings = greetings
+}
+```
+
+See [UI Extensions](/docs/extensions/ui) docs for more details.
+
+### Disable Extensions
+
+Only built-in extensions or extensions in your local `~/.llms/extensions` folder are loaded by default. To disable built-in extensions or temporarily disable local extensions, add their folder names in your `llms.json` configuration file under `disable_extensions`:
+
+```json
+{
+  "disable_extensions": [
+    "xmas",
+    "duckduckgo"
+  ]
+}
+```
+
+Alternatively you can set the `LLMS_DISABLE` environment variable with a comma-separated list of extension names to disable.
+
+```bash
+export LLMS_DISABLE="xmas,duckduckgo"
+```
