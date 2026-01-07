@@ -100,7 +100,7 @@ export default function HomePage() {
 
           {/* Feature Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            <Link href="/docs/features/model-selector" className="block">
+            <Link href="/docs/v3#switch-to-modelsdev-provider-model-configuration" className="block">
               <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
