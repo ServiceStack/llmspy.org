@@ -105,6 +105,75 @@ export const screenshotScreens: ScreenshotScreen[] = [
     description: 'Enable or disable providers in real-time with automatic failover support',
     image: '/img/screenshots/screenshot-15.webp',
     alt: 'Provider management interface showing enabled and disabled providers'
-  }
+  },
+  {
+    id: 'gallery-portrait',
+    title: '🎨 Media Gallery - Portrait',
+    description: 'Media Gallery for managing and viewing generated images',
+    image: '/img/screenshots/screenshot-16.webp',
+    alt: 'Media Gallery interface showing generated images and audio files'
+  },
+  {
+    id: 'gallery-square',
+    title: '🖼️ Media Gallery - Square',
+    description: 'Media Gallery for managing and viewing generated images',
+    image: '/img/screenshots/screenshot-17.webp',
+    alt: 'Media Gallery interface showing generated images and audio files'
+  },
+  {
+    id: 'gallery-landscape',
+    title: '🎨 Media Gallery - Landscape',
+    description: 'Media Gallery for managing and viewing generated images',
+    image: '/img/screenshots/screenshot-18.webp',
+    alt: 'Media Gallery interface showing generated images and audio files'
+  },
+  {
+    id: 'gallery-audio',
+    title: '🎶 Media Gallery - Audio',
+    description: 'Media Gallery for managing and listening to generated audio files',
+    image: '/img/screenshots/screenshot-19.webp',
+    alt: 'Media Gallery for managing and listening to generated audio files'
+  },
+  {
+    id: 'run-python',
+    title: '🐍 Run Python',
+    description: 'Run Python code snippets in a sandboxed environment',
+    image: '/img/screenshots/screenshot-20.webp',
+    alt: 'Interface showing Python code execution within conversations'
+  },
+  {
+    id: 'run-javascript',
+    title: '🌐 Run JavaScript',
+    description: 'Run JavaScript code snippets in a sandboxed environment',
+    image: '/img/screenshots/screenshot-21.webp',
+    alt: 'Run JavaScript code snippets in a sandboxed environment'
+  },
+  {
+    id: 'run-typescript',
+    title: '🛠️ Run TypeScript',
+    description: 'Run TypeScript code snippets in a sandboxed environment',
+    image: '/img/screenshots/screenshot-22.webp',
+    alt: 'Run TypeScript code snippets in a sandboxed environment'
+  },
+  {
+    id: 'run-csharp',
+    title: '⚙️ Run C#',
+    description: 'Run C# code snippets in a sandboxed environment',
+    image: '/img/screenshots/screenshot-23.webp',
+    alt: 'Run C# code snippets in a sandboxed environment'
+  },
+  {
+    id: 'calc',
+    title: '🖩 Evaluate Math Expressions',
+    description: 'Evaluate Python mathematical expressions',
+    image: '/img/screenshots/screenshot-24.webp',
+    alt: 'Evaluate Python mathematical expressions'
+  },
+  {
+    id: 'tool-calling',
+    title: '🧰 Tool Calling',
+    description: 'Call external tools and services from within conversations',
+    image: '/img/screenshots/screenshot-25.webp',
+    alt: 'Call external tools and services from within conversations'
+  },
 ]
-
