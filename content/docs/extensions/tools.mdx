@@ -57,14 +57,37 @@ ctx.register_tool(
                     "tz_name": {
                         "type": "string",
                         "description": "timezone name (e.g. 'America/New_York')",
-                        "default": "UTC"
+                        "default": "UTC",
                     }
                 },
-                "required": []
-            }
-        }
-    })
+                "required": [],
+            },
+        },
+    },
+)
+
+ctx.register_tool(
+    edit_file,
+    {
+        "type": "function",
+        "function": {
+            "name": "edit_file",
+            "description": "Replaces first occurrence of old_str with new_str in file. If old_str is empty, create/overwrite file with new_str.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "path": {"type": "string", "description": "Path to the file to edit."},
+                    "old_str": {"type": "string", "description": "String to replace."},
+                    "new_str": {"type": "string", "description": "String to replace with."},
+                },
+                "required": ["path", "old_str", "new_str"],
+            },
+        },
+    },
+)
 ```
+
+
 
 ## UI Management
 
