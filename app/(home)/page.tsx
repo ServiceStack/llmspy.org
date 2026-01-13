@@ -8,7 +8,7 @@ import { screenshotScreens } from './screenshot-screens';
 import { TabbedImages } from './tabbed-images';
 import { LightboxImage } from './lightbox-image';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Star, Sparkles, Zap, Code2, Image as ImageIcon, Music, Calculator, Puzzle } from 'lucide-react';
+import { Star, Sparkles, Zap, Code2, Image as ImageIcon, Music, Calculator, Puzzle, Search, GalleryHorizontal, Sigma } from 'lucide-react';
 
 export default function HomePage() {
   return (
@@ -132,6 +132,22 @@ export default function HomePage() {
               </Card>
             </Link>
 
+            <Link href="/docs/extensions/gemini" className="block">
+              <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
+                    <Search className="w-5 h-5 text-cyan-500" />
+                    Gemini File Search
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-700 dark:text-slate-300">
+                    RAG workflows with document stores, categories, and contextual chat
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
             <Link href="/docs/extensions/tools" className="block">
               <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
                 <CardHeader>
@@ -143,6 +159,38 @@ export default function HomePage() {
                 <CardContent>
                   <p className="text-slate-700 dark:text-slate-300">
                     First-class Python function calling for LLM interactions with your environment
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/docs/features/calculator-ui" className="block">
+              <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
+                    <Calculator className="w-5 h-5 text-orange-500" />
+                    Calculator & Run Code UIs
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-700 dark:text-slate-300">
+                    Beautiful UIs to evaluate math and execute Python, JS, TS & C# code
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/docs/media-generation/media-gallery" className="block">
+              <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
+                    <GalleryHorizontal className="w-5 h-5 text-indigo-500" />
+                    Media Gallery
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-700 dark:text-slate-300">
+                    Browse and manage all your generated images and audio in one place
                   </p>
                 </CardContent>
               </Card>
@@ -180,17 +228,17 @@ export default function HomePage() {
               </Card>
             </Link>
 
-            <Link href="/docs/features/calculator-ui" className="block">
+            <Link href="/docs/features/katex" className="block">
               <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
-                    <Calculator className="w-5 h-5 text-orange-500" />
-                    Calculator & Run Code UIs
+                    <Sigma className="w-5 h-5 text-violet-500" />
+                    KaTeX Math Rendering
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-slate-700 dark:text-slate-300">
-                    Beautiful UIs to evaluate math and execute Python, JS, TS & C# code
+                    Beautiful LaTeX math typesetting for equations and formulas
                   </p>
                 </CardContent>
               </Card>
@@ -224,6 +272,84 @@ export default function HomePage() {
               height={800}
               className="w-full h-auto"
             />
+          </div>
+        </div>
+      </div>
+
+      {/* Gemini File Search Section */}
+      <div className="w-full my-16 px-4 bg-gradient-to-b from-transparent via-cyan-50/50 to-transparent dark:via-cyan-950/20 py-16">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              Gemini File Search & RAG
+            </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-400">
+              Build knowledge bases with document stores and contextual AI chat
+            </p>
+            <Link
+              href="/docs/extensions/gemini"
+              className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline mt-2"
+            >
+              Learn more →
+            </Link>
+          </div>
+          <div className="rounded-xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 mb-8">
+            <Image
+              src="/img/gemini-filestores-upload-folder.webp"
+              alt="Document Upload with Categories"
+              width={1200}
+              height={800}
+              className="w-full h-auto"
+            />
+          </div>
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700">
+              <LightboxImage
+                src="/img/gemini-filestores.webp"
+                alt="Filestore Management"
+                width={600}
+                height={400}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700">
+              <LightboxImage
+                src="/img/gemini-sync.webp"
+                alt="Bidirectional Sync"
+                width={600}
+                height={400}
+                className="w-full h-auto"
+              />
+            </div>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700">
+              <LightboxImage
+                src="/img/gemini-search-all.webp"
+                alt="Search All Documents"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700">
+              <LightboxImage
+                src="/img/gemini-search-category.webp"
+                alt="Search by Category"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700">
+              <LightboxImage
+                src="/img/gemini-search-document.webp"
+                alt="Gemini RAG chat with document context"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
           </div>
         </div>
       </div>
