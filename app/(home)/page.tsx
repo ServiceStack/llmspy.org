@@ -65,7 +65,7 @@ export default function HomePage() {
         {/* Quick Install */}
         <div className="mt-8 mx-auto max-w-3xl rounded-lg bg-muted p-6">
           <h3 className="font-semibold mb-4 text-slate-900 dark:text-slate-100">Quick Install</h3>
-          <CopyBlock>pip install llms</CopyBlock>
+          <CopyBlock>pip install llms-py</CopyBlock>
         </div>
 
         {/* Console Carousel Section */}
