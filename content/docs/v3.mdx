@@ -133,9 +133,9 @@ See [Model Selector](/docs/features/model-selector) docs for more info.
 
 ## Rewritten for Extensibility
 
-llms.py has been rewritten from the ground-up with extensibility a **core concept** where all [major UI and Server features](https://github.com/ServiceStack/llms/tree/main/llms/extensions) now layer on their encapsulated functionality by using the public Client & Server Extensibility APIs.
+llms.py has been rewritten from the ground-up with extensibility a **core concept** where all [major UI and Server features](/docs/extensions/built-in) now layer on their encapsulated functionality by using the public Client & Server Extensibility APIs.
 
-Extensions are just folders that can add both Server and UI features using the public client and server extensibility APIs. Built-in features are just extensions in the repo's [llms/extensions](https://github.com/ServiceStack/llms/tree/main/llms/extensions) folder which can be overridden by adding them to your local `~/.llms/extensions` folder.
+Extensions are just folders that can add both Server and UI features using the public client and server extensibility APIs. [Built-in features](/docs/extensions/built-in) are just extensions in the repo's [llms/extensions](https://github.com/ServiceStack/llms/tree/main/llms/extensions) folder which [can be disabled](/docs/extensions/built-in#disable-extensions) or overridden by adding them to your local `~/.llms/extensions` folder. Too minimize bloat, only features that are generally useful and don't require additional dependencies are included as built-in extensions.
 
 llms includes support for installing and uninstalling extensions from any GitHub repository. For better discoverability, non built-in extensions are maintained in the [github.com/llmspy](https://github.com/orgs/llmspy/repositories) organization repositories which anyone else is welcome to contribute their repos to for increased discoverability.
 

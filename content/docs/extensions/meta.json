@@ -3,8 +3,9 @@
   "defaultOpen": true,
   "pages": [
     "index",
-    "server",
+    "built-in",
     "ui",
+    "server",
     "tools",
     "core-tools",
     "gemini"

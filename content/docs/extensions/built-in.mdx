@@ -1,0 +1,71 @@
+---
+title: Built-in Extensions
+description: Overview of the built-in extensions that provide core functionality without additional dependencies
+---
+
+To minimize bloat and ensure a lean functional core, llms .py:
+ - Maintains a single file [main.py](https://github.com/ServiceStack/llms/blob/main/llms/main.py) core which enables:
+   - Its [CLI Features](/docs/features/cli)
+   - Support for Open AI Compatible providers: 
+     - Moonshot AI, Z.ai, Alibaba/Qwen, Groq, xAI, Mistral, Codestral, NVIDIA, GitHub, DeepSeek, Chutes, HuggingFace, OpenRouter, Fireworks AI, Ollama, LM Studio
+ - Requires only a single **aiohttp** dependency
+ - Maintains an up-to-date model provider configuration (from models.dev)
+ - Supports loading extensions for any additional functionality, integrations, and UI features
+
+## Built-in Extensions
+
+All built-in extensions are located in the [llms/extensions](https://github.com/ServiceStack/llms/tree/main/llms/extensions) folder.
+They're resolved for generally useful functionality that does not require any additional dependencies.
+
+### [app](https://github.com/ServiceStack/llms/tree/main/llms/extensions/app) extension
+
+Provides core application logic, data persistence (SQLite), and migration from client-side storage
+- **Database**: `~/.llms/user/default/app/app.sqlite`
+    - **request**: Logs all requests for auditing and analytics
+    - **thread**: Persists chat threads and messages
+- [analytics](https://github.com/ServiceStack/llms/tree/main/llms/extensions/analytics): Provides a UI for analytics - using `request` table data in `app.sqlite`
+
+### [gallery](https://github.com/ServiceStack/llms/tree/main/llms/extensions/gallery) extension
+
+A UI and backend for intercepting, storing, and viewing generated assets and uploaded files
+- **Database**: `~/.llms/user/default/gallery/gallery.sqlite`
+    - **media**: Stores metadata for generated assets and uploaded files
+
+### [providers](https://github.com/ServiceStack/llms/tree/main/llms/extensions/providers) extension
+
+Provides support for popular LLM providers requiring custom handling beyond OpenAI-compatible requests:
+
+- [anthropic](https://github.com/ServiceStack/llms/blob/main/llms/extensions/providers/anthropic.py): Integration with Anthropic's Claude models
+- [cerebras](https://github.com/ServiceStack/llms/blob/main/llms/extensions/providers/cerebras.py): Integration with Cerebras AI models
+- [chutes](https://github.com/ServiceStack/llms/blob/main/llms/extensions/providers/chutes.py): Integration with Chutes.ai for image generation
+- [google](https://github.com/ServiceStack/llms/blob/main/llms/extensions/providers/google.py): Integration with Google's Gemini models
+- [nvidia](https://github.com/ServiceStack/llms/blob/main/llms/extensions/providers/nvidia.py): Integration with NVIDIA's GenAI APIs
+- [openai](https://github.com/ServiceStack/llms/blob/main/llms/extensions/providers/openai.py): Integration with OpenAI's chat and image generation models
+- [openrouter](https://github.com/ServiceStack/llms/blob/main/llms/extensions/providers/openrouter.py): Integration with OpenRouter for image generation
+
+### Disable Extensions
+
+Only built-in extensions or extensions in your local `~/.llms/extensions` folder are loaded by default. 
+To disable built-in extensions or temporarily disable local extensions, add their folder names to your `~/.llms/llms.json`:
+
+```json
+{
+  "disable_extensions": [
+    "xmas",
+    "duckduckgo"
+  ]
+}
+```
+
+Alternatively you can set the `LLMS_DISABLE` environment variable with a comma-separated list of extension names to disable.
+
+```bash
+export LLMS_DISABLE="xmas,duckduckgo"
+```
+
+### Other Built-in Extensions
+
+- [core_tools](https://github.com/ServiceStack/llms/tree/main/llms/extensions/core_tools) - [Essential tools](/docs/features/core-tools) for file operations, memory persistence, math calculation & safe code execution
+- [katex](https://github.com/ServiceStack/llms/tree/main/llms/extensions/katex) 0 Enables rendering of [LaTeX math expressions](/docs/features/katex) in chat responses using KaTeX
+- [system_prompts](https://github.com/ServiceStack/llms/tree/main/llms/extensions/system_prompts): Configures a library of over [200+ curated system prompts](/docs/features/system-prompts) accessible from the UI
+- [tools](https://github.com/ServiceStack/llms/tree/main/llms/extensions/tools): Provides [Tools UI](/docs/extensions/tools) and Exposes registered tool definitions via an API endpoint
