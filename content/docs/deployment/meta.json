@@ -4,6 +4,7 @@
   "pages": [
     "index",
     "docker",
+    "custom-build",
     "github-oauth"
   ]
 }

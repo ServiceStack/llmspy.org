@@ -143,6 +143,8 @@ UI components are now registered and referenced as Global Vue components, which 
 
 This approach allows [main.py](https://github.com/ServiceStack/llms/blob/main/llms/main.py) to retain a **lean functional core in a single file** whilst still being fully extensible and lays the foundation for **rapid development of new features** - both from the core team and external 3rd party extensions - enabling the community to extend llms.py in new unanticipated ways.
 
+For deployments requiring minimal footprint, the [Custom Build](/docs/deployment/custom-build) docs shows how to create a tailored distribution with only the specific extensions you need - perfect for CLI-only or lightweight API server deployments.
+
 ## Extensions System
 
 To keep the core lightweight while enabling limitless enhancements, we've implemented a flexible **Extensions system** inspired by ComfyUI Custom Nodes. This allows adding new features, pages and toolbar icons, register new provider implementations, extend, replace, and customize the UI with your own custom features, just by adding new extension folders.
