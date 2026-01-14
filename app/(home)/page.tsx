@@ -36,7 +36,7 @@ export default function HomePage() {
             </div>
             <div className="flex items-center gap-2">
               <Zap className="w-4 h-4 text-blue-500" />
-              <span>23 Providers</span>
+              <span>24 Providers</span>
             </div>
             <div className="flex items-center gap-2">
               <Puzzle className="w-4 h-4 text-purple-500" />
@@ -105,7 +105,7 @@ export default function HomePage() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
                     <Sparkles className="w-5 h-5 text-yellow-500" />
-                    530+ Models from 23 Providers
+                    530+ Models from 24 Providers
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
