@@ -256,10 +256,10 @@ export default {
         const greetings = api.response
         if (greetings) {
             // maintain in local reactive state in (localized to extension)
-            ext.state.greetings = greetings
+            ext.setState({ greetings })
 
             // maintain in global reactive state
-            ctx.state.greetings = greetings
+            ctx.setState({ greetings })
         } else {
             ctx.setError(api.error)
         }

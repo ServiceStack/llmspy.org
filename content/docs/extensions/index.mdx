@@ -173,10 +173,10 @@ async load(ctx) {
     const greetings = await ext.getJson("/greetings.json")
 
     // maintain in local reactive state in (localized to extension)
-    ext.state.greetings = greetings
+    ext.setState({ greetings })
 
     // maintain in global reactive state
-    ctx.state.greetings = greetings
+    ctx.setState({ greetings })
 }
 ```
 
