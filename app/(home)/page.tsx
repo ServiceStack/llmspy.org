@@ -248,7 +248,7 @@ export default function HomePage() {
       </div>
 
       {/* Model Selector Section */}
-      <div className="w-full my-16 px-4">
+      <div id="model-selector" className="w-full my-16 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
@@ -277,7 +277,7 @@ export default function HomePage() {
       </div>
 
       {/* Gemini File Search Section */}
-      <div className="w-full my-16 px-4 bg-gradient-to-b from-transparent via-cyan-50/50 to-transparent dark:via-cyan-950/20 py-16">
+      <div id="rag" className="w-full my-16 px-4 bg-gradient-to-b from-transparent via-cyan-50/50 to-transparent dark:via-cyan-950/20 py-16">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
@@ -355,7 +355,7 @@ export default function HomePage() {
       </div>
 
       {/* Tools & Function Calling Section */}
-      <div className="w-full my-16 px-4 bg-slate-50 dark:bg-slate-900/50 py-16">
+      <div id="tools" className="w-full my-16 px-4 bg-slate-50 dark:bg-slate-900/50 py-16">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
@@ -453,7 +453,7 @@ export default function HomePage() {
       </div>
 
       {/* Calculator UI Section */}
-      <div className="w-full my-16 px-4">
+      <div id="calculator" className="w-full my-16 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
@@ -482,7 +482,7 @@ export default function HomePage() {
       </div>
 
       {/* Run Code UI Section */}
-      <div className="w-full my-16 px-4 bg-slate-50 dark:bg-slate-900/50 py-16">
+      <div id="run-code" className="w-full my-16 px-4 bg-slate-50 dark:bg-slate-900/50 py-16">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
@@ -526,7 +526,7 @@ export default function HomePage() {
       </div>
 
       {/* KaTeX Math Typesetting */}
-      <div className="w-full my-16 px-4 bg-gradient-to-b from-transparent via-purple-50/50 to-transparent dark:via-purple-950/20 py-16">
+      <div id="katex" className="w-full my-16 px-4 bg-gradient-to-b from-transparent via-purple-50/50 to-transparent dark:via-purple-950/20 py-16">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
@@ -566,7 +566,7 @@ export default function HomePage() {
       </div>
 
       {/* Media Generation Section */}
-      <div className="w-full my-16 px-4">
+      <div id="media-generation" className="w-full my-16 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
@@ -614,7 +614,7 @@ export default function HomePage() {
       </div>
 
       {/* Media Gallery Section */}
-      <div className="w-full my-16 px-4 bg-slate-50 dark:bg-slate-900/50 py-16">
+      <div id="media-gallery" className="w-full my-16 px-4 bg-slate-50 dark:bg-slate-900/50 py-16">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
@@ -674,7 +674,7 @@ export default function HomePage() {
       </div>
 
       {/* System Prompts Section */}
-      <div className="w-full my-16 px-4">
+      <div id="system-prompts" className="w-full my-16 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
@@ -703,7 +703,7 @@ export default function HomePage() {
       </div>
 
       {/* Provider Management Section */}
-      <div className="w-full my-16 px-4 bg-gradient-to-b from-transparent via-slate-50/50 to-transparent dark:via-slate-900/50 py-16">
+      <div id="provider-management" className="w-full my-16 px-4 bg-gradient-to-b from-transparent via-slate-50/50 to-transparent dark:via-slate-900/50 py-16">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
@@ -732,7 +732,7 @@ export default function HomePage() {
       </div>
 
       {/* Getting Started Call-out */}
-      <div className="w-full my-12 px-4">
+      <div id="getting-started" className="w-full my-12 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-2 border-blue-200 dark:border-blue-800 rounded-xl p-8 text-center shadow-lg dark:shadow-blue-900/20">
             <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3">
