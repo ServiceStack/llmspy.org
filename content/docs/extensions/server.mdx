@@ -18,11 +18,12 @@ git clone https://github.com/user/my_extension ~/.llms/extensions/my_extension
 ### How it Works (Server)
 Extensions are Python modules that plug into the server lifecycle using hooks defined in their `__init__.py`:
 
-| Hook | Purpose |
-|------|---------|
-| `__parser__(parser)` | Add custom CLI arguments for custom CLI functionality |
+| Hook                 | Purpose |
+|----------------------|---------|
+| `__parser__(parser)` | Add custom CLI arguments |
 | `__install__(ctx)`   | Enhance the server instance (routes, providers, filters, etc.) |
-| `__run__(ctx)`       | Execute custom logic when running in CLI mode (to implement `__parser__` args) |
+| `__load__(ctx)`      | Load data or perform **async** tasks before server starts |
+| `__run__(ctx)`       | Execute custom logic when running in CLI mode |
 
 - The `ctx` parameter provides access to the `ExtensionContext`
 - The `__install__` hook runs after providers are configured but before server is run

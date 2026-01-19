@@ -27,7 +27,8 @@ Output:
 
 ```
 Available extensions:
-  gemini       Google Gemini RAG file search with document management, auto-upload & sync capabilities
+  fast_mcp     Add MCP Support using FastMCP
+  gemini       Google Gemini RAG file search with document management, auto-upload & sync
   xmas         Example of utilizing the Extensions APIs to give llms.py some Christmas spirit
   duckduckgo   Add web search tool capabilities using Duck Duck Go
 
@@ -38,7 +39,7 @@ Usage:
 
 **Install an extension:**
 ```bash
-llms --add duckduckgo
+llms --add fast_mcp
 ```
 
 **Install a 3rd-party extension:**
@@ -61,11 +62,12 @@ llms --remove system_prompts
 ### How it Works (Server)
 Extensions are Python modules that plug into the server lifecycle using special hooks defined in their `__init__.py`:
 
-| Hook | Purpose |
-|------|---------|
+| Hook                 | Purpose |
+|----------------------|---------|
 | `__parser__(parser)` | Add custom CLI arguments |
-| `__install__(ctx)` | Enhance the server instance (routes, providers, filters, etc.) |
-| `__run__(ctx)` | Execute custom logic when running in CLI mode |
+| `__install__(ctx)`   | Enhance the server instance (routes, providers, filters, etc.) |
+| `__load__(ctx)`      | Load data or perform **async** tasks before server starts |
+| `__run__(ctx)`       | Execute custom logic when running in CLI mode |
 
 The `ctx` parameter provides access to the `ExtensionContext`.
 
@@ -154,7 +156,7 @@ export default {
         })
 
         // Register route to XmasPage component
-        ctx.routes.push({ path: '/xmas', component: XmasPage, meta: { title: `Merry Christmas!` } })
+        ctx.routes.push({ path: '/xmas', component: XmasPage, meta:{title:`Merry Christmas!`} })
 
         ctx.onRouterBeforeEach((to, from) => { // Auto hide top panel on non chat pages
             if (to.path !== '/' && !to.path.startsWith('/c/')) {

@@ -39,6 +39,12 @@ def install(ctx):
     ctx.register_tool(get_current_time)
 ```
 
+If no group is specified, tools are registered under the default `custom` group, alternatively you can group them under your preferred name:
+
+```python
+ctx.register_tool(get_current_time, group="my_tools")
+```
+
 ### Explicit Tool Definition
 
 When more fine-grain configuration is needed you can use an explicit tool definition instead, e.g:
@@ -65,14 +71,16 @@ ctx.register_tool(
         },
     },
 )
+```
 
+```python
 ctx.register_tool(
     edit_file,
     {
         "type": "function",
         "function": {
             "name": "edit_file",
-            "description": "Replaces first occurrence of old_str with new_str in file. If old_str is empty, create/overwrite file with new_str.",
+            "description": "Replaces first occurrence of old_str with new_str in file.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -87,24 +95,49 @@ ctx.register_tool(
 )
 ```
 
-
-
 ## UI Management
 
 **Dedicated Tools Page** 
 
 View all registered tools and their definitions at `/tools` page via the left sidebar link:
 
-[![](/img/llms-tools-page.webp)](/img/llms-tools-page.webp)
+<Screenshot src="/img/llms-tools-page.webp" />
 
-**Top Panel Tools Selector** 
+### Execute Tools
 
-- **One-Click Enable/Disable**: Use the new Tool Selector in the chat interface (top-right) to control which tools are available to the model
-- **Granular Control**: Select "All", "None", or specific tools for each chat session
+You can execute tools directly from the Tools page by clicking the **Execute** button next to each tool, filling out the required parameters in the dialog, and clicking **Run Tool**.
 
-[![](/img/llms-tools-top.webp)](/img/llms-tools-top.webp)
+<Screenshot src="/img/tools-exec.webp" />
 
-When tools are used within AI Requests a special UI is used to render tool calls and responses.
+#### Results
+
+Upon execution, the tool's output is displayed in a results dialog with specific rendering based on the output type:
+
+<Screenshot src="/img/tools-exec-results.webp" />
+
+### Chat Sessions
+
+When included, the same tools can be also be invoked indirectly by LLMs during chat sessions:
+
+<Screenshot src="/img/tools-chat-gemini-image.webp" />
+
+### HTML Results
+
+Tool outputs containing HTML content are rendered within an `<iframe>` within the results dialog which safely sandboxes the content whilst letting you interact with it and play games like Tetris from the arguments or output of a tool call:
+
+<Screenshot src="/img/tools-chat-tetris.webp" />
+
+### Top Panel Tools Selector
+
+The tools selector allows curating the available tools for each chat session, benefitting from:
+
+- **Reduced Context Usage**: Each tool definition consumes tokens in the LLM's context window. Disabling unused tools frees up context for longer conversations and more detailed responses
+- **Improved Focus**: When fewer tools are available, the model is less likely to be distracted by irrelevant capabilities and stays focused on the task at hand
+- **Faster Responses**: Smaller payloads with fewer tool definitions can reduce latency, especially with models that process tool schemas upfront
+- **Task-Specific Sessions**: Tailor each chat to its purpose—enable file editing tools for coding tasks, search tools for research, or disable all tools for pure conversation
+
+<Screenshot src="/img/llms-tools-top.webp" />
+
 
 ## Core Tools
 
@@ -114,13 +147,9 @@ See the [built-in core_tools](/docs/features/core-tools) functionality enabling 
 
 ## Available Tools
 
-All available tools are maintained in the GitHub [llmspy organization](https://github.com/orgs/llmspy/repositories) repositories:
+All available tools and extensions are maintained in the GitHub [llmspy organization](https://github.com/orgs/llmspy/repositories) repositories:
 
-| Tool | Description |
-|------|-------------|
-| `gemini` | Google Gemini RAG file search with document management, auto-upload & sync capabilities |
-| `duckduckgo` | Add web search tool capabilities using Duck Duck Go |
-| `xmas` | Example of utilizing the Extensions APIs to give llms.py some Christmas spirit |
+- `duckduckgo` - Add web search tool capabilities using Duck Duck Go
 
 **List available extensions:**
 
@@ -142,7 +171,7 @@ def web_search(query: str, max_results: int | None = 10, page: int = 1) -> Dict[
 
 ### Installing external Extensions and Tools
 
-Installing an extension clones it into your `~/.llms/extensions` folder and installs any Python `requirements.txt` dependencies. You can remove an extension by deleting the folder from `~/.llms/extensions`.
+Installing an extension clones it into your `~/.llms/extensions` folder and installs any Python `requirements.txt` dependencies. You can remove an extension by deleting its folder.
 
 **Install 3rd-party extensions:**
 ```bash

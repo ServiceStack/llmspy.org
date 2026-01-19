@@ -12,6 +12,7 @@ description: Major release focused on extensibility, expanded provider support, 
 | **Extensions** | Add features, providers, and customize the UI with a flexible plugin architecture |
 | **Gemini RAG** | Manage Gemini File Search Stores and manage document uploads for RAG workflows |
 | **Tool Support** | First-class Python function calling for LLM interactions with your local environment |
+| **MCP Support** | Connect to Model Context Protocol servers for extended tool capabilities |
 | **KaTeX Math Typesetting** | Support for beautiful rendering of LaTeX math expressions |
 | **Calculator UI** | Beautiful UX Friendly UI to evaluate python math expressions |
 | **Run Code UI** | Execute Python, JS, TypeScript and C# code scripts in a CodeMirror editor |
@@ -31,6 +32,7 @@ description: Major release focused on extensibility, expanded provider support, 
 - [Extensions System](#extensions-system)
 - [Gemini RAG Extension](#gemini-rag-extension)
 - [Tool Support](#tool-support)
+- [MCP Support](#mcp-support)
 - [Core Tools](#core-tools)
 - [Calculator UI](#calculator-ui)
 - [Run Code UI](#run-code-ui)
@@ -162,7 +164,8 @@ Output:
 
 ```
 Available extensions:
-  gemini       Google Gemini RAG file search with document management, auto-upload & sync capabilities
+  fast_mcp     Add MCP Support using FastMCP
+  gemini       Google Gemini RAG file search with document management, auto-upload & sync
   xmas         Example of utilizing the Extensions APIs to give llms.py some Christmas spirit
   duckduckgo   Add web search tool capabilities using Duck Duck Go
 
@@ -173,7 +176,7 @@ Usage:
 
 **Install an extension:**
 ```bash
-llms --add duckduckgo
+llms --add fast_mcp
 ```
 
 **Install a 3rd-party extension:**
@@ -190,7 +193,7 @@ llms --remove
 
 **Remove an extension:**
 ```bash
-llms --remove duckduckgo
+llms --remove fast_mcp
 ```
 
 ### Manual Installation
@@ -207,11 +210,12 @@ See [Extensions](/docs/extensions) docs for more details.
 ### How it Works (Server)
 Extensions are Python modules that plug into the server lifecycle using special hooks defined in their `__init__.py`:
 
-| Hook | Purpose |
-|------|---------|
+| Hook                 | Purpose |
+|----------------------|---------|
 | `__parser__(parser)` | Add custom CLI arguments |
-| `__install__(ctx)` | Enhance the server instance (routes, providers, filters, etc.) |
-| `__run__(ctx)` | Execute custom logic when running in CLI mode |
+| `__install__(ctx)`   | Enhance the server instance (routes, providers, filters, etc.) |
+| `__load__(ctx)`      | Load data or perform **async** tasks before server starts |
+| `__run__(ctx)`       | Execute custom logic when running in CLI mode |
 
 The `ctx` parameter provides access to the `ExtensionContext`.
 
@@ -381,6 +385,12 @@ def install(ctx):
     ctx.register_tool(get_current_time)
 ```
 
+If no group is specified, tools are registered under the default `custom` group, alternatively you can group them under your preferred name:
+
+```python
+ctx.register_tool(get_current_time, group="my_tools")
+```
+
 #### Explicit Tool Definition
 
 When more fine-grain configuration is needed you can use an explicit tool definition, e.g:
@@ -418,6 +428,76 @@ ctx.register_tool(
 **Dedicated Tools Page**: View all registered tools and their definitions at `/tools` or via the sidebar
 
 <Screenshot src="/img/llms-tools-page.webp" />
+
+---
+
+## MCP Support
+
+The [fast_mcp](https://github.com/llmspy/fast_mcp) extension brings **Model Context Protocol (MCP)** support to llms.py, allowing you to extend LLM capabilities with a wide range of external tools and services using the [FastMCP Python Framework](https://gofastmcp.com).
+
+### Install
+
+```bash
+llms --add fast_mcp
+```
+
+### Key Features
+
+- **Standardized Tool Access**: Connect to any MCP-compliant server (Node.js, Python, etc.) seamlessly
+- **Dynamic Discovery**: Automatically discovers and registers all tools exposed by configured servers
+- **Parallel Discovery**: All configured MCP servers are discovered concurrently for fast startup times
+- **UI Management**: Add, edit, and manage MCP servers directly from the Tools page
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'MCP Servers': '/img/mcp-servers.webp',
+    'Gemini Image via MCP': '/img/tools-chat-gemini-image.webp',
+}} />
+
+### Configuration
+
+MCP servers are configured via a `mcp.json` file. By default, Anthropic's [Filesystem MCP Server](https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem) is pre-configured:
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "description": "Anthropic's MCP Server for secure filesystem operations",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "$PWD"]
+    },
+    "git": {
+      "command": "uvx",
+      "args": ["mcp-server-git", "--repository", "$PWD"]
+    }
+  }
+}
+```
+
+### Managing Servers
+
+Add, edit, or remove MCP servers directly from the UI:
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Add MCP Server': '/img/mcp-add.webp',
+    'Edit MCP Server': '/img/mcp-edit.webp',
+}} />
+
+### Executing Tools
+
+MCP tools can be executed directly from the Tools page or invoked by LLMs during chat sessions:
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Execute Tool': '/img/tools-exec.webp',
+    'Tool Results': '/img/tools-exec-results.webp',
+}} />
+
+### HTML Results
+
+Tool outputs containing HTML content are rendered within a sandboxed iframe, letting you interact with rich content and even play games:
+
+<Screenshot src="/img/tools-chat-tetris.webp" />
+
+See the [MCP Support](/docs/extensions/fast_mcp) docs for complete configuration and usage details.
 
 ## Core Tools
 
@@ -744,7 +824,7 @@ llms --tools none "Tell me a joke"
 llms --add
 
 # Install an extension
-llms --add duckduckgo
+llms --add fast_mcp
 
 # Install a 3rd-party extension from GitHub
 llms --add github-user/repo-name
@@ -753,7 +833,7 @@ llms --add github-user/repo-name
 llms --remove
 
 # Uninstall an extension
-llms --remove duckduckgo
+llms --remove fast_mcp
 ```
 
 ### Provider Management

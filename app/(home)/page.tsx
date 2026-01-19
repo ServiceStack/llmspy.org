@@ -8,7 +8,7 @@ import { screenshotScreens } from './screenshot-screens';
 import { TabbedImages } from './tabbed-images';
 import { LightboxImage } from './lightbox-image';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Star, Sparkles, Zap, Code2, Image as ImageIcon, Music, Calculator, Puzzle, Search, GalleryHorizontal, Sigma } from 'lucide-react';
+import { Star, Sparkles, Zap, Code2, Image as ImageIcon, Music, Calculator, Puzzle, Search, GalleryHorizontal, Sigma, Plug } from 'lucide-react';
 
 export default function HomePage() {
   return (
@@ -164,6 +164,22 @@ export default function HomePage() {
               </Card>
             </Link>
 
+            <Link href="/docs/extensions/fast_mcp" className="block">
+              <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
+                    <Plug className="w-5 h-5 text-teal-500" />
+                    MCP Support
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-700 dark:text-slate-300">
+                    Connect to Model Context Protocol servers for extended tool capabilities
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
             <Link href="/docs/features/calculator-ui" className="block">
               <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
                 <CardHeader>
@@ -201,28 +217,12 @@ export default function HomePage() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
                     <ImageIcon className="w-5 h-5 text-green-500" />
-                    Image Generation
+                    Image & Audio Generation
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-slate-700 dark:text-slate-300">
-                    Built-in support for Google, OpenAI, OpenRouter, Chutes, and Nvidia
-                  </p>
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/docs/media-generation/audio-generation" className="block">
-              <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
-                    <Music className="w-5 h-5 text-pink-500" />
-                    Audio Generation
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-slate-700 dark:text-slate-300">
-                    TTS support for Gemini 2.5 Flash/Pro Preview models
+                    Built-in support for Gemini, OpenAI, OpenRouter, Chutes, and Nvidia
                   </p>
                 </CardContent>
               </Card>
@@ -448,6 +448,84 @@ export default function HomePage() {
                 className="w-full h-full object-cover"
               />
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* MCP Support Section */}
+      <div id="mcp" className="w-full my-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              MCP Support
+            </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-400">
+              Extend LLM capabilities with Model Context Protocol servers
+            </p>
+            <Link
+              href="/docs/extensions/fast_mcp"
+              className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline mt-2"
+            >
+              Learn more →
+            </Link>
+          </div>
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/mcp-servers.webp"
+                alt="MCP Servers with registered tools"
+                width={600}
+                height={400}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/tools-chat-gemini-image.webp"
+                alt="Gemini image generation via MCP"
+                width={600}
+                height={400}
+                className="w-full h-auto"
+              />
+            </div>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/mcp-add.webp"
+                alt="Add MCP Server"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/tools-exec.webp"
+                alt="Execute MCP Tools"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/tools-exec-results.webp"
+                alt="Tool Execution Results"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
+          </div>
+          <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+            <LightboxImage
+              src="/img/tools-chat-tetris.webp"
+              alt="Interactive HTML results from MCP tools"
+              width={1200}
+              height={600}
+              className="w-full h-auto"
+            />
           </div>
         </div>
       </div>

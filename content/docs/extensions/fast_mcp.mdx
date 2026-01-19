@@ -1,0 +1,186 @@
+---
+title: MCP Support
+description: The fast_mcp extension brings Model Context Protocol (MCP) support to `llms.py`, allowing you to extend LLM capabilities with a wide range of external tools and services.
+---
+
+## Install
+
+Add the [fast_mcp](https://github.com/llmspy/fast_mcp) extension to enable MCP support using the [FastMCP Python Framework](https://gofastmcp.com):
+
+<ShellCommand>llms --add fast_mcp</ShellCommand>
+
+## Features
+
+- **Standardized Tool Access**: Connect to any MCP-compliant server (Node.js, Python, etc.) seamlessly.
+- **Dynamic Discovery**: Automatically discovers and registers all tools exposed by the configured servers.
+- **Parallel Discovery**: All configured MCP servers are discovered concurrently for fast startup times.
+- **Deterministic Registration**: Tools are registered in configuration order; if multiple servers provide tools with the same name, the later server in the config overrides earlier ones.
+
+## Configuration
+
+The extension manages MCP servers via a `mcp.json` configuration file in the following locations:
+
+1. **User Config**: `~/.llms/user/default/fast_mcp/mcp.json`
+2. **Default Config**: The [ui/mcp.json](https://github.com/llmspy/fast_mcp/blob/main/ui/mcp.json) file bundled with the extension.
+
+### Server Configuration Options
+
+Each server in `mcpServers` supports the [mcp_config fields](https://gofastmcp.com/python-sdk/fastmcp-mcp_config):
+
+| Field         | Type   | Required | Description |
+|---------------|--------|----------|-------------|
+| `command`     | string | Yes      | The executable to run (e.g., `npx`, `uvx`, `uv`, `python`) |
+| `args`        | array  | No       | Command-line arguments passed to the command |
+| `env`         | object | No       | Environment variables to set for the server process |
+| `timeout`     | number | No       | Timeout in seconds for tool execution |
+| `description` | string | No       | A human-readable description of the server |
+
+### Environment Variable Substitution
+
+To allow for flexible and shared configurations, you can reference environment variables using the `$` prefix in both `args` and `env` values, e.g:
+
+- `$PWD` - Current working directory
+- `$GEMINI_API_KEY` - Any environment variable
+
+**Selective Registration**: MCP servers are only registered if **all** referenced environment variables are available. If any variable is missing, that server is skipped during discovery. This allows you to maintain a single shared config with optional servers.
+
+### Example `mcp.json`
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "description": "Anthropic's MCP Server for secure filesystem operations",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "$PWD"
+      ]
+    },
+    "git": {
+      "description": "Provides tools to read, search, and manipulate Git repositories",
+      "command": "uvx",
+      "args": [
+        "mcp-server-git",
+        "--repository",
+        "$PWD"
+      ]
+    },
+    "gemini-gen": {
+      "description": "Gemini Image and Audio TTS generation",
+      "command": "uvx",
+      "args": ["gemini-gen-mcp"],
+      "env": {
+        "GEMINI_API_KEY": "$GEMINI_API_KEY"
+      }
+    }
+  }
+}
+```
+
+## Tools UI
+
+Information about all discovered MCP servers and their registered tools is available in the **Tools** page under the **MCP Servers** section. By default only Anthropic's [Filesystem MCP Server](https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem) is configured.
+
+<Screenshot src="/img/mcp-servers-empty.webp" />
+
+You can either edit the `mcp.json` file directly to add your own servers or use the UI to **Add**, **Edit**, or **Delete** servers or use the **Copy** button to copy an individual server's configuration.
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <Screenshot src="/img/mcp-add.webp" />
+    <Screenshot src="/img/mcp-edit.webp" />
+</div>
+
+After adding servers and restarting the application, the Tools page will display all discovered servers and their registered tools.
+
+<Screenshot src="/img/mcp-servers.webp" />
+
+## Executing Tools
+
+Fundamentally MCP Servers are a standardized way to expose external tools to LLMs. Once MCP servers are configured and their tools discovered, LLMs can invoke them during chat sessions like any other tool.
+
+An MCP Tools are grouped under their tool name, making it easy to identify, enable or disable them for each chat session. You can execute tools directly from the Tools page by clicking the **Execute** button next to each tool, filling out the required parameters in the dialog, and clicking **Run Tool**.
+
+<Screenshot src="/img/tools-exec.webp" />
+
+#### Results
+
+Upon execution, the tool's output is displayed in a results dialog with specific rendering based on the output type:
+
+<Screenshot src="/img/tools-exec-results.webp" />
+
+### Chat Sessions
+
+When included, the same tools can be also be invoked indirectly by LLMs during chat sessions:
+
+<Screenshot src="/img/tools-chat-gemini-image.webp" />
+
+### HTML Results
+
+Tool outputs containing HTML content are rendered within an `<iframe>` within the results dialog which safely sandboxes the content whilst letting you interact with it and play games like Tetris from the arguments or output of a tool call:
+
+<Screenshot src="/img/tools-chat-tetris.webp" />
+
+### Top Panel Tools Selector
+
+- **One-Click Enable/Disable**: Use the new Tool Selector in the chat interface (top-right) to control which tools are available to the model
+- **Granular Control**: Select **all**, **none** per group or globally, or individual tools for each chat session
+
+<Screenshot src="/img/llms-tools-top.webp" />
+
+When tools are used within AI Requests a special UI is used to render tool calls and responses.
+
+
+## How It Works
+
+### Discovery Phase (Startup)
+
+1. The extension loads `mcp.json` and filters out servers with missing environment variables
+2. All valid servers are discovered **in parallel**
+3. Each server is started, queried for its available tools via `list_tools()`
+4. Tools are registered in **config order** (deterministic - later servers override earlier ones for duplicate tool names)
+
+### Execution Phase (Runtime)
+
+When a tool is invoked:
+
+1. A **fresh connection** is established to the appropriate MCP server
+2. The tool is executed with the provided arguments (configurable timeout, default 60s)
+3. The connection is closed after execution
+
+This fresh-connection-per-execution approach ensures reliability and isolation between tool calls.
+
+## Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MCP_TIMEOUT` | `60.0` | Timeout in seconds for MCP tool execution |
+| `MCP_LOG_ERRORS` | `0` | Set to `1` to enable detailed stderr logging for tool execution |
+
+## Troubleshooting
+
+If tools are not appearing:
+
+- Check that the MCP server command is accessible in your `PATH`
+- Verify that all required environment variables are exported
+- Enable detailed error logging with `MCP_LOG_ERRORS=1`
+- Review the logs in the `logs/` directory for specific error messages
+
+If tools are timing out:
+
+- Increase the timeout with `MCP_TIMEOUT=120` (or higher value in seconds)
+
+### Log Files
+
+Logs are stored in the extension's `logs/` directory:
+
+| Log File | Description |
+|----------|-------------|
+| `{server}_discovery.stderr.log` | Stderr output from server during discovery phase |
+| `{tool_name}.stderr.log`        | Stderr output from tool execution (when `MCP_LOG_ERRORS=1`) |
+
+## Requirements
+
+- Python 3.9+ (for dict insertion order guarantee)
+- [fastmcp](https://pypi.org/project/fastmcp/) - MCP client library
