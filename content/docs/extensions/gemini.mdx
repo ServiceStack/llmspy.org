@@ -51,10 +51,9 @@ First step is to create a Filestore to hold your documents. Navigate to the Gemi
 
 <Screenshot src="/img/gemini-filestores-create.webp" />
 
-### macOS Performance
+### macOS Slow Performance
 
-⚠️ For a yet unknown reason, Gemini filestore operations takes seconds on our Linux systems, but can take up to several minutes on our macOS desktops (on same network). 
-The Create/Delete Filestore operations are synchronous and block the UI and server until completed, but once created document uploads are asynchronous and run by a Background Worker DB Queue without blocking the UI.
+⚠️ If experiencing slow or hanging network requests on macOS, try [disabling ocsp.apple.com](https://gist.github.com/nathanhleung/2ceeda4c743f2a1cf3d670c8b90445f6) to resolve potential TLS handshake delays. If the issue persists, try disabling IPv6 on your network interface, e.g: `sudo networksetup -setv6off Wi-Fi`.
 
 ## Filestore UI
 
