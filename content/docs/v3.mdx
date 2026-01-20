@@ -83,7 +83,7 @@ The switch to [models.dev](https://models.dev) greatly expands the model selecti
 | Cerebras       | 3        |                 |          |
 | LMStudio       | local    | Ollama          | local    |
 
-Non OpenAI Compatible LLM and Image generation providers are maintained in the [providers](https://github.com/ServiceStack/llms/tree/main/llms/extensions/providers) extension, registered using the `ctx.add_provider()` API.
+Non OpenAI Compatible LLM and Image generation providers are maintained in the [providers](https://github.com/ServiceStack/llms/tree/main/llms/extensions/providers) extension, registered using the `ctx.add_provider()` API. There are several different provider implementations to take advantage of features available in each provider, such as **Interleaved Thinking** support in Anthropic's Messages API which enables all Claude and MiniMax models to reason between tool calls for improved agentic performance.
 
 <Tip>💡 [Raise an issue](https://github.com/ServiceStack/llms/issues) to add support for any missing providers from [models.dev](https://models.dev) you would like to use.</Tip>
 
