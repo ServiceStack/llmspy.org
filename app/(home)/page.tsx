@@ -164,7 +164,7 @@ export default function HomePage() {
               </Card>
             </Link>
 
-            <Link href="/docs/extensions/fast_mcp" className="block">
+            <Link href="/docs/mcp/fast_mcp" className="block">
               <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
@@ -463,7 +463,7 @@ export default function HomePage() {
               Extend LLM capabilities with Model Context Protocol servers
             </p>
             <Link
-              href="/docs/extensions/fast_mcp"
+              href="/docs/mcp/fast_mcp"
               className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline mt-2"
             >
               Learn more →

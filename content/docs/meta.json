@@ -8,8 +8,9 @@
     "multimodal",
     "media-generation",
     "extensions",
-    "configuration",
+    "mcp",
     "cli",
+    "configuration",
     "deployment"
   ]
 }
