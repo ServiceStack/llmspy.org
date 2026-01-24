@@ -3,7 +3,7 @@
   "defaultOpen": true,
   "pages": [
     "fast_mcp",
-    "gemini_mcp",
+    "gemini_gen_mcp",
     "omarchy_mcp"
   ]
 }

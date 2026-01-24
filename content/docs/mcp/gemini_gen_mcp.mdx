@@ -1,0 +1,217 @@
+---
+title: Gemini Gen MCP
+description: MCP Server for Gemini Image and Text to Speech (TTS) Audio generation
+---
+
+### Using in llms .py
+
+Paste server configuration into [llms .py MCP Servers](https://llmspy.org/docs/extensions/fast_mcp):
+
+Name: `gemini-gen`
+
+```json
+{
+  "description": "Gemini Image and Audio TTS generation",
+  "command": "uvx",
+  "args": [
+    "gemini-gen-mcp"
+  ],
+  "env": {
+    "GEMINI_API_KEY": "$GEMINI_API_KEY"
+  }
+}
+```
+
+You can either edit the `mcp.json` file directly to add your own servers or use the UI to **Add**, **Edit**, or **Delete** servers or use the **Copy** button to copy an individual server's configuration.
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <Screenshot src="/img/mcp-add.webp" />
+    <Screenshot src="/img/mcp-edit.webp" />
+</div>
+
+### Using with Claude Desktop
+
+Add this to your or `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "gemini-gen": {
+      "description": "Gemini Image and Audio TTS generation",
+      "command": "uvx",
+      "args": [
+        "gemini-gen-mcp"
+      ],
+      "env": {
+        "GEMINI_API_KEY": "$GEMINI_API_KEY"
+      }
+    }
+  }
+}
+```
+
+### Development Server
+
+For development, you can run this server using `uv`:
+
+```json
+{
+  "mcpServers": {
+    {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "/path/to/ServiceStack/gemini-gen-mcp",
+        "gemini-gen-mcp"
+      ],
+      "env": {
+        "GEMINI_API_KEY": "$GEMINI_API_KEY"
+      }
+    }
+  }
+}
+```
+
+## Features
+
+This MCP server provides tools to:
+- **Generate images from text** using Gemini's Flash Image model
+- **Generate audio from text** using Gemini 2.5 Flash Preview TTS model
+
+<Screenshot src="/img/mcp/gemini-gen-mcp/tools_gemini_mcp_text2img.webp" />
+
+#### Results
+
+Upon execution, the tool's output is displayed in a results dialog with specific rendering based on the output type:
+
+<Screenshot src="/img/tools/tools-exec-results.webp" />
+
+When included, the same tools can be also be invoked indirectly by LLMs during chat sessions:
+
+<Screenshot src="/img/tools/tools-chat-gemini-image.webp" />
+
+## Prerequisites
+
+You need a Google Gemini API key to use this server. Get one from [Google AI Studio](https://aistudio.google.com/apikey).
+
+## Environment Variables
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `GEMINI_API_KEY` | Yes | - | Your Google Gemini API key |
+| `GEMINI_DOWNLOAD_PATH` | No | `/tmp/gemini_gen_mcp` | Directory where generated files are saved |
+
+Set the environment variables:
+
+```bash
+export GEMINI_API_KEY='your-api-key-here'
+export GEMINI_DOWNLOAD_PATH='/path/to/downloads'  # optional
+```
+
+Generated files are organized by type and date:
+- Images: `$GEMINI_DOWNLOAD_PATH/images/YYYY-MM-DD/`
+- Audio: `$GEMINI_DOWNLOAD_PATH/audios/YYYY-MM-DD/`
+
+Each generated file includes a companion `.info.json` file with generation metadata.
+
+## Usage
+
+### Running the Server
+
+Run the MCP server directly:
+
+```bash
+gemini-gen-mcp
+```
+
+Or as a Python module:
+
+```bash
+python -m gemini_gen_mcp.server
+```
+
+## Available Tools
+
+### `text_to_image`
+
+Generate images from text using Gemini's Flash (Nano Banana) Image models.
+
+```python
+@mcp.tool()
+async def text_to_image(
+    prompt: Annotated[str, "Text description of the image to generate"],
+    model: ImageModels = ImageModels.NANO_BANANA,
+    aspect_ratio: AspectRatio = AspectRatio.SQUARE,
+    temperature: Annotated[
+        float, "Sampling temperature for image generation (default: 1.0)"
+    ] = 1.0,
+    top_p: Annotated[
+        Optional[float], "Nucleus sampling parameter for image generation (optional)"
+    ] = None,
+) -> Image
+```
+
+**Parameters:**
+- `prompt` (string, required): Text description of the image to generate
+- `model` (string, optional): Gemini model to use
+  - `gemini-2.5-flash-image` (default)
+  - `gemini-3-pro-image-preview`
+- `aspect_ratio` (string, optional): Aspect ratio for the generated image (default: "1:1")
+  - Supported: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`
+- `temperature` (float, optional): Sampling temperature for image generation (default: 1.0)
+- `top_p` (float, optional): Nucleus sampling parameter (optional)
+
+**Example:**
+```json
+{
+  "prompt": "A serene mountain landscape at sunset with a lake",
+  "model": "gemini-2.5-flash-image",
+  "aspect_ratio": "16:9",
+  "temperature": 1.0
+}
+```
+
+#### text_to_audio
+
+Generate speech audio from text using Gemini Flash TTS model. Output is saved as WAV format.
+
+```python
+@mcp.tool()
+async def text_to_speech(
+    text: Annotated[str, "Text to convert to speech"],
+    model: AudioModels = AudioModels.GEMINI_2_5_FLASH_PREVIEW_TTS,
+    voice: VoiceName = VoiceName.KORE,
+) -> Audio
+```
+
+**Parameters:**
+- `text` (string, required): Text to convert to speech
+- `model` (string, optional): Gemini TTS model to use
+  - `gemini-2.5-flash-preview-tts` (default)
+  - `gemini-2.5-pro-preview-tts`
+- `voice` (string, optional): Voice to use for speech generation (default: "Kore")
+
+**Available Voices:**
+
+| Voice     | Style      | Voice         | Style         | Voice        | Style       |
+|-----------|------------|---------------|---------------|--------------|-------------|
+| Zephyr    | Bright     | Puck          | Upbeat        | Charon       | Informative |
+| Kore      | Firm       | Fenrir        | Excitable     | Leda         | Youthful    |
+| Orus      | Firm       | Aoede         | Breezy        | Callirrhoe   | Easy-going  |
+| Autonoe   | Bright     | Enceladus     | Breathy       | Iapetus      | Clear       |
+| Umbriel   | Easy-going | Algieba       | Smooth        | Despina      | Smooth      |
+| Erinome   | Clear      | Algenib       | Gravelly      | Rasalgethi   | Informative |
+| Laomedeia | Upbeat     | Achernar      | Soft          | Alnilam      | Firm        |
+| Schedar   | Even       | Gacrux        | Mature        | Pulcherrima  | Forward     |
+| Achird    | Friendly   | Zubenelgenubi | Casual        | Vindemiatrix | Gentle      |
+| Sadachbia | Lively     | Sadaltager    | Knowledgeable | Sulafat      | Warm        |
+
+**Example:**
+```json
+{
+  "text": "Hello, this is a test of the Gemini text to speech system.",
+  "model": "gemini-2.5-flash-preview-tts",
+  "voice": "Kore"
+}
+```
