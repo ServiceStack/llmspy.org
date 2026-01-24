@@ -1,0 +1,189 @@
+---
+title: Computer Use
+description: Enable AI agents to control your computer like a human - clicking, typing, running commands, and editing files.
+---
+
+Transform your AI agent into an autonomous computer operator. This built-in extension enables agents to see your screen, control the mouse and keyboard, execute shell commands, and edit files - just like a human user sitting at the computer.
+
+Based on [Anthropic's computer use tools](https://github.com/anthropics/anthropic-quickstarts/tree/main/computer-use-demo), it brings full desktop automation capabilities to your AI workflows.
+
+## Using Computer Use Tools
+
+The built-in Computer Use extension tools are listed under the **computer_use** category that can be executed directly in the **Tools** page:
+
+<Screenshot src="/img/tools/computer_use_exec.webp" />
+
+Which also shows the definitions of all other available Computer Use tools:
+
+<Screenshot src="/img/tools/computer_use_list.webp" />
+
+## Selecting Tools
+
+Enable or disable individual tools based on your workflow needs:
+
+<Screenshot src="/img/tools/computer_use_select.webp" />
+
+## Why Computer Use?
+
+Traditional AI tools operate through APIs and structured data. Computer Use breaks this barrier by letting agents interact with **any application** - web browsers, desktop apps, terminals, IDEs - exactly as you would. This unlocks automation for:
+
+- **Legacy Applications**: Automate software that lacks APIs
+- **Visual Verification**: Confirm that code actually renders correctly in a browser
+- **End-to-End Workflows**: Chain together multiple applications in a single task
+- **Interactive Testing**: Navigate UIs, fill forms, and verify results visually
+
+## Key Capabilities
+
+- **Visual Perception**: Capture screenshots to see what's on screen, zoom into specific regions for detailed inspection
+- **Mouse Control**: Move, click (single/double/triple), drag, and scroll anywhere on screen
+- **Keyboard Input**: Type text, press key combinations, execute shortcuts
+- **Shell Execution**: Run any command in a persistent bash session with preserved state
+- **File Operations**: View, create, edit, and undo changes to files with precision
+
+## Use Cases
+
+### Web Development with Visual Verification
+
+Ask an agent to build a web application, and it can write the code, launch a server, open the browser, and take a screenshot to prove it works:
+
+<Screenshot src="/img/tools/computer_use_tetris.webp" />
+
+The agent combines all three tools seamlessly:
+1. **bash**: Create project directories and start a local server
+2. **edit**: Write HTML, CSS, and JavaScript files
+3. **computer**: Open the browser and capture the final result
+
+### Desktop Application Automation
+
+Agents can operate any GUI application:
+- Open applications, navigate menus, click buttons
+- Fill out forms and dialog boxes
+- Extract information from visual interfaces
+- Automate repetitive desktop workflows
+
+### System Administration
+
+Execute and verify system operations:
+- Run diagnostic commands and interpret output
+- Edit configuration files with undo capability
+- Verify changes by taking screenshots of system state
+- Chain complex multi-step operations in a persistent shell
+
+### Testing and QA
+
+Visual validation that code works as expected:
+- Navigate to specific URLs and verify page content
+- Interact with UI elements and confirm behavior
+- Capture screenshots for documentation or bug reports
+- Test across different screen regions with zoom
+
+---
+
+## Tools
+
+### Computer
+
+Interact with the screen, mouse, and keyboard to control your desktop environment.
+
+| Action | Description |
+|--------|-------------|
+| `screenshot` | Capture the current screen state |
+| `mouse_move` | Move cursor to specific coordinates |
+| `left_click`, `right_click`, `middle_click` | Click at current or specified position |
+| `double_click`, `triple_click` | Multi-click actions for text selection |
+| `left_click_drag` | Click and drag to a target position |
+| `left_mouse_down`, `left_mouse_up` | Press/release mouse button for complex interactions |
+| `scroll` | Scroll in any direction by a specified amount |
+| `type` | Type text at the current cursor position |
+| `key` | Press key combinations (e.g., `Control+c`, `Return`) |
+| `hold_key` | Hold a key down for a specified duration |
+| `wait` | Pause execution for a specified duration |
+| `cursor_position` | Get current cursor coordinates |
+| `zoom` | Zoom into a specific screen region for detail |
+
+```python
+async def computer(
+    action: Literal["key", "type", "mouse_move", "left_click", "left_click_drag", "right_click",
+        "middle_click", "double_click", "left_mouse_down", "left_mouse_up", "scroll",
+        "hold_key", "wait", "triple_click", "screenshot", "cursor_position", "zoom"],
+    text: Annotated[str | None, "The text to type or the key to press"] = None,
+    coordinate: Annotated[
+        tuple[int, int] | None,
+        "(x, y): The x and y coordinates to move the mouse to"
+    ] = None,
+    scroll_direction: Literal["up", "down", "left", "right"] | None = None,
+    scroll_amount: Annotated[int | None, "The number of lines to scroll"] = None,
+    duration: Annotated[float | None, "Duration in seconds"] = None,
+    key: Annotated[str | None, "The key sequence to press"] = None,
+    region: Annotated[str | None, "(x0, y0, x1, y1): The region to zoom into"] = None,
+) -> list[dict[str, Any]]
+```
+
+### Edit
+
+A precision file editor designed for AI agents with string-based operations that avoid line-number ambiguity.
+
+| Command | Description |
+|---------|-------------|
+| `view` | Read file contents or list directory contents |
+| `create` | Create a new file with specified content |
+| `str_replace` | Replace a unique string with new content |
+| `insert` | Insert text after a specific line number |
+| `undo_edit` | Revert the last edit to a file |
+
+View, create, and modify files with undo support.
+
+```python
+async def edit(
+    command: Literal["view", "create", "str_replace", "insert", "undo_edit"],
+    path: Annotated[str, "The absolute path to the file or directory"],
+    file_text: Annotated[
+        str | None,
+        "The content to write to the file (required for create)"
+    ] = None,
+    view_range: Annotated[
+        list[int] | None,
+        "The range of lines to view (e.g. [1, 10])"
+    ] = None,
+    old_str: Annotated[
+        str | None,
+        "The string to replace (required for str_replace)"
+    ] = None,
+    new_str: Annotated[
+        str | None,
+        "The replacement string (required for str_replace and insert)"
+    ] = None,
+    insert_line: Annotated[
+        int | None,
+        "The line number after which to insert (required for insert)"
+    ] = None,
+) -> list[dict[str, Any]]
+```
+
+### Bash
+
+Execute commands in a persistent shell session where environment variables, working directory, and state are preserved between calls.
+
+| Feature | Description |
+|---------|-------------|
+| Command execution | Run any bash command |
+| Persistent state | Working directory and variables persist |
+| Session restart | Reset the shell environment when needed |
+| Cross-platform open | Launch files/URLs with system default handler |
+
+```python
+async def run_bash(
+    command: Annotated[str | None, "Command to run"],
+    restart: Annotated[bool, "Restart the bash session"] = False,
+) -> list[dict[str, Any]]
+```
+
+### Open File or URL
+
+Open a URL or file using the system's default handler (`xdg-open` on Linux, `open` on macOS, `start` on Windows).
+
+```python
+async def open(
+    target: Annotated[str, "URL or file path to open"]
+) -> list[dict[str, Any]]
+```
