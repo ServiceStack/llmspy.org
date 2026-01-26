@@ -49,15 +49,6 @@ To allow for flexible and shared configurations, you can reference environment v
 ```json
 {
   "mcpServers": {
-    "filesystem": {
-      "description": "Anthropic's MCP Server for secure filesystem operations",
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
-        "$PWD"
-      ]
-    },
     "git": {
       "description": "Provides tools to read, search, and manipulate Git repositories",
       "command": "uvx",
@@ -81,7 +72,7 @@ To allow for flexible and shared configurations, you can reference environment v
 
 ## Tools UI
 
-Information about all discovered MCP servers and their registered tools is available in the **Tools** page under the **MCP Servers** section. By default only Anthropic's [Filesystem MCP Server](https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem) is configured.
+Information about all discovered MCP servers and their registered tools is available in the **Tools** page under the **MCP Servers** section. By default only Anthropic's [Git MCP Server](https://github.com/modelcontextprotocol/servers/tree/main/src/git) is configured.
 
 <Screenshot src="/img/mcp-servers-empty.webp" />
 
