@@ -2,9 +2,12 @@
 title: GitHub OAuth Setup
 description: Secure your llms.py deployment with GitHub OAuth authentication
 ---
-## Features
 
-Secure your llms.py deployment with GitHub OAuth authentication and optional user access restrictions.
+## Overview
+
+The [github_auth](https://github.com/ServiceStack/llms/tree/main/llms/extensions/github_auth) built-in extension enables OAuth 2.0 authentication via GitHub for your llms application. When enabled, users must sign in with their GitHub account before accessing the application.
+
+### Key Features
 
 - ✅ GitHub OAuth 2.0 integration
 - ✅ Secure session management
@@ -14,19 +17,40 @@ Secure your llms.py deployment with GitHub OAuth authentication and optional use
 - ✅ Optional user access restrictions
 - ✅ Environment variable support
 
-## Setup Instructions
+## Configuration
 
-### 1. Create a GitHub OAuth App
+Create a config file at `~/.llms/users/default/github_auth/config.json`:
 
-1. Go to [GitHub Settings → Developer settings → OAuth Apps](https://github.com/settings/developers)
-2. Click "New OAuth App"
+```json
+{
+  "enabled": true,
+  "client_id": "GITHUB_CLIENT_ID",
+  "client_secret": "GITHUB_CLIENT_SECRET",
+  "redirect_uri": "http://localhost:8000/auth/github/callback",
+  "restrict_to": "GITHUB_USERS"
+}
+```
+
+| Property        | Description |
+|-----------------|-------------|
+| `client_id`     | GitHub OAuth App client ID |
+| `client_secret` | GitHub OAuth App client secret |
+| `redirect_uri`  | Callback URL registered with GitHub |
+| `restrict_to`   | Optional comma/space-delimited list of allowed GitHub usernames |
+| `enabled`       | Set to `false` to disable the extension |
+
+Values prefixed with `$` are resolved from environment variables.
+
+## Creating a GitHub OAuth App
+
+1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
+2. Click **New OAuth App**
 3. Fill in the application details:
-   - **Application name**: `llms.py` (or your preferred name)
-   - **Homepage URL**: `http://localhost:8000`
-   - **Authorization callback URL**: `http://localhost:8000/auth/github/callback`
-4. Click "Register application"
-5. Note down your **Client ID**
-6. Click "Generate a new client secret" and note down the **Client Secret**
+   - **Application name**: Your app name
+   - **Homepage URL**: Your app's homepage (e.g., `http://localhost:8000`)
+   - **Authorization callback URL**: Must match your `redirect_uri` (e.g., `http://localhost:8000/auth/github/callback`)
+4. Click **Register application**
+5. Copy the **Client ID** and generate a **Client Secret**
 
 For production deployments, use your actual domain instead of localhost.
 
@@ -44,29 +68,7 @@ export GITHUB_USERS="octocat mythz"
 
 For permanent configuration, add these to your shell profile (`~/.bashrc`, `~/.zshrc`, etc.).
 
-### 3. Configure llms.json
-
-Enable OAuth in your `~/.llms/llms.json`:
-
-```json
-{
-  "auth": {
-    "enabled": true,
-    "github": {
-      "client_id": "$GITHUB_CLIENT_ID",
-      "client_secret": "$GITHUB_CLIENT_SECRET",
-      "redirect_uri": "http://localhost:8000/auth/github/callback",
-      "restrict_to": "$GITHUB_USERS"
-    }
-  }
-}
-```
-
-**Note**: The `$` prefix indicates environment variables that will be automatically expanded at runtime.
-
-**Optional**: The `restrict_to` field can be omitted to allow any GitHub user to authenticate.
-
-### 4. Start the Server
+### 3. Start the Server
 
 ```bash
 llms --serve 8000
@@ -104,51 +106,24 @@ If `restrict_to` is configured, only specified GitHub users can access the appli
 
 ```json
 {
-  "auth": {
-    "github": {
-      "restrict_to": "octocat mythz demisbellot"
-    }
-  }
+  "restrict_to": "octocat mythz demisbellot"
 }
 ```
 
-Users not in the list will see an "Access Denied" message after authenticating.
-
-## Configuration
-
-### Full Configuration Example
-
-```json
-{
-  "auth": {
-    "enabled": true,
-    "github": {
-      "client_id": "$GITHUB_CLIENT_ID",
-      "client_secret": "$GITHUB_CLIENT_SECRET",
-      "redirect_uri": "http://localhost:8000/auth/github/callback",
-      "restrict_to": "$GITHUB_USERS"
-    }
-  },
-  "providers": {
-    ...
-  }
-}
-```
+Users not in this list receive a `403 Forbidden` response.
 
 ### Disable Authentication
 
-To disable authentication:
+You can [disable the GitHub OAuth extension](/docs/configuration#disable-extensions) by setting `enabled` to `false`:
 
 ```json
 {
-  "auth": {
-    "enabled": false,
-    "github": { ... }
-  }
+  "enabled": true,
+  ...
 }
 ```
 
-Or remove the entire `auth` section.
+Or remove the entire `~/.llms/users/default/github_auth/config.json` file.
 
 ### Production Configuration
 
@@ -156,14 +131,10 @@ For production, update the `redirect_uri`:
 
 ```json
 {
-  "auth": {
-    "github": {
-      "client_id": "$GITHUB_CLIENT_ID",
-      "client_secret": "$GITHUB_CLIENT_SECRET",
-      "redirect_uri": "https://yourdomain.com/auth/github/callback",
-      "restrict_to": "$GITHUB_USERS"
-    }
-  }
+  "client_id": "$GITHUB_CLIENT_ID",
+  "client_secret": "$GITHUB_CLIENT_SECRET",
+  "redirect_uri": "https://yourdomain.com/auth/github/callback",
+  "restrict_to": "$GITHUB_USERS"
 }
 ```
 
@@ -171,14 +142,17 @@ Also update the callback URL in your GitHub OAuth App settings.
 
 ## Architecture
 
-### Server Endpoints
+## API Endpoints
 
-New authentication endpoints:
+The extension registers these routes:
 
-- `GET /auth/github` - Initiates GitHub OAuth flow
-- `GET /auth/github/callback` - Handles OAuth callback
-- `GET /auth/session` - Validates session token
-- `POST /auth/logout` - Ends user session
+| Method | Endpoint                | Description |
+|--------|-------------------------|-------------|
+| GET    | `/auth`                 | Check authentication status |
+| GET    | `/auth/github`          | Initiate GitHub OAuth flow |
+| GET    | `/auth/github/callback` | OAuth callback handler |
+| GET    | `/auth/session`         | Get current session info |
+| POST   | `/auth/logout`          | End the current session |
 
 ### Session Management
 
@@ -187,18 +161,54 @@ New authentication endpoints:
 - Sessions expire after 24 hours
 - CSRF protection using state tokens (expire after 10 minutes)
 
-### Authentication Flow
 
-1. User clicks "Sign in with GitHub"
-2. Redirected to `/auth/github`
-3. Server redirects to GitHub OAuth authorization
-4. User authorizes on GitHub
-5. GitHub redirects to `/auth/github/callback` with code
-6. Server exchanges code for access token
-7. Server fetches user info from GitHub API
-8. Server creates session and redirects to `/?session=TOKEN`
-9. Client validates session and stores user info
-10. User is authenticated
+## OAuth Flow
+
+```
+┌─────────┐          ┌─────────┐          ┌────────┐
+│ Browser │          │  llms   │          │ GitHub │
+└────┬────┘          └────┬────┘          └───┬────┘
+     │                    │                   │
+     │ GET /auth/github   │                   │
+     ├───────────────────►│                   │
+     │                    │                   │
+     │   302 Redirect     │                   │
+     │◄───────────────────┤                   │
+     │                    │                   │
+     │  /login/oauth/authorize?...            │
+     ├────────────────────────────────────────►
+     │                    │                   │
+     │         User grants access             │
+     │◄────────────────────────────────────────
+     │                    │                   │
+     │ GET /auth/github/callback?code=...     │
+     ├───────────────────►│                   │
+     │                    │                   │
+     │                    │ POST /access_token │
+     │                    ├──────────────────►│
+     │                    │                   │
+     │                    │   access_token    │
+     │                    │◄──────────────────┤
+     │                    │                   │
+     │                    │ GET /user         │
+     │                    ├──────────────────►│
+     │                    │                   │
+     │                    │   user info       │
+     │                    │◄──────────────────┤
+     │                    │                   │
+     │  302 /?session=... │                   │
+     │  Set-Cookie: token │                   │
+     │◄───────────────────┤                   │
+     │                    │                   │
+```
+
+1. User clicks "Sign in with GitHub" → redirects to `/auth/github`
+2. Server generates CSRF state token and redirects to GitHub
+3. User authorizes the app on GitHub
+4. GitHub redirects back with authorization code
+5. Server exchanges code for access token
+6. Server fetches user info from GitHub API
+7. Server creates session and sets cookie
 
 ### Session Data Structure
 
@@ -211,6 +221,21 @@ New authentication endpoints:
   "email": "octocat@github.com",
   "sessionToken": "abc123...",
   "created": 1234567890.123
+}
+```
+
+## UI Component
+
+The [github_auth](https://github.com/ServiceStack/llms/tree/main/llms/extensions/github_auth) extension provides a custom `SignIn` component that displays a "Sign in with GitHub" button. This component automatically overrides the default sign-in UI when the extension is loaded.
+
+```js
+export default {
+    install(ctx) {
+        // Override SignIn component
+        ctx.components({
+            SignIn,
+        })
+    }
 }
 ```
 
