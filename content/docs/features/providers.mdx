@@ -33,6 +33,51 @@ llms --update-providers
 
 As an optimization, only providers referenced in your `llms.json` are saved locally, keeping your configuration lightweight.
 
+### Extra Providers
+
+Any additional providers you want to use that are not included in models.dev can be added to your `~/.llms/providers-extra.json`, which get merged into your `providers.json` on every update. This keeps your local configuration file lightweight by only including the providers that are available for use.
+
+This is used in the default [providers-extra.json](https://github.com/ServiceStack/llms/blob/main/llms/providers-extra.json) for image generation providers which are not yet supported in models.dev, e.g:
+
+```json
+{
+    "chutes": {
+        "models": {
+            "chutes-z-image-turbo": {
+                "name": "Z Image Turbo",
+                "modalities": {
+                    "input": [
+                        "text"
+                    ],
+                    "output": [
+                        "image"
+                    ]
+                }
+            }
+        }
+    },
+    "zai": {
+        "models": {
+            "glm-image": {
+                "name": "GLM-Image",
+                "modalities": {
+                    "input": [
+                        "text"
+                    ],
+                    "output": [
+                        "image"
+                    ]
+                },
+                "cost": {
+                    "input": 0,
+                    "output": 0.015
+                }
+            }
+        }
+    }
+}
+```
+
 ---
 
 ## Supported Providers
