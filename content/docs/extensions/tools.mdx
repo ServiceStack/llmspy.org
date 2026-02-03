@@ -138,6 +138,20 @@ The tools selector allows curating the available tools for each chat session, be
 
 <Screenshot src="/img/llms-tools-top.webp" />
 
+## Personalized Tools in Multi-User Environments
+
+A tool will be able to return user-specific data when used in authenticated multi-user environments by defining an optional `user` parameter, e.g this is used in the built-in `skill` tool to return skills specific to the authenticated user:
+
+```python
+def skill(name: Annotated[str, "skill name"], file: Annotated[str | None, "skill file"] = None, user=None):
+    """Get the content of a skill or a specific file within a skill."""
+    skills = resolve_all_skills(ctx, user=user)
+    return skills.get(name)
+
+ctx.register_tool(skill, group="core_tools")
+```
+
+When a user is authenticated, the `user` parameter is automatically populated with their username allowing the tool to return user-specific data.
 
 ## Core Tools
 

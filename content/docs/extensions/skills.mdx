@@ -179,6 +179,14 @@ my-skill/
 
 **Note:** The `SKILL.md` file cannot be deleted as it's required for every skill.
 
+## Multi User Skills
+
+In multi-user environments with Authentication enabled, users are only able to manage their own skill collection located at `~/.llms/user/<username>/skills` which are only accessible to them. They can also each enable or disable skills independently without affecting others.
+
+They'll still have access to shared global and project-level skills in `.agent/skills/` and `.claude/skills/`, but won't be able to edit or delete them.
+
+<Screenshot src="/img/skills/skills-authenticated-user.webp" />
+
 ## Skill Metadata (SKILL.md)
 
 Every skill requires a `SKILL.md` file with YAML frontmatter:
