@@ -47,49 +47,9 @@ If you've cloned the repository:
 
 <ShellCommand>docker compose -f docker-compose.local.yml up -d --build</ShellCommand>
 
-## Setting Up API Keys
+## Setup
 
-Set environment variables for the providers you want to use:
-
-```bash
-export OPENROUTER_API_KEY="sk-or-..."
-export GROQ_API_KEY="gsk_..."
-export GOOGLE_FREE_API_KEY="AIza..."
-export ANTHROPIC_API_KEY="sk-ant-..."
-export OPENAI_API_KEY="sk-..."
-export GROK_API_KEY="xai-..."
-export DASHSCOPE_API_KEY="sk-..."  # Qwen
-export ZAI_API_KEY="sk-..."
-export MISTRAL_API_KEY="..."
-```
-
-### API Key Reference
-
-```bash
-OPENROUTER_API_KEY     # OpenRouter
-GEMINI_API_KEY         # Gemini (Google)
-ANTHROPIC_API_KEY      # Claude (Anthropic)
-OPENAI_API_KEY         # Open AI
-GROQ_API_KEY           # Groq API
-ZHIPU_API_KEY          # Z.ai Coding Plan
-MINIMAX_API_KEY        # MiniMax
-DASHSCOPE_API_KEY      # Qwen (Alibaba)
-XAI_API_KEY            # Grok (X.AI)
-NVIDIA_API_KEY         # NVidia NIM
-GITHUB_TOKEN           # GitHub Copilot Models
-MISTRAL_API_KEY        # Mistral
-DEEPSEEK_API_KEY       # DeepSeek
-CHUTES_API_KEY         # chutes.ai OSS LLM and Image Models
-HF_TOKEN               # Hugging Face
-FIREWORKS_API_KEY      # fireworks.ai OSS Models
-LMSTUDIO_API_KEY       # Placeholder for local LM Studio
-```
-
-## Verification
-
-After installation, verify it's working:
-
-<ShellCommand>llms ls</ShellCommand>
+[Setup environment variables](/docs/getting-started/quick-start#1-set-api-keys) for the providers you want to use.
 
 ## Updating
 
