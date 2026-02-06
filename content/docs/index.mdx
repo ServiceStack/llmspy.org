@@ -3,9 +3,9 @@ title: Documentation
 description: Lightweight OpenAI compatible CLI and server gateway for multiple LLMs
 ---
 
-# llms.py
+# Introducing llms.py 🚀
 
-**llms.py** is a super lightweight CLI tool and OpenAI-compatible server that acts as a **configurable gateway** over multiple Large Language Model (LLM) providers.
+**[llms.py](https://github.com/ServiceStack/llms)** is a super lightweight CLI tool and OpenAI-compatible server that acts as a **configurable gateway** over multiple configurable Large Language Model (LLM) providers.
 
 ## Quick Start
 
@@ -42,16 +42,170 @@ Access the UI at `http://localhost:8000`
 </Step>
 </Steps>
 
+## 🚀 Key Features
 
-## Key Features
-
+- **💸 Free**: True Open source with no hidden costs or restrictions!
 - **🪶 Ultra-Lightweight**: Single file with just one `aiohttp` dependency
-- **🌐 Multi-Provider Support**: OpenRouter, Ollama, OpenAI, Anthropic, Google, Grok, Groq, Qwen, and more
+- **🌐 Multi-Provider Support**: Access over 530 models from 24 providers
 - **🎯 Intelligent Routing**: Automatic failover between providers
 - **💻 Web UI**: ChatGPT-like interface with dark mode
 - **📊 Built-in Analytics**: Track costs, tokens, and usage
 - **🔒 Privacy First**: All data stored locally in browser
 - **🐳 Docker Ready**: Pre-built images available
+
+## 🎯 OpenRouter but Local
+
+**llms.py** is designed as a **unified gateway** that seamlessly connects you to multiple LLM providers through a single, consistent interface. Whether using cloud APIs or local models, `llms` provides intelligent routing and automatic failover to ensure your AI workflows connect to your chosen providers in your preferred priority - whether optimizing for cost, performance, or availability.
+
+### ⚡ Ultra-Lightweight Architecture
+
+1. **Simplicity**: Just one [llms.py](https://github.com/ServiceStack/llms/blob/main/llms/main.py) file (easily customizable)
+2. **Single Dependency**: Only requires `aiohttp` (Pillow optional)
+   - Zero Dependencies for ComfyUI - Ideal for use in Custom Nodes
+3. **Flexibility**: Works with any OpenAI-compatible client or framework
+4. **Reliability**: Automatic failover ensures your workflows never break
+5. **Economy**: Intelligent routing minimizes API costs
+6. **Privacy**: Mix local and cloud models based on your data sensitivity
+7. **Future-Proof**: Easily add new providers as they emerge
+8. **No Setup**: Just download and use, configure preferred LLMs in [llms.json](https://github.com/ServiceStack/llms/blob/main/llms/llms.json)
+
+**llms.py** transforms the complexity of managing multiple LLM providers into a simple, unified experience. 
+Whether you're researching capabilities of new models, building the next breakthrough AI application, 
+or just want reliable access to the best models available, llms.py has you covered.
+
+Get started today and avoid expensive cloud lock-ins with the freedom of provider-agnostic AI development! 🎉
+
+## 🌐 Expanded Provider Support
+
+Acts as an intelligent gateway routing requests to over **530 models** from **24 different providers** via [models.dev](https://models.dev) integration:
+
+| Provider        | Models   | Provider        | Models   |
+|-----------------|----------|-----------------|----------|
+| OpenAI          | 44+      | Alibaba         | 38       |
+| Anthropic       | 10+      | Hugging Face    | 13       |
+| Google          | 26+      | Chutes          | 68       |
+| OpenRouter      | 200+     | DeepSeek        | 2        |
+| Groq            | 17+      | Fireworks AI    | 12       |
+| xAI (Grok)      | 22+      | GitHub Copilot  | 27       |
+| Mistral         | 25+      | GitHub Models   | 55       |
+| Qwen            | 20+      | Nvidia          | 59       |
+| Cerebras        | 2        | MiniMax         | 2        |
+| Zai Coding Plan | 9+       | Ollama          | local    |
+| Ollama Cloud    | 29+      | LMStudio        | local    |
+
+### 🔄 Automatic Provider Updates
+
+Provider and model definitions are automatically updated daily from [models.dev](https://models.dev), or manually with:
+
+```bash
+llms --update-providers
+```
+
+### Configuration
+
+Enable providers with minimal configuration — all settings are inherited from models.dev:
+
+```json
+{
+  "openai": { "enabled": true },
+  "anthropic": { "enabled": true },
+  "google": { "enabled": true }
+}
+```
+
+[Learn more about Configuration →](/docs/configuration)
+
+## 🔄 Intelligent Request Routing
+
+- **Automatic Failover**: If one provider fails, automatically retry with the next available provider
+- **Cost Optimization**: Define free/cheap/local providers first to minimize costs
+- **Model Mapping**: Use unified model names that map to different provider-specific names
+
+### 🎨 ChatGPT-like Web UI
+
+A modern, fast, and privacy-focused web interface for interacting with all your LLMs.
+
+- **Offline & Private**: All data stored locally in SQLite
+- **Dark Mode**: Automatic or manual dark mode toggle
+- **Rich Markdown**: Full markdown support with syntax highlighting
+- **Search**: Quickly find past conversations
+- **Export/Import**: Backup and transfer chat histories
+
+[Learn more about the Web UI →](/docs/features/web-ui)
+
+### 🖥️ CLI Interface
+
+- Interactive command-line tool
+- Support for all modalities (text, image, audio, files)
+- Custom system prompts
+- Raw JSON output mode
+
+[Learn more about the CLI →](/docs/features/cli)
+
+### 🎯 Multimodal Support
+
+Process text, images, audio, and documents with capable models.
+
+- **Text Generation**: Chat completions with any supported model
+- **Vision Models**: Process images through vision-capable models (GPT-4V, Gemini Vision, etc.)
+- **Audio Processing**: Handle audio inputs through audio-capable models
+- **Document Processing**: Analyze PDFs and documents with capable models
+- **Drag & Drop**: Easy file attachments in the UI
+
+[Learn more about Multimodal Support →](/docs/features/multimodal)
+
+### Flexible Deployment Options
+- **CLI Tool**: Interactive command-line interface for quick queries
+- **HTTP Server**: OpenAI-compatible server at `http://localhost:{PORT}/v1/chat/completions`
+- **Python Module**: Import and use programmatically in your applications
+- **ComfyUI Node**: Embed directly in ComfyUI workflows
+
+### Simple and Customizable
+- **Environment Variables**: Secure API key management
+- **Provider Management**: Easy enable/disable of providers
+- **Custom Models**: Define your own model aliases and mappings
+- **Unified Configuration**: Single [llms.json](https://github.com/ServiceStack/llms/blob/main/llms/llms.json) to configure all providers and models
+  - Custom model aliases and mappings
+  - Flexible chat templates
+  - Environment variable support
+
+[Learn more about Configuration →](docs/configuration)
+
+### 🌐 OpenAI-Compatible API
+
+- Drop-in replacement for OpenAI API
+- Works with any OpenAI-compatible client
+- Streaming support
+- Custom parameters
+
+### 📊 Analytics & Monitoring
+
+Track costs, usage, and performance across all providers.
+
+- **Cost Tracking**: Per-message, per-thread, and monthly cost analytics
+- **Token Metrics**: Input/output token tracking
+- **Activity Logs**: Detailed request history
+- **Provider Stats**: Response times and reliability metrics
+
+[Learn more about Analytics →](/docs/features/analytics)
+
+### 🔄 Intelligent Provider Routing
+
+Automatic failover and cost optimization across providers.
+
+- **Multi-Provider**: Support for 10+ provider types with 160+ models
+- **Auto-Failover**: If one provider fails, automatically try the next
+- **Cost Optimization**: Route to free/cheap providers first
+- **Model Mapping**: Unified model names across providers
+
+[Learn more about Providers →](/docs/features/providers)
+
+### 🔒 Security
+
+- Optional GitHub OAuth authentication
+- User access restrictions
+
+[Learn more about GitHub OAuth →](/docs/deployment/github-oauth)
 
 ## Use Cases
 
@@ -60,15 +214,23 @@ Access the UI at `http://localhost:8000`
 - **Cost Management**: Automatically route to cheapest available providers
 - **Reliability**: Built-in failover ensures high availability
 
-### For ComfyUI Users
-- **Hybrid Workflows**: Combine local Ollama models with cloud APIs
-- **Zero Setup**: No dependency management headaches
-- **Provider Flexibility**: Switch providers without changing your workflow
-
 ### For Enterprises
 - **Vendor Independence**: Avoid lock-in to any single LLM provider
 - **Scalability**: Distribute load across multiple providers
 - **Budget Control**: Intelligent routing to optimize costs
+
+### For ComfyUI Users
+- **Hybrid Workflows**: Access to both Ollama/LM Studio models with cloud APIs
+- **Zero Setup**: Requires no additional dependencies, use [custom builds with only what you need](/docs/deployment/custom-build)
+
+
+---
+
+## Links
+
+- 📚 [llms GitHub Repository](https://github.com/ServiceStack/llms)
+- 📦 [llms-py PyPI Package](https://pypi.org/project/llms-py/)
+
 
 ## Next Steps
 
