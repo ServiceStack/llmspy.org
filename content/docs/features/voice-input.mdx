@@ -1,0 +1,144 @@
+---
+title: Voice Input
+description: Adds voice-to-text transcription to the chat UI via a microphone button or ALT+D keyboard shortcut.
+---
+
+The [voice](https://github.com/ServiceStack/llms/tree/main/llms/extensions/voice) extension supports three transcription modes tried in order: `voxtype`, `transcribe`, and `voxtral-mini-latest`, using the first one that's available.
+
+To remove modes or change their priority, override with the `LLMS_VOICE` environment variable, e.g:
+
+```bash
+export LLMS_VOICE="transcribe,voxtral-mini-latest"
+```
+
+## Usage
+
+### 🎤 Microphone Button
+
+Click the microphone icon in the chat input area to start recording. Click again to stop and transcribe.
+
+
+If the **voice** extension is enabled the microphone button will appear in the chat input area, and the `ALT+D` keyboard shortcut will be available for voice input.
+
+### Keyboard Shortcut
+
+**Alt+D** toggles voice recording with two modes:
+
+- **Tap (< 500ms):** Toggle mode - starts recording, press again to stop
+- **Hold (≥ 500ms):** Push-to-talk - records **while held**, stops when released
+
+<Screenshot src="/img/features/voice-input.webp"  />
+
+The transcribed text is appended to the current message input. 
+
+<Screenshot src="/img/features/voice-recording.webp"  />
+
+Voice input can be disabled by [disabling the voice extension](/docs/configuration#disable-extensions) or by setting `LLMS_VOICE=""` to disable all modes.
+
+## Available Modes
+
+Voice Input will use the first available mode.
+
+## voxtype
+
+Uses the [voxtype.io](https://voxtype.io) CLI tool for local transcription.
+
+**Requirements:**
+- `voxtype` must be installed and on your `$PATH`
+- `ffmpeg` must be installed for audio format conversion
+
+#### Installation
+
+Voxtype works on GNOME, KDE, Sway, Hyprland, River—Wayland or X11 with [native packages](https://voxtype.io/#install) for **Arch Linux**, **Debian**, **Ubuntu**, **Fedora** and support for macOS via their source builds.
+
+## transcribe
+
+Use your preferred speech-to-text tool by creating a custom `transcribe` script or executable.
+
+**Requirements:**
+- A `transcribe` executable on your `$PATH` that accepts an audio wav file and outputs text to stdout
+- `ffmpeg` must be installed for audio format conversion
+
+**Interface:**
+
+```bash
+transcribe recording.wav > transcript.txt
+```
+
+See [Creating a transcribe Script](#creating-a-transcribe-script) for implementation examples.
+
+## voxtral-mini-latest
+
+Uses [Mistral's Voxtral model](https://docs.mistral.ai/models/voxtral-mini-transcribe-26-02) for cloud-based transcription. A good option if you want to avoid downloading a large model and using local CPU resources.
+
+**Requirements:**
+- Mistral provider must be enabled in your configuration
+- `MISTRAL_API_KEY` environment variable must be set
+
+**Pricing:** ~$0.003/minute
+
+---
+
+## Creating a transcribe Script
+
+Make the script executable and add it to your `$PATH`:
+
+```bash
+chmod +x ./transcribe
+sudo ln -s $(pwd)/transcribe /usr/local/bin/transcribe
+```
+
+### Using OpenAI Whisper
+
+Create a script using [uvx](https://github.com/astral-sh/uv) and [openai-whisper](https://github.com/openai/whisper):
+
+`./transcribe`
+
+```bash
+#!/usr/bin/env bash
+uvx --from openai-whisper whisper "$1" --model base.en --output_format txt --output_dir /tmp >/dev/null 2>&1
+
+BASENAME=$(basename "${1%.*}")
+cat "/tmp/${BASENAME}.txt"
+rm -f "/tmp/${BASENAME}.txt"
+```
+
+### Using Whisper.cpp
+
+[whisper.cpp](https://github.com/ggml-org/whisper.cpp) provides a faster, dependency-free C++ implementation.
+
+**Setup:**
+
+```bash
+git clone https://github.com/ggml-org/whisper.cpp.git
+cd whisper.cpp
+
+# Download a model
+sh ./models/download-ggml-model.sh base.en
+
+# Build
+cmake -B build
+cmake --build build -j --config Release
+
+# Test
+./build/bin/whisper-cli -f samples/jfk.wav
+```
+
+**Create the transcribe script:**
+
+`./transcribe`
+
+```bash
+#!/usr/bin/env bash
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+MODEL="$SCRIPT_DIR/models/ggml-base.en.bin"
+CLI="$SCRIPT_DIR/build/bin/whisper-cli"
+TMPFILE=$(mktemp /tmp/whisper-XXXXXX)
+
+trap 'rm -f "$TMPFILE" "${TMPFILE}.txt"' EXIT
+
+"$CLI" -m "$MODEL" -otxt -f "$1" -of "$TMPFILE" >/dev/null 2>&1
+
+cat "${TMPFILE}.txt"
+```
+

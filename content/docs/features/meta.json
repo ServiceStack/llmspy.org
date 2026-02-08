@@ -12,6 +12,7 @@
     "katex",
     "model-selector",
     "system-prompts",
-    "providers"
+    "providers",
+    "voice-input"
   ]
 }

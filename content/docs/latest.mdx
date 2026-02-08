@@ -1,0 +1,133 @@
+---
+title: Latest Features
+description: Latest features and updates in llms.py
+---
+
+## Feb 8, 2026
+
+### Support for Voice Input
+
+Added [Voice Input](/docs/features/voice-input) extension with speech-to-text transcription via a microphone button or `ALT+D` shortcut, supporting three modes: local transcription with **voxtype**, custom **transcribe** executable, and cloud-based **voxtral-mini-latest** via Mistral.
+
+<Screenshot src="/img/features/voice-recording.webp"  />
+
+- Added **tok/s** metrics in Chat UI on a per-message and per-thread basis
+
+## Feb 5, 2026
+
+### Voxtral Audio Models
+
+Added support for Mistral's [Voxtral audio transcription models](https://mistral.ai/news/voxtral-transcribe-2) - use the **audio** input filter in the model selector to find them.
+
+<Screenshot src="/img/models/voxtral-models.webp"  />
+
+Both the **Chat Completion** and dedicated **Audio Transcription** APIs deliver impressive speed, with the dedicated transcription endpoint returning results near-instantly.
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Voxtral Chat': '/img/models/voxtrals-chat.webp',
+    'Voxtral Audio Transcription': '/img/models/voxtrals-audio-transcription.webp',
+}} />
+
+### Compact Threads
+
+Added [Compact Threads feature](/docs/features/chat-ui#compact-feature) for managing long conversations - it summarizes the current thread into a new, condensed thread targeting **30%** of the original context size. The compact button appears when a conversation exceeds **10 messages** or uses more than **40%** of the model's context limit. 
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Compact Button': '/img/compact-button.webp',
+    'Compact Button Intensity': '/img/compact-intensity.webp',
+}} />
+
+The compaction model and prompts are fully customizable in `~/.llms/llms.json`.
+
+- Fix **OpenRouter** provider after [models.dev](https://models.dev) switched to use `@openrouter/ai-sdk-provider`. Remove `llms.json` to reset to default configuration:
+
+<ShellCommand>rm ~/.llms/llms.json</ShellCommand>
+
+## Feb 3, 2026
+
+- Removed duplicate filesystem tools from [Core Tools](/docs/features/core-tools), they're now only included in [File System Tools](/docs/features/core-tools#file-system-tools)
+
+- Add `sort_by` and `max_result` options in `search_files` and made `path` and optional parameter to improve utility and reduce tool use error rates. `path` now defaults to the first allowed directory (project dir).
+
+## Feb 3, 2026
+
+- Add support for overridable  **ClientTimeout** limits in `~/.llms/llms.json`:
+
+```json
+{
+    "limits": {
+        "client_timeout": 120
+    }
+}
+```
+
+- Show **proceed** button for assistant messages without content but with reasoning
+
+## Feb 2, 2026
+
+### Multi User Skills
+
+When Auth is enabled, each user [manages their own skill collection](/docs/extensions/skills#multi-user-skills) at `~/.llms/user/<user>/skills` and can enable or disable skills independently. Shared global & project-level skills remain accessible but read-only.
+
+## Jan 31, 2026
+
+- Refactor [GitHub Auth](/docs/deployment/github-oauth) out into a builtin [github_auth](https://github.com/ServiceStack/llms/tree/main/llms/extensions/github_auth) extension
+
+## Jan 30, 2026
+
+- Support for **tool calling** for models returned by local **Ollama** instances
+
+- New `openai-local` provider for custom OpenAI-compatible endpoints
+
+- Fix computer tool issues in Docker by only loading computer tool if run in environment with a display
+
+## Jan 29, 2026
+
+### Skills Management
+
+Added a full [Skills Management UI](/docs/extensions/skills) for creating, editing, and deleting skills directly from the browser. 
+
+Skills package domain-specific instructions, scripts, references & assets that enhance your AI agent.
+
+<Screenshot src="/img/skills/skills-edit-page.webp"  />
+
+### Browse & Install Skills
+
+Added a [Skill Browser](/docs/extensions/skills#browsing-and-installing-skills) with access to the top 5,000 community skills from [skills.sh](http://skills.sh). Search, browse, and install pre-built skills directly into your personal collection.
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Browse Skills': '/img/skills/skills-browse.webp',
+    'Installing Skill': '/img/skills/skills-installing.webp',
+}} />
+
+## Jan 28, 2026
+
+- Use a barebones fallback markdown render when [markdown renders like KaTex](/docs/features/katex) fail
+
+- Use `sanitizeHtml` to avoid breaking layout when displaying rendered html
+
+## Jan 26, 2026
+
+- Add copy button to **TextViewer** popover menu
+
+- Add **proceed** and **retry** buttons at the bottom of Threads to continue agent loop
+
+- Add [filesystem tools](/docs/features/core-tools#file-system-tools) in [computer](/docs/extensions/computer_use) extension
+
+- Add a simple `sendUserMessage` API in UI to simulate a new user message on the thread
+
+- Implement `TextViewer` component for displaying Tool Args, Tool Output + SystemPrompt
+
+## Jan 24, 2026
+
+- Auto collapse long tool args content and add ability to min/maximize text content
+
+## Jan 23, 2026
+
+- Add built-in [computer_use extension](/docs/extensions/computer_use)
+
+---
+
+## v3 Released
+
+See [v3 release notes](/docs/v3) for details on the major new features and improvements in v3.

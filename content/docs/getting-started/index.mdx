@@ -60,3 +60,13 @@ To update to the latest version:
 For Docker:
 
 <ShellCommand>docker pull ghcr.io/servicestack/llms:latest</ShellCommand>
+
+### Reset to latest configuration
+
+New versions sometimes include changes to `llms.json` config which isn't automatically updated. 
+
+To reset to the latest configuration just delete your `llms.json` and it will be recreated with the latest defaults on next run:
+
+```bash
+rm ~/.llms/llms.json
+```
