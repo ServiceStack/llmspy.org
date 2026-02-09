@@ -2,6 +2,7 @@
   "title": "Configuration",
   "defaultOpen": true,
   "pages": [
-    "index"
+    "index",
+    "avatars"
   ]
 }

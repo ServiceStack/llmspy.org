@@ -1,0 +1,54 @@
+---
+title: Avatars
+description: Personalize your chat experience by adding custom avatars for yourself and AI agents.
+---
+
+## Customizing User and Agent Avatars
+
+Avatars are displayed in the chat interface to visually distinguish between user messages and AI responses. You can customize these avatars using the bottom left icon to open the Settings Page:
+
+<Screenshot src="/img/features/avatars-settings.webp" class="mx-auto max-w-2xl border rounded" />
+
+The new Avatars will be used in the Chat UI and other areas of the app where it's needed.
+
+<Screenshot src="/img/features/avatars-chat.webp" class="mx-auto max-w-2xl border rounded" />
+
+### Supported Formats
+
+* `.png` - Recommended for photos
+* `.svg` - Vector format for illustrations
+* All other image formats will be converted to **png** automatically.
+
+They can also be manually added to your `~/.llms/users/` directory at:
+
+## User Avatar
+
+Your user avatar appears next to your messages in the Chat UI, with either of the file names:
+
+- `avatar.png` or `avatar.svg`
+
+You can also provide separate avatars for light and dark modes by including the mode in the filename:
+
+- `avatar.light.png` or `avatar.dark.svg`
+
+#### File Resolution Order
+
+The system checks for user avatar images in this order (first match wins):
+
+1. `~/.llms/users/{username}/{avatar}` (if using authentication)
+2. `~/.llms/users/default/{avatar}`
+
+## Agent Avatar
+
+Agent avatars appear next to AI responses. You can customize the default agent avatar or create role-specific avatars.
+
+- `agent.png` or `agent.svg`
+
+Or customized for light and dark modes by including the mode in the filename:
+
+- `agent.light.png` or `agent.dark.svg`
+
+#### File Resolution Order
+
+1. `~/.llms/users/default/{agent}`
+
