@@ -50,7 +50,7 @@ export default function HomePage() {
             href="/docs"
             className="px-8 py-3 rounded-lg border-2 border-blue-600 dark:border-blue-500 bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 font-semibold hover:bg-blue-50 dark:hover:bg-blue-950/50 hover:border-blue-700 dark:hover:border-blue-400 transition-all shadow-md hover:shadow-lg"
           >
-            Get Started
+            View the Docs
           </Link>
           <a
             href="https://github.com/ServiceStack/llms"
@@ -61,6 +61,13 @@ export default function HomePage() {
             View on GitHub
           </a>
         </div>
+        <p className="text-sm text-muted-foreground">
+          <span className="text-slate-400 dark:text-slate-500">Feb 9, 2026</span>
+          {' - '}
+          <Link href="/docs/latest" className="text-blue-600 dark:text-blue-400 hover:underline">
+            Custom User and Agent Avatars
+          </Link>
+        </p>
 
         {/* Quick Install */}
         <div className="mt-8 mx-auto max-w-3xl rounded-lg bg-muted p-6">
