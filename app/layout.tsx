@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { Provider } from './provider';
 import './global.css';
 import { Inter } from 'next/font/google';
@@ -5,6 +6,14 @@ import { Inter } from 'next/font/google';
 const inter = Inter({
   subsets: ['latin'],
 });
+
+export const metadata: Metadata = {
+  title: {
+    template: '%s | llmspy.org',
+    default: 'llmspy.org',
+  },
+  description: 'Lightweight OpenAI compatible CLI and server gateway for multiple LLMs',
+};
 
 export default function Layout({ children }: LayoutProps<'/'>) {
   return (
