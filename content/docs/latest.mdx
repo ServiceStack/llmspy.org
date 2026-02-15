@@ -3,6 +3,102 @@ title: Latest Features
 description: Latest features and updates in llms.py
 ---
 
+## Feb 15, 2026
+
+### Standard Input
+
+`llms` now accepts [OpenAI-compatible Chat Completion requests](https://platform.openai.com/docs/api-reference/chat/create) via standard input, making it easy to integrate into shell pipelines and scripts.
+
+When JSON is piped in, `llms` detects it automatically — no extra flags needed:
+
+```bash
+cat request.json | llms
+```
+
+Build requests inline with a heredoc:
+
+```bash
+llms <<EOF
+{
+  "model": "Minimax M2.5",
+  "messages": [
+    { "role": "user", "content": "Capital of France?" }
+  ]
+}
+EOF
+```
+
+Combine with other CLI tools to generate requests dynamically:
+
+```bash
+echo '{"messages":[{"role":"user","content":"Summarize:'"$(cat notes.txt)"'"}]}' | llms
+```
+
+This pairs well with structured outputs support and `jq` to build end-to-end JSON pipelines:
+
+```bash
+(llms <<EOF
+{
+    "model": "moonshotai/kimi-k2-instruct",
+    "messages": [{"role":"user", "content":"Return capital cities for: France, Italy, Spain, Japan." }],
+    "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "country_capitals",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "capitals": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "country": { "type": "string" },
+                                "capital": { "type": "string" }
+                            },
+                            "required": ["country","capital"]
+                        }
+                    }
+                },
+                "required": ["capitals"]
+            }
+        }
+    }
+}
+EOF
+) | jq -r '.capitals[] | "\(.country): \(.capital)"'
+```
+
+Output:
+
+```
+France: Paris
+Italy: Rome
+Spain: Madrid
+Japan: Tokyo
+```
+
+### Persistence Options
+
+By default, all chat completions are saved to the database, including both the chat thread (conversation history) and the individual API request logs. 
+Use these options to control what gets saved to the database:
+
+#### `--nohistory`
+
+Skip saving the **chat thread** (conversation history) to the database. The individual API **request log** is still recorded.
+
+```sh
+llms "What is the capital of France?" --nohistory
+```
+
+#### `--nostore`
+
+Do not save **anything** to the database - no request log and no chat thread history. Implies `--nohistory`.
+
+```sh
+llms "What is the capital of France?" --nostore
+```
+
 ## Feb 9, 2026
 
 ### Custom User and Agent Avatars
