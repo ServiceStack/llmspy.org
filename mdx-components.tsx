@@ -3,6 +3,7 @@ import defaultMdxComponents from 'fumadocs-ui/mdx';
 import { Steps, Step } from 'fumadocs-ui/components/steps';
 import { CopyBlock } from '@/app/(home)/copy-block';
 import { Info } from '@/components/info';
+import { Warning } from '@/components/warning';
 import { Tip } from '@/components/tip';
 import { YouTube } from '@/components/youtube';
 import { Screenshot } from '@/components/screenshot';
@@ -16,6 +17,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     Step,
     ShellCommand: CopyBlock,
     Info,
+    Warning,
     Tip,
     YouTube,
     Screenshot,
