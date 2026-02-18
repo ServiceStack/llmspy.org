@@ -8,7 +8,8 @@ import { screenshotScreens } from './screenshot-screens';
 import { TabbedImages } from './tabbed-images';
 import { LightboxImage } from './lightbox-image';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Star, Sparkles, Zap, Code2, Image as ImageIcon, Music, Calculator, Puzzle, Search, GalleryHorizontal, Sigma, Plug, Wand2, Mic } from 'lucide-react';
+import { Star, Sparkles, Zap, Code2, Image as ImageIcon, Music, Calculator, Puzzle, Search, GalleryHorizontal, Sigma, Plug, Wand2, Mic, Monitor } from 'lucide-react';
+import { YouTube } from '@/components/youtube';
 
 export default function HomePage() {
   return (
@@ -198,6 +199,22 @@ export default function HomePage() {
                 <CardContent>
                   <p className="text-slate-700 dark:text-slate-300">
                     Extend AI capabilities with specialized knowledge, workflows, and tools
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/docs/features/browser" className="block">
+              <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
+                    <Monitor className="w-5 h-5 text-emerald-500" />
+                    Agent Browser
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-700 dark:text-slate-300">
+                    AI-powered browser automation with live preview, script editor, and element inspector
                   </p>
                 </CardContent>
               </Card>
@@ -645,6 +662,76 @@ export default function HomePage() {
               <LightboxImage
                 src="/img/skills/skills-edit-page.webp"
                 alt="Edit Skills"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Browser Extension Section */}
+      <div id="browser" className="w-full my-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              Agent Browser
+            </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+              An integrated workspace for building and running automated browser scripts with AI assistance, live previews, and an interactive element inspector
+            </p>
+            <Link
+              href="/docs/features/browser"
+              className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline mt-2"
+            >
+              Learn more →
+            </Link>
+          </div>
+          <YouTube id="7HubpAx4fxM" title="Agent Browser Overview" splash="/img/features/browser-script-edit-ai.webp" width={1164} height={1465}/>
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/features/browser-url.webp"
+                alt="Browser URL Navigation"
+                width={600}
+                height={400}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/features/browser-dialog.webp"
+                alt="Browser Dialog Interaction"
+                width={600}
+                height={400}
+                className="w-full h-auto"
+              />
+            </div>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/features/browser-new-script.webp"
+                alt="AI Script Generation"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/features/browser-script-generate.webp"
+                alt="Generated Browser Script"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/features/browser-script-run.webp"
+                alt="Run Browser Script"
                 width={400}
                 height={300}
                 className="w-full h-auto"
