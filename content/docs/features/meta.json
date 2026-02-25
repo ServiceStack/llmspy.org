@@ -4,6 +4,7 @@
   "pages": [
     "cli",
     "web-ui",
+    "themes",
     "chat-ui",
     "analytics",
     "core-tools",

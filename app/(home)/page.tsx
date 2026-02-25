@@ -7,8 +7,9 @@ import { ScreenshotCarousel } from './screenshot-carousel';
 import { screenshotScreens } from './screenshot-screens';
 import { TabbedImages } from './tabbed-images';
 import { LightboxImage } from './lightbox-image';
+import { ThemeCarousel } from './theme-carousel';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Star, Sparkles, Zap, Code2, Image as ImageIcon, Music, Calculator, Puzzle, Search, GalleryHorizontal, Sigma, Plug, Wand2, Mic, Monitor } from 'lucide-react';
+import { Star, Sparkles, Zap, Code2, Image as ImageIcon, Music, Calculator, Puzzle, Search, GalleryHorizontal, Sigma, Plug, Wand2, Mic, Monitor, Palette } from 'lucide-react';
 import { YouTube } from '@/components/youtube';
 
 export default function HomePage() {
@@ -89,20 +90,38 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* Themes Section */}
+      <div id="themes" className="w-full my-16 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              Beautiful Themes
+            </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-400">
+              Personalize your experience with a selection of 
+              <a href="/docs/features/themes" className="text-blue-600 dark:text-blue-400 hover:underline mx-1">
+                handcrafted themes
+              </a>
+            </p>
+          </div>
+          <ThemeCarousel />
+        </div>
+      </div>
+
       {/* Screenshot Carousel Section */}
       <div className="w-full my-12 px-4">
         <ScreenshotCarousel screens={screenshotScreens} className="max-w-[1200px] mx-auto" />
       </div>
 
-      {/* What's New in v3 */}
-      <div className="w-full my-16 px-4 bg-gradient-to-b from-transparent via-blue-50/50 to-transparent dark:via-blue-950/20 py-16">
+      {/* What's New */}
+      <div id="whatsnew" className="w-full my-16 px-4 bg-gradient-to-b from-transparent via-blue-50/50 to-transparent dark:via-blue-950/20 py-16">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-              What's New in v3
+              What's New
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              Major release focused on extensibility, expanded provider support, and enhanced user experience
+              Latest release focused on extensibility, expanded provider support, and enhanced user experience
             </p>
           </div>
 
@@ -215,6 +234,22 @@ export default function HomePage() {
                 <CardContent>
                   <p className="text-slate-700 dark:text-slate-300">
                     AI-powered browser automation with live preview, script editor, and element inspector
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/docs/features/themes" className="block">
+              <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
+                    <Palette className="w-5 h-5 text-violet-500" />
+                    Themes
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-700 dark:text-slate-300">
+                    Customize the look and feel with built-in themes or create your own
                   </p>
                 </CardContent>
               </Card>

@@ -9,6 +9,7 @@ import { YouTube } from '@/components/youtube';
 import { Screenshot } from '@/components/screenshot';
 import { ScreenshotsGallery } from '@/components/screenshots-gallery';
 import { SystemPrompts } from '@/components/system-prompts';
+import { ThemeCarousel } from '@/app/(home)/theme-carousel';
 
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
@@ -23,6 +24,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     Screenshot,
     ScreenshotsGallery,
     SystemPrompts,
+    ThemeCarousel,
     ...components,
   };
 }

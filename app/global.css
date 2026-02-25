@@ -18,6 +18,31 @@
   --color-fd-muted-foreground: rgb(148 163 184); /* slate-400 */
 }
 
+@theme {
+    --default-ring-color: hsl(var(--ring));
+
+    --color-nord-100: #eceff4;
+    --color-nord-200: #e5e9f0;
+    --color-nord-300: #d8dee9;
+
+    --color-nord-600: #4c566a;
+    --color-nord-700: #434c5e;
+    --color-nord-800: #3b4252;
+    --color-nord-900: #2e3440;
+
+    --color-frost-400: #8fbcbb;
+    --color-frost-500: #88c0d0;
+    --color-frost-600: #81a1c1;
+    --color-frost-700: #5e81ac;
+
+    --color-nord-red: #bf616a;
+    --color-nord-orange: #d08770;
+    --color-nord-yellow: #ebcb8b;
+    --color-nord-green: #a3be8c;
+    --color-nord-purple: #b48ead;
+}
+
+
 /* Code block background color - target all elements */
 pre,
 pre *,
