@@ -1,11 +1,11 @@
 ---
 title: Themes
-description: Learn how to customize the look and feel of the llms .py Web UI using themes. Create your own themes or use the built-in options to personalize your experience.
+description: Learn how to customize the look and feel of the llms .py Web UI using themes. Create your own themes or use the built-in options to personalize your UX
 ---
 
-llms.py supports a flexible theming system that allows you to customize the look and feel of llms .py Web UI. Themes can define color schemes, background images, and specific CSS/Tailwind classes for different UI components.
+llms.py includes a powerful theming system for customizing the appearance of its Web UI. Themes control color schemes, background images, and CSS/Tailwind classes across UI components, letting you tailor the interface to match your brand or preferences.
 
-## Available Default Themes
+## Default Themes
 
 The Web UI comes with the following themes built-in:
 
@@ -118,7 +118,8 @@ You can then reference these assets in your `theme.json` file. For instance, to 
     }
 }
 ```
-*(Note: Assets placed in the `ui` folder are served dynamically by the application.)*
+
+<Tip>Assets placed in the `/ui` folder are served dynamically by at `/themes/<theme-name>/ui`</Tip>
 
 ### 5. Typography in Markdown 
 
