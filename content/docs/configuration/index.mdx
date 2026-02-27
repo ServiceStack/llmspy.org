@@ -9,6 +9,22 @@ The main configuration file is `~/.llms/llms.json`. It's automatically created o
 
 This creates `~/.llms/llms.json` with the latest default configuration.
 
+### Reset Configuration
+
+Use the `--reset` option to reset the default configuration files back to its factory defaults. This is useful for reverting corrupted configurations or to apply the latest default configuration after updates. 
+
+Available reset options:
+
+* **config** - Reset ~/.llms/llms.json to default
+* **providers** - Reset ~/.llms/providers.json and ~/.llms/providers-extra.json
+* **all** - Reset all configuration
+
+```bash
+llms --reset providers
+```
+
+Resets [~/.llms/providers.json](https://raw.githubusercontent.com/ServiceStack/llms/refs/heads/main/llms/providers.json) and [~/.llms/providers-extra.json](https://raw.githubusercontent.com/ServiceStack/llms/refs/heads/main/llms/providers-extra.json) by downloading latest the defaults from the official repository, and automatically fetches provider updates. 
+
 ### Configuration Structure
 
 ```json

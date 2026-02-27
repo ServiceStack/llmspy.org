@@ -3,6 +3,53 @@ title: Latest Features
 description: Latest features and updates in llms.py
 ---
 
+Get the latest features by [updating to the latest version](/docs/getting-started#updating):
+
+<ShellCommand>pip install llms-py --upgrade</ShellCommand>
+
+After upgrading, it's recommended to also upgrade any external extensions:
+
+<ShellCommand>llms --update all</ShellCommand>
+
+
+## Feb 27, 2026
+
+### Nano Banana 2
+
+Added Google's latest **Gemini Nano Banana 2** model, available from both the **Google** and **OpenRouter** providers. The Google/Gemini provider supports multiple chat history in conversations, while OpenRouter sends a fresh chat request for each message.
+
+You can find it in the model selector by selecting **Image** output filter and searching for **"Nano Banana 2"**.
+
+<Screenshot src="/img/latest/nano-banana2.webp"  />
+
+To get the latest model info with **Nano Banana 2**, reset your providers configuration:
+
+<ShellCommand>llms --reset providers</ShellCommand>
+
+### Optimized Gallery Thumbnails
+
+Gallery pages now use optimized thumbnails instead of full-size images. Detail images that increasingly approach over 2MB are now served as thumbnails under 10KB, delivering a noticeable performance improvement when scrolling through the infinite scrolling gallery pages.
+
+<Screenshot src="/img/latest/gallery-thumbnails.webp"  />
+
+### Reset to latest configuration
+
+New versions sometimes include changes to `llms.json` config which isn't automatically updated. 
+
+Use the `--reset` option to reset the default configuration files back to its factory defaults. Available reset options (config, providers, all):
+
+**config** - Reset [~/.llms/llms.json](https://github.com/ServiceStack/llms/blob/main/llms/llms.json) to default
+
+```bash
+llms --reset config
+```
+
+**providers** - Reset [~/.llms/providers.json](https://raw.githubusercontent.com/ServiceStack/llms/refs/heads/main/llms/providers.json) and [~/.llms/providers-extra.json](https://raw.githubusercontent.com/ServiceStack/llms/refs/heads/main/llms/providers-extra.json)
+
+```bash
+llms --reset providers
+```
+
 ## Feb 25, 2026
 
 ### New Theme Support

@@ -57,6 +57,10 @@ To update to the latest version:
 
 <ShellCommand>pip install llms-py --upgrade</ShellCommand>
 
+After upgrading, it's recommended to also upgrade any external extensions:
+
+<ShellCommand>llms --update all</ShellCommand>
+
 For Docker:
 
 <ShellCommand>docker pull ghcr.io/servicestack/llms:latest</ShellCommand>
@@ -65,8 +69,16 @@ For Docker:
 
 New versions sometimes include changes to `llms.json` config which isn't automatically updated. 
 
-To reset to the latest configuration just delete your `llms.json` and it will be recreated with the latest defaults on next run:
+Use the `--reset` option to reset the default configuration files back to its factory defaults. Available reset options (config, providers, all):
+
+**config** - Reset [~/.llms/llms.json](https://github.com/ServiceStack/llms/blob/main/llms/llms.json) to default
 
 ```bash
-rm ~/.llms/llms.json
+llms --reset config
+```
+
+**providers** - Reset [~/.llms/providers.json](https://raw.githubusercontent.com/ServiceStack/llms/refs/heads/main/llms/providers.json) and [~/.llms/providers-extra.json](https://raw.githubusercontent.com/ServiceStack/llms/refs/heads/main/llms/providers-extra.json)
+
+```bash
+llms --reset providers
 ```
