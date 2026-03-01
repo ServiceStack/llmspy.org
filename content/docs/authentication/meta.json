@@ -1,0 +1,8 @@
+{
+  "title": "Authentication",
+  "defaultOpen": true,
+  "pages": [
+    "credentials",
+    "github-auth"
+  ]
+}

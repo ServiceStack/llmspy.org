@@ -1,6 +1,6 @@
 {
   "title": "Media Generation",
-  "defaultOpen": true,
+  "defaultOpen": false,
   "pages": [
     "image-generation",
     "audio-generation",

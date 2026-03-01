@@ -1,6 +1,6 @@
 {
   "title": "Model Context Protocol",
-  "defaultOpen": true,
+  "defaultOpen": false,
   "pages": [
     "fast_mcp",
     "gemini_gen_mcp",

@@ -6,11 +6,12 @@
     "v3",
     "getting-started",
     "features",
-    "multimodal",
-    "media-generation",
     "extensions",
     "mcp",
+    "multimodal",
+    "media-generation",
     "cli",
+    "authentication",
     "configuration",
     "deployment"
   ]

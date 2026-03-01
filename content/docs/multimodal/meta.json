@@ -1,6 +1,6 @@
 {
   "title": "Multimodal",
-  "defaultOpen": true,
+  "defaultOpen": false,
   "pages": [
     "index",
     "image",

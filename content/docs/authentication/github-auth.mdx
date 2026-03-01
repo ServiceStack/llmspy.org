@@ -1,5 +1,5 @@
 ---
-title: GitHub OAuth Setup
+title: GitHub Auth
 description: Secure your llms.py deployment with GitHub OAuth authentication
 ---
 
@@ -17,13 +17,26 @@ The [github_auth](https://github.com/ServiceStack/llms/tree/main/llms/extensions
 - ✅ Optional user access restrictions
 - ✅ Environment variable support
 
+## Enable GitHub Auth Provider
+
+GitHub Auth can either be enabled via environment `LLMS_AUTH` variable:
+
+```bash
+export LLMS_AUTH=github_auth
+```
+
+Or with the `--auth github_auth` flag when starting the server:
+
+```bash
+llms --auth github_auth
+```
+
 ## Configuration
 
 Create a config file at `~/.llms/users/default/github_auth/config.json`:
 
 ```json
 {
-  "enabled": true,
   "client_id": "GITHUB_CLIENT_ID",
   "client_secret": "GITHUB_CLIENT_SECRET",
   "redirect_uri": "http://localhost:8000/auth/github/callback",
