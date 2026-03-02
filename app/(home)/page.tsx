@@ -9,7 +9,7 @@ import { TabbedImages } from './tabbed-images';
 import { LightboxImage } from './lightbox-image';
 import { ThemeCarousel } from './theme-carousel';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Star, Sparkles, Zap, Code2, Image as ImageIcon, Music, Calculator, Puzzle, Search, GalleryHorizontal, Sigma, Plug, Wand2, Mic, Monitor, Palette } from 'lucide-react';
+import { Star, Sparkles, Zap, Code2, Image as ImageIcon, Music, Calculator, Puzzle, Search, GalleryHorizontal, Sigma, Plug, Wand2, Mic, Monitor, Palette, ShieldCheck } from 'lucide-react';
 import { YouTube } from '@/components/youtube';
 
 export default function HomePage() {
@@ -64,10 +64,10 @@ export default function HomePage() {
           </a>
         </div>
         <p className="text-sm text-muted-foreground">
-          <span className="text-slate-400 dark:text-slate-500">Feb 27, 2026</span>
+          <span className="text-slate-400 dark:text-slate-500">Mar 2, 2026</span>
           {' - '}
           <Link href="/docs/latest" className="text-blue-600 dark:text-blue-400 hover:underline">
-            Support for Gemini Nano Banana 2, optimized gallery thumbnails, and more →
+            New Username/Password Credentials Auth Provider →
           </Link>
         </p>
 
@@ -170,6 +170,22 @@ export default function HomePage() {
                 <CardContent>
                   <p className="text-slate-700 dark:text-slate-300">
                     RAG workflows with document stores, categories, and contextual chat
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/docs/authentication/credentials" className="block">
+              <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
+                    <ShieldCheck className="w-5 h-5 text-emerald-500" />
+                    Credentials Auth
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-700 dark:text-slate-300">
+                    Username/Password authentication with Admin UI and CLI user management
                   </p>
                 </CardContent>
               </Card>
@@ -359,10 +375,10 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-              Powerful Model Selector
+              Model Selector
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400">
-              Smart search, advanced filtering, sorting, and favorites system
+              Smart search, advanced filtering, sorting, and favorites over 530 models from 24 providers
             </p>
             <Link
               href="/docs/features/model-selector"
@@ -379,6 +395,76 @@ export default function HomePage() {
               height={800}
               className="w-full h-auto"
             />
+          </div>
+        </div>
+      </div>
+
+      {/* Credentials Auth Section */}
+      <div id="credentials-auth" className="w-full my-16 px-4 bg-gradient-to-b from-transparent via-emerald-50/50 to-transparent dark:via-emerald-950/20 py-16">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              <ShieldCheck className="w-8 h-8 inline-block mr-2 text-emerald-500" />
+              Credentials Auth
+            </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+              Built-in Username/Password authentication with a Sign In page, Admin Web UI and CLI for user managing accounts, roles, and account locking
+            </p>
+            <Link
+              href="/docs/authentication/credentials"
+              className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline mt-2"
+            >
+              Learn more →
+            </Link>
+          </div>
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/auth/signin.webp"
+                alt="Sign In Page"
+                width={600}
+                height={400}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/auth/manage-users.webp"
+                alt="Manage Users"
+                width={600}
+                height={400}
+                className="w-full h-auto"
+              />
+            </div>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/auth/create-user.webp"
+                alt="Create User"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/auth/my-account-avatar.webp"
+                alt="My Account"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/auth/lock-user.webp"
+                alt="Lock User"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
           </div>
         </div>
       </div>

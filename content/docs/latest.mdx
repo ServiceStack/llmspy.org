@@ -11,6 +11,31 @@ After upgrading, it's recommended to also upgrade any external extensions:
 
 <ShellCommand>llms --update all</ShellCommand>
 
+## Mar 2, 2026
+
+### Credentials Auth Provider
+
+The built-in [credentials](/docs/authentication/credentials) extension enables Username/Password authentication for your Application, including a Sign In page, user registration, role assignment, and account locking. It provides full user management through both the CLI and a web-based Admin UI, along with account self-service for all authenticated users.
+
+Credentials is the default Auth Provider that's automatically enabled when at least one user has been created:
+
+```bash
+llms --adduser admin
+```
+
+<Screenshot src="/img/auth/signin.webp" alt="Sign In Page" />
+
+After logging in as `admin`, you can create additional users from the **Manage Users** page which can be accessed from the user menu.
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Manage Users': '/img/auth/manage-users.webp',
+    'Create User': '/img/auth/create-user.webp',
+    'Change Password': '/img/auth/change-password.webp',
+    'Lock User': '/img/auth/lock-user.webp',
+    'Delete User': '/img/auth/delete-user.webp',
+    'My Account': '/img/auth/my-account-avatar.webp',
+}} />
+
 
 ## Feb 27, 2026
 
