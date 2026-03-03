@@ -11,6 +11,55 @@ After upgrading, it's recommended to also upgrade any external extensions:
 
 <ShellCommand>llms --update all</ShellCommand>
 
+## Mar 3, 2026
+
+### Support for Fireworks Large Language Models
+
+Added support for [Fireworks AI](https://fireworks.ai) as a new provider, a fast inference platform hosting the leading open-source models including **GLM 5**, **Kimi K2.5**, **MiniMax M2.5** and **DeepSeek V3.2** at a market-leading **200 tok/s**.
+
+<Screenshot src="/img/latest/fireworks-models.webp"  />
+
+All text models support **reasoning** and **tool use**, making Fireworks an excellent choice for agentic workflows where speed matters. Here's Kimi K2.5 via Fireworks creating a retro Tetris game with full tool calling support:
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Kimi K2.5 via Fireworks': '/img/latest/fireworks-kimi.webp',
+    'Results at 125 tk/s': '/img/latest/fireworks-kimi-results.webp',
+}} />
+
+### Fireworks Image Generation Models
+
+Fireworks also hosts Black Forest Labs' **FLUX.1** image generation models with fast inference and competitive per-image pricing:
+
+| Model | Cost | Pricing |
+| --- | --- | --- |
+| **FLUX.1 Kontext Max** | $0.08 | per image |
+| **FLUX.1 Kontext Pro** | $0.04 | per image |
+| **FLUX.1 Dev FP8** | $0.0005 | per step |
+| **FLUX.1 Schnell FP8** | $0.00035 | per step |
+
+This can be found in the model selector by selecting the **Image** output filter:
+
+<Screenshot src="/img/image-gen/fireworks-image-models.webp"  />
+
+Here are examples to demonstrate the quality of each of the FLUX.1 models:
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'FLUX.1 Kontext Max': '/img/image-gen/flux-kontext-max.webp',
+    'FLUX.1 Kontext Pro': '/img/image-gen/flux-kontext-pro.webp',
+    'FLUX.1 Dev': '/img/image-gen/flux-dev.webp',
+    'FLUX.1 Schnell': '/img/image-gen/flux-schnell.webp',
+}} />
+
+To get started, set your Fireworks API key:
+
+```bash
+export FIREWORKS_API_KEY=your_api_key_here
+```
+
+Then reset your providers configuration to pick up the new Fireworks models in [providers-extra.json](https://github.com/ServiceStack/llms/blob/main/llms/providers-extra.json):
+
+<ShellCommand>llms --reset providers</ShellCommand>
+
 ## Mar 2, 2026
 
 ### Credentials Auth Provider

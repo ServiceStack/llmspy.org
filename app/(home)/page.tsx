@@ -64,10 +64,10 @@ export default function HomePage() {
           </a>
         </div>
         <p className="text-sm text-muted-foreground">
-          <span className="text-slate-400 dark:text-slate-500">Mar 2, 2026</span>
+          <span className="text-slate-400 dark:text-slate-500">Mar 3, 2026</span>
           {' - '}
           <Link href="/docs/latest" className="text-blue-600 dark:text-blue-400 hover:underline">
-            New Username/Password Credentials Auth Provider →
+            New Fireworks AI Image Generation & GLM-5, Kimi K2.5, MimiMax M2.5 LLMs →
           </Link>
         </p>
 

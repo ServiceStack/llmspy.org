@@ -5,14 +5,15 @@ description: Generate images using various LLM providers
 
 Unlike text generation, there's no standard API for image generation across providers - each requires its own custom implementation. Despite the additional effort required, there's now seamless image generation support through both the UI and CLI with built-in integrations for:
 
-| Provider   | Status |
-|------------|--------|
-| Google     | ✅ Supported |
-| OpenAI     | ✅ Supported |
-| OpenRouter | ✅ Supported |
-| Chutes     | ✅ Supported |
-| Z.ai       | ✅ Supported |
-| Nvidia     | ✅ Supported |
+| Provider     | Status |
+|--------------|--------|
+| Google       | ✅ Supported |
+| OpenAI       | ✅ Supported |
+| OpenRouter   | ✅ Supported |
+| Fireworks AI | ✅ Supported |
+| Chutes       | ✅ Supported |
+| Z.ai         | ✅ Supported |
+| Nvidia       | ✅ Supported |
 
 To begin select an image generation model from the Model Selector that supports image generation:
 
@@ -52,3 +53,28 @@ llms -m "Gemini 2.5 Flash Image" --out image "cat in a hat"
 ```
 
 <Info>📁 All generated images are saved to `~/.llms/cache` using their SHA-256 hash as the filename.</Info>
+
+### Fireworks Image Generation Models
+
+Fireworks hosts Black Forest Labs' **FLUX.1** image generation models with fast inference and competitive per-image pricing:
+
+| Model | Cost | Pricing |
+| --- | --- | --- |
+| **FLUX.1 Kontext Max** | $0.08 | per image |
+| **FLUX.1 Kontext Pro** | $0.04 | per image |
+| **FLUX.1 Dev FP8** | $0.0005 | per step |
+| **FLUX.1 Schnell FP8** | $0.00035 | per step |
+
+This can be found in the model selector by selecting the **Image** output filter:
+
+<Screenshot src="/img/image-gen/fireworks-image-models.webp"  />
+
+Here are examples to demonstrate the quality of each of the FLUX.1 models:
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'FLUX.1 Kontext Max': '/img/image-gen/flux-kontext-max.webp',
+    'FLUX.1 Kontext Pro': '/img/image-gen/flux-kontext-pro.webp',
+    'FLUX.1 Dev': '/img/image-gen/flux-dev.webp',
+    'FLUX.1 Schnell': '/img/image-gen/flux-schnell.webp',
+}} />
+
