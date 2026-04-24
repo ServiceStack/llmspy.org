@@ -11,6 +11,24 @@ After upgrading, it's recommended to also upgrade any external extensions:
 
 <ShellCommand>llms --update all</ShellCommand>
 
+## April 25, 2026
+
+You can now make use of your existing Claude Code Subscription by changing the Anthropic provider `npm` configuration in your `llms.json` to use `@ai-sdk/anthropic-cli` instead of `@ai-sdk/anthropic`, e.g:
+
+```json
+{
+    "anthropic": {
+        "enabled": true,
+        "npm": "@ai-sdk/anthropic-cli",
+        ...
+    }
+}
+```
+
+This provider routes all requests to the `claude` binary so it's functionality and integration is limited, e.g. it doesn't support tool calling or skills. Otherwise it supports other features you'd expect like System Prompts, Chat History, Image and Document attachments, etc.
+
+At the same time it's able to benefit from some smarts in the `claude` binary it's built-in system prompts and optimizations for handling long conversations, so it can be a good option for some use cases.
+
 ## Mar 3, 2026
 
 ### Support for Fireworks Large Language Models
