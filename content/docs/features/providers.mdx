@@ -355,12 +355,31 @@ ctx.add_provider(AnthropicProvider)
 
 ### Custom Provider implementations
 
-| Type                  | npm                       | Description |
-|-----------------------|---------------------------|-------------|
-| `AnthropicProvider`   | @ai-sdk/anthropic | Access Claude models using Anthropic's messages API |
-| `CerebrasProvider`    | @ai-sdk/cerebras  | Access Cerebras models |
-| `GoogleProvider`      | @ai-sdk/google    | Google models using the Gemini API |
-| `OpenAiProvider`      | @ai-sdk/openai    | Access OpenAI models using Chat Completions API |
+| Type                   | npm                   | Description |
+|------------------------|-----------------------|-------------|
+| `AnthropicProvider`    | @ai-sdk/anthropic     | Access Claude models using Anthropic's messages API |
+| `AnthropicProviderCli` | @ai-sdk/anthropic-cli | Use claude binary to use existing Claude subscription |
+| `CerebrasProvider`     | @ai-sdk/cerebras      | Access Cerebras models |
+| `GoogleProvider`       | @ai-sdk/google        | Google models using the Gemini API |
+| `OpenAiProvider`       | @ai-sdk/openai        | Access OpenAI models using Chat Completions API |
+
+## @ai-sdk/anthropic-cli
+
+You can now make use of your existing Claude Code Subscription by changing the Anthropic provider `npm` configuration in your `llms.json` to use `@ai-sdk/anthropic-cli` instead of `@ai-sdk/anthropic`, e.g:
+
+```json
+{
+    "anthropic": {
+        "enabled": true,
+        "npm": "@ai-sdk/anthropic-cli",
+        ...
+    }
+}
+```
+
+This provider routes all requests to the `claude` binary so it's functionality and integration is limited, e.g. it doesn't support tool calling or skills. Otherwise it supports other features you'd expect like System Prompts, Chat History, Image and Document attachments, etc.
+
+At the same time it's able to benefit from some smarts in the `claude` binary it's built-in system prompts and optimizations for handling long conversations, so it can be a good option for some use cases.
 
 ### Multi Modal Generation Providers
 
