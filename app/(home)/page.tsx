@@ -64,10 +64,10 @@ export default function HomePage() {
           </a>
         </div>
         <p className="text-sm text-muted-foreground">
-          <span className="text-slate-400 dark:text-slate-500">Apr 25, 2026</span>
+          <span className="text-slate-400 dark:text-slate-500">May 9, 2026</span>
           {' - '}
           <Link href="/docs/latest" className="text-blue-600 dark:text-blue-400 hover:underline">
-            Use your existing Claude Code subscription by switching to <b>@ai-sdk/anthropic-cli</b> →
+            New Recraft and GPT Image 2 image generation models →
           </Link>
         </p>
 
