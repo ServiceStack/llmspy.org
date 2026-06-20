@@ -9,7 +9,7 @@ import { TabbedImages } from './tabbed-images';
 import { LightboxImage } from './lightbox-image';
 import { ThemeCarousel } from './theme-carousel';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Star, Sparkles, Zap, Code2, Image as ImageIcon, Music, Calculator, Puzzle, Search, GalleryHorizontal, Sigma, Plug, Wand2, Mic, Monitor, Palette, ShieldCheck } from 'lucide-react';
+import { Star, Sparkles, Zap, Code2, Image as ImageIcon, Music, Calculator, Puzzle, Search, GalleryHorizontal, Sigma, Plug, Wand2, Mic, Monitor, Palette, ShieldCheck, Bot, FolderOpen } from 'lucide-react';
 import { YouTube } from '@/components/youtube';
 
 export default function HomePage() {
@@ -64,10 +64,10 @@ export default function HomePage() {
           </a>
         </div>
         <p className="text-sm text-muted-foreground">
-          <span className="text-slate-400 dark:text-slate-500">May 9, 2026</span>
+          <span className="text-slate-400 dark:text-slate-500">June 20, 2026</span>
           {' - '}
           <Link href="/docs/latest" className="text-blue-600 dark:text-blue-400 hover:underline">
-            New Recraft and GPT Image 2 image generation models →
+            New support for Agent Profiles and Projects →
           </Link>
         </p>
 
@@ -186,6 +186,38 @@ export default function HomePage() {
                 <CardContent>
                   <p className="text-slate-700 dark:text-slate-300">
                     Username/Password authentication with Admin UI and CLI user management
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/docs/features/agents" className="block">
+              <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
+                    <Bot className="w-5 h-5 text-violet-500" />
+                    Agent Profiles
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-700 dark:text-slate-300">
+                    Specialized AI agents with custom prompts, tools, themes, and Planner→Coder workflows
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/docs/features/projects" className="block">
+              <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
+                    <FolderOpen className="w-5 h-5 text-amber-500" />
+                    Projects
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-700 dark:text-slate-300">
+                    Secure workspace isolation that restricts AI agent filesystem access to designated project folders
                   </p>
                 </CardContent>
               </Card>
@@ -460,6 +492,107 @@ export default function HomePage() {
               <LightboxImage
                 src="/img/auth/lock-user.webp"
                 alt="Lock User"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Agents & Projects Section */}
+      <div id="agents-projects" className="w-full my-16 px-4 bg-gradient-to-b from-transparent via-violet-50/50 to-transparent dark:via-violet-950/20 py-16">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              Agent Profiles &amp; Projects
+            </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+              Configure specialized AI agents with custom prompts, tools, and themes — and scope their filesystem access to secure project workspaces
+            </p>
+            <div className="flex items-center justify-center gap-4 mt-2">
+              <Link href="/docs/features/agents" className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline">
+                Agent Profiles →
+              </Link>
+              <Link href="/docs/features/projects" className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline">
+                Projects →
+              </Link>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/profiles/profiles-ubi.webp"
+                alt="Ubi Personal Assistant Agent Profile"
+                width={600}
+                height={400}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/projects/projects-editor.webp"
+                alt="Projects Editor"
+                width={600}
+                height={400}
+                className="w-full h-auto"
+              />
+            </div>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6 mb-6">
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/profiles/profiles-menu.webp"
+                alt="Agent Profile Selector"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/profiles/profiles-planner.webp"
+                alt="Planner Agent Profile"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/profiles/profiles-coder.webp"
+                alt="Coder Agent Profile"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/projects/projects-menu.webp"
+                alt="Projects Menu"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/profiles/galaga-menu.webp"
+                alt="Sci-Fi Space Game — Main Menu built by Coder agent"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/profiles/galaga-game.webp"
+                alt="Sci-Fi Space Game — Gameplay built by Coder agent"
                 width={400}
                 height={300}
                 className="w-full h-auto"

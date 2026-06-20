@@ -6,6 +6,8 @@
     "web-ui",
     "themes",
     "chat-ui",
+    "agents",
+    "projects",
     "analytics",
     "core-tools",
     "calculator-ui",

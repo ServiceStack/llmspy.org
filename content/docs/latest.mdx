@@ -11,6 +11,54 @@ After upgrading, it's recommended to also upgrade any external extensions:
 
 <ShellCommand>llms --update all</ShellCommand>
 
+## June 20, 2026
+
+### Agent Profiles
+
+The new [Agent Profiles](/docs/features/agents) feature lets you configure specialized AI agents, each with its own system prompt, default model, UI theme, restricted tool/skill set, custom avatar, and footer action buttons.
+
+Switch between agents from the **Agent Profile Selector** dropdown in the chat header. Built-in profiles include **Chat** (general-purpose), **Planner** (multi-step reasoning and task decomposition), and **Coder** (reads and writes code to disk).
+
+<Screenshot src="/img/profiles/profiles-menu.webp" alt="Agent Profile Selector" />
+
+#### Planner → Coder Workflow
+
+A powerful two-phase workflow: use the **Planner** to break a goal into a structured architecture plan, then hand off to the **Coder** via footer action buttons (**Save to PLAN.md**, **Execute Plan**, **Execute PLAN.md**) to implement it step by step.
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Planner': '/img/profiles/profiles-planner.webp',
+    'Coder': '/img/profiles/profiles-coder.webp',
+}} />
+
+Here's the workflow in action — the **Planner** was given the prompt **"Build a Sci-Fi GALAGA game"**, produced a full architecture plan saved to `PLAN.md`, and the **Coder** implemented the complete game:
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Galaga Menu': '/img/profiles/galaga-menu.webp',
+    'Galaga Game': '/img/profiles/galaga-game.webp',
+}} />
+
+#### Custom Personal Assistant
+
+The [assistant example profile](https://github.com/ServiceStack/llms/tree/main/examples/profiles/assistant) shows how to build a fully personalized AI companion using a `SYSTEM.template` that composes separate markdown files for identity, user context, values, and tools — with a custom avatar:
+
+<Screenshot src="/img/profiles/profiles-ubi.webp" alt="Ubi Personal Assistant" />
+
+See the [Agent Profiles docs](/docs/features/agents) for the full configuration reference including custom avatars, `onlyTools`/`onlySkills` restrictions, conditional footer actions, and composite system prompt templates.
+
+### Projects
+
+The new [Projects](/docs/features/projects) feature provides a secure workspace sandboxing system. Each project defines one or more allowed directories — all AI agent filesystem tools (read, write, edit, search, list) are restricted exclusively to those paths.
+
+<Screenshot src="/img/projects/projects-menu.webp" alt="Projects Menu" />
+
+Projects support path aliases (`$WORKSPACE` for the server's working directory, `$TEMP` for the system temp dir) alongside any custom absolute paths. Non-existent directories are automatically created on save.
+
+<Screenshot src="/img/projects/projects-editor.webp" alt="Projects Editor" />
+
+Switch between projects from the **Workspaces & Projects** dropdown in the top-left header, or reset to **Default Workspace** to remove sandbox restrictions. Projects are persisted per-user at `~/.llms/user/{username}/projects/projects.json`.
+
+See the [Projects docs](/docs/features/projects) for more details.
+
 ## May 9, 2026
 
 Checkout the latest models inc. Grok 4.3, GPT-5.5, GPT Image 2, Opus 4.7, Sonnet 4.6, Gemini 3.1, Gemma 4, DeepSeek v4, Kimi K2.6, GLM 5.1, MiMo V2.5 and more...
