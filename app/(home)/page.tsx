@@ -9,7 +9,7 @@ import { TabbedImages } from './tabbed-images';
 import { LightboxImage } from './lightbox-image';
 import { ThemeCarousel } from './theme-carousel';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Star, Sparkles, Zap, Code2, Image as ImageIcon, Music, Calculator, Puzzle, Search, GalleryHorizontal, Sigma, Plug, Wand2, Mic, Monitor, Palette, ShieldCheck, Bot, FolderOpen } from 'lucide-react';
+import { Star, Sparkles, Zap, Code2, Image as ImageIcon, Music, Calculator, Puzzle, Search, GalleryHorizontal, Sigma, Plug, Wand2, Mic, Monitor, Palette, ShieldCheck, Bot, FolderOpen, Server } from 'lucide-react';
 import { YouTube } from '@/components/youtube';
 
 export default function HomePage() {
@@ -64,10 +64,10 @@ export default function HomePage() {
           </a>
         </div>
         <p className="text-sm text-muted-foreground">
-          <span className="text-slate-400 dark:text-slate-500">June 20, 2026</span>
+          <span className="text-slate-400 dark:text-slate-500">June 28, 2026</span>
           {' - '}
           <Link href="/docs/latest" className="text-blue-600 dark:text-blue-400 hover:underline">
-            New support for Agent Profiles and Projects →
+            Support for OpenRouter and Anthropic Server Tools →
           </Link>
         </p>
 
@@ -234,6 +234,22 @@ export default function HomePage() {
                 <CardContent>
                   <p className="text-slate-700 dark:text-slate-300">
                     First-class Python function calling for LLM interactions with your environment
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/docs/features/server-tools" className="block">
+              <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
+                    <Server className="w-5 h-5 text-sky-500" />
+                    Server Tools
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-700 dark:text-slate-300">
+                    Built-in support for provider hosted Anthropic & OpenRouter server tools like web search
                   </p>
                 </CardContent>
               </Card>
@@ -772,6 +788,40 @@ export default function HomePage() {
                 width={500}
                 height={500}
                 className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+          <div className="text-center mt-16 mb-8">
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              Server Tools
+            </h3>
+            <p className="text-lg text-slate-600 dark:text-slate-400">
+              Built-in support for provider-hosted OpenRouter & Anthropic server tools like web search, web fetch &amp; code execution
+            </p>
+            <Link
+              href="/docs/features/server-tools"
+              className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline mt-2"
+            >
+              Learn more →
+            </Link>
+          </div>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/tools/tools_selector_server.webp"
+                alt="Server Tools Selector Tab"
+                width={600}
+                height={400}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/tools/tools_selector_server_config.webp"
+                alt="Configure Server Tool"
+                width={600}
+                height={400}
+                className="w-full h-auto"
               />
             </div>
           </div>

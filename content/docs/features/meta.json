@@ -10,6 +10,7 @@
     "projects",
     "analytics",
     "core-tools",
+    "server-tools",
     "calculator-ui",
     "run-code-ui",
     "katex",

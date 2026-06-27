@@ -11,6 +11,23 @@ After upgrading, it's recommended to also upgrade any external extensions:
 
 <ShellCommand>llms --update all</ShellCommand>
 
+## June 28, 2026
+
+### Server Tools
+
+The new [Server Tools](/docs/features/server-tools) feature adds built-in support for provider-hosted tools, including both [OpenRouter Server Tools](https://openrouter.ai/docs/guides/features/server-tools/overview) and [Anthropic's Server Tools](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview). This lets you enable provider-hosted capabilities like **web search**, **web fetch**, and **code execution** directly from the chat UI without any client-side setup.
+
+Each tool is defined in standard **JSON Schema** which the frontend uses to dynamically generate the configuration UI and the tool definition presented to the model.
+
+Open the **Tools** panel from the toolbar, switch to the **SERVER TOOLS** tab to see the tools available for the selected model's provider:
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Server Tools Tab': '/img/tools/tools_selector_server.webp',
+    'Configure Server Tool': '/img/tools/tools_selector_server_config.webp',
+}} />
+
+See the [Server Tools docs](/docs/features/server-tools) for more details.
+
 ## June 20, 2026
 
 ### Agent Profiles
