@@ -81,12 +81,24 @@ Only providers that define `"server_tools"` will have the **SERVER TOOLS** tab e
 
 ### Example `llms.json` Provider Snippet
 
+If upgrading from an older version of `llms.json`, you can add the `"server_tools"` array to your provider definitions like this:
+
 ```json
 {
     "providers": {
+        "anthropic": {
+            "enabled": true,
+            "server_tools": [
+                "tool://anthropic/web_search",
+                "tool://anthropic/web_fetch",
+                "tool://anthropic/code_execution",
+                "tool://anthropic/advisor",
+                "tool://anthropic/tool_search",
+                "tool://anthropic/mcp_toolset"
+            ]
+        },
         "openrouter": {
             "enabled": true,
-            "id": "openrouter",
             "server_tools": [
                 "tool://openrouter/web_search",
                 "tool://openrouter/datetime",
