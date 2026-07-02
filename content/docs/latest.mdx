@@ -11,6 +11,47 @@ After upgrading, it's recommended to also upgrade any external extensions:
 
 <ShellCommand>llms --update all</ShellCommand>
 
+To reset your configuration to the latest [llms.json](https://github.com/ServiceStack/llms/blob/main/llms/llms.json) and [providers-extra.json](https://github.com/ServiceStack/llms/blob/main/llms/providers-extra.json) run:
+
+<ShellCommand>llms --reset all</ShellCommand>
+
+## July 3, 2026
+
+### Audio & Speech Models via OpenRouter
+
+llms.py now supports **Audio** and **Speech** generation models available through [OpenRouter](https://openrouter.ai), bringing music generation, audio synthesis, and text-to-speech capabilities to the model selector alongside chat and image models.
+
+Use the **Audio** (🔊) and **Speech** (👤) output filters in the model selector to browse all available models.
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'OpenRouter Audio': '/img/models/openrouter-audio.webp',
+    'OpenRouter Speech': '/img/models/openrouter-speech.webp',
+}} />
+
+#### Audio Models
+
+| Model | ID | Context | Price |
+| --- | --- | --- | --- |
+| **Lyria 3 Clip Preview** | `google/lyria-3-clip-preview` | 1.0M | Free |
+| **Lyria 3 Pro Preview** | `google/lyria-3-pro-preview` | 1.0M | Free |
+| **GPT Audio** | `openai/gpt-audio` | 128K | $2.50 / $10.00 |
+| **GPT Audio Mini** | `openai/gpt-audio-mini` | 128K | $0.60 / $2.40 |
+
+Google's [Lyria 3](https://deepmind.google/models/lyria/) is DeepMind's latest music generation model - both the **Clip** and **Pro** previews are available currently free on OpenRouter.
+
+#### Speech (Text-to-Speech) Models
+
+| Model | ID | Price |
+| --- | --- | --- |
+| **MAI-Voice-2** | `microsoft/mai-voice-2` | Free / $22.00 |
+| **Grok Voice TTS 1.0** | `x-ai/grok-voice-tts-1.0` | Free / $15.00 |
+| **Gemini 3.1 Flash TTS** | `google/gemini-3.1-flash-tts-preview` | $1.00 / $22.00 |
+| **Voxtral Mini TTS** | `mistralai/voxtral-mini-tts-2603` | $0.05 / $0.20 |
+
+To pick up the latest Audio and Speech models, reset your providers configuration:
+
+<ShellCommand>llms --reset providers</ShellCommand>
+
 ## June 29, 2026
 
 ### Server Tools
