@@ -230,7 +230,7 @@ export default function HomePage() {
 
       {/* Projects Built by AI Section */}
       <div id="projects-built" className="w-full my-16 px-4">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <div className="text-center mb-10">
             <p className="text-sm font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400">Playable &amp; self-contained</p>
             <h2 className="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
@@ -242,12 +242,12 @@ export default function HomePage() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { name: 'Breakout', desc: 'Stunning sci-fi breakout game', img: '/img/publish/games/Breakout-home.webp' },
+              { name: 'Space Blocks', desc: 'Space themed Tetris with power ups', img: '/img/publish/games/Space_Blocks.webp' },
+              { name: 'Breakout', desc: 'Stunning sci-fi breakout game', img: '/img/publish/games/Breakout.webp' },
               { name: '2048', desc: 'Neon 2048 Arcade game', img: '/img/publish/games/2048.webp' },
               { name: 'Pac_Man', label: 'Pac Man', desc: 'Stunning Sci-Fi Pacman', img: '/img/publish/games/Pac_Man.webp' },
-              { name: 'Galaga', desc: 'Stunning sci-fi Galaga game in React', img: '/img/publish/games/Galaga.webp' },
               { name: 'Asteroids', desc: 'The classic Asteroids game', img: '/img/publish/games/Asteroids.webp' },
-              { name: 'Pinball', desc: 'Stunning Steampunk Workshop themed Pinball', img: '/img/publish/games/Pinball.webp' },
+              { name: 'Pong', desc: 'Sci-Fi Neon Pong', img: '/img/publish/games/Pong.webp' },
             ].map((game) => (
               <a
                 key={game.name}
