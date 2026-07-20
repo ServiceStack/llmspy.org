@@ -8,15 +8,16 @@ import { screenshotScreens } from './screenshot-screens';
 import { TabbedImages } from './tabbed-images';
 import { LightboxImage } from './lightbox-image';
 import { ThemeCarousel } from './theme-carousel';
+import { ScreenshotTabs } from '@/components/screenshot-tabs';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Star, Sparkles, Zap, Code2, Image as ImageIcon, Music, Calculator, Puzzle, Search, GalleryHorizontal, Sigma, Plug, Wand2, Mic, Monitor, Palette, ShieldCheck, Bot, FolderOpen, Server } from 'lucide-react';
+import { Star, Sparkles, Code2, Image as ImageIcon, Music, Calculator, Puzzle, Search, GalleryHorizontal, Sigma, Plug, Wand2, Mic, Monitor, Palette, ShieldCheck, Bot, FolderOpen, Server, MessageSquare, Check, Globe, Gamepad2 } from 'lucide-react';
 import { YouTube } from '@/components/youtube';
 
 export default function HomePage() {
   return (
     <main className="mt-8 flex flex-col items-center justify-center min-h-screen">
       {/* Hero Section */}
-      <div className="max-w-7xl mx-auto text-center space-y-8">
+      <div className="max-w-7xl mx-auto text-center space-y-8 px-4">
         <div className="space-y-4">
           <h1 className="text-5xl font-bold tracking-tight">
             <span>llms.py</span>
@@ -28,23 +29,9 @@ export default function HomePage() {
             </svg>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Lightweight OpenAI compatible CLI, server gateway and OSS Open WebUI alternative
-            for Local and Cloud LLMs
+            The self-hosted, OpenAI-compatible AI gateway for <span className="text-slate-900 dark:text-slate-100 font-semibold">text, image &amp; audio</span>
+            {' '}— a lightweight CLI, server and OSS Open WebUI alternative for Local and Cloud LLMs
           </p>
-          <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground pt-2">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-yellow-500" />
-              <span>530+ Models</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-blue-500" />
-              <span>24 Providers</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Puzzle className="w-4 h-4 text-purple-500" />
-              <span>Extensible</span>
-            </div>
-          </div>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -55,6 +42,15 @@ export default function HomePage() {
             View the Docs
           </Link>
           <a
+            href="https://ai.llmspy.org/m"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-8 py-3 rounded-lg bg-blue-600 dark:bg-blue-600 text-white font-semibold hover:bg-blue-700 dark:hover:bg-blue-700 transition-all shadow-md hover:shadow-lg"
+          >
+            <Globe className="w-5 h-5" />
+            Explore the Gallery
+          </a>
+          <a
             href="https://github.com/ServiceStack/llms"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-8 py-3 rounded-lg border-2 border-slate-300 dark:border-slate-600 bg-background hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-400 dark:hover:border-slate-500 transition-all font-semibold shadow-md hover:shadow-lg"
@@ -64,28 +60,252 @@ export default function HomePage() {
           </a>
         </div>
         <p className="text-sm text-muted-foreground">
-          <span className="text-slate-400 dark:text-slate-500">July 3, 2026</span>
+          <span className="text-slate-400 dark:text-slate-500">July 20, 2026</span>
           {' - '}
           <Link href="/docs/latest" className="text-blue-600 dark:text-blue-400 hover:underline">
-            Support for OpenRouter Audio and Speech Generation Models →
+            v4 Released! →
           </Link>
         </p>
 
-        {/* Quick Install */}
-        <div className="mt-8 mx-auto max-w-3xl rounded-lg bg-muted p-6">
-          <h3 className="font-semibold mb-4 text-slate-900 dark:text-slate-100">Quick Install</h3>
-          <CopyBlock>pip install llms-py</CopyBlock>
+        {/* Hero Poster */}
+        <div className="pt-4">
+          <Link href="/docs/latest" className="block">
+            <Image
+              src="/img/latest/llmspy-v4.webp"
+              alt="llms.py v4 — Text, Image, Audio, Speech & Projects"
+              width={1376}
+              height={768}
+              priority
+              className="mx-auto w-full max-w-4xl h-auto rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl"
+            />
+          </Link>
         </div>
+      </div>
 
-        {/* Console Carousel Section */}
-        <div className="mt-8 w-full px-4">
-          <div className="w-full max-w-4xl mx-auto">
-            <ConsoleCarousel screens={consoleScreens} />
+      {/* Stats Band */}
+      <div className="w-full mt-12 px-4 border-y border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40">
+        <div className="max-w-6xl mx-auto py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="text-center">
+            <div className="text-4xl sm:text-5xl font-black text-blue-600 dark:text-blue-400">530+</div>
+            <div className="mt-1 text-sm font-medium text-slate-600 dark:text-slate-400">Models</div>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl sm:text-5xl font-black text-blue-600 dark:text-blue-400">24</div>
+            <div className="mt-1 text-sm font-medium text-slate-600 dark:text-slate-400">Providers</div>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl sm:text-5xl font-black text-blue-600 dark:text-blue-400">3</div>
+            <div className="mt-1 text-sm font-medium text-slate-600 dark:text-slate-400">Modalities · Text · Image · Audio</div>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl sm:text-5xl font-black text-blue-600 dark:text-blue-400">100%</div>
+            <div className="mt-1 text-sm font-medium text-slate-600 dark:text-slate-400">Open Source &amp; Self-Hosted</div>
           </div>
         </div>
+      </div>
 
-        <div className="mt-8 mx-auto max-w-3xl rounded-lg bg-muted p-6">
-          <h3 className="font-semibold mb-4 text-slate-900 dark:text-slate-100">Run Server</h3>
+      {/* Generate Anything Section */}
+      <div id="generate" className="w-full mt-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-10">
+            <p className="text-sm font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400">One tool, every modality</p>
+            <h2 className="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              Generate Anything
+            </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+              From a single self-hosted gateway — chat with 530+ models, create images, and synthesize speech across 24 providers
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            <Link href="/docs/features/chat-ui" className="block">
+              <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
+                <CardHeader>
+                  <div className="flex size-11 items-center justify-center rounded-xl bg-blue-500/15 text-blue-500">
+                    <MessageSquare className="w-5 h-5" />
+                  </div>
+                  <CardTitle className="mt-3 text-slate-900 dark:text-slate-100">Text &amp; Chat</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-700 dark:text-slate-300">
+                    A fast, private, ChatGPT-like web UI over every local &amp; cloud LLM — with tools, MCP, skills, agents and 200+ system prompts
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/docs/media-generation/image-generation" className="block">
+              <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
+                <CardHeader>
+                  <div className="flex size-11 items-center justify-center rounded-xl bg-pink-500/15 text-pink-500">
+                    <ImageIcon className="w-5 h-5" />
+                  </div>
+                  <CardTitle className="mt-3 text-slate-900 dark:text-slate-100">Image Generation</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-700 dark:text-slate-300">
+                    Create images via Gemini, OpenAI, OpenRouter, Chutes, Z.ai &amp; Nvidia — right inside the chat and gallery workflow
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/docs/media-generation/audio-generation" className="block">
+              <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
+                <CardHeader>
+                  <div className="flex size-11 items-center justify-center rounded-xl bg-violet-500/15 text-violet-500">
+                    <Music className="w-5 h-5" />
+                  </div>
+                  <CardTitle className="mt-3 text-slate-900 dark:text-slate-100">Audio &amp; Speech</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-700 dark:text-slate-300">
+                    High-quality text-to-speech with Gemini &amp; OpenRouter models, plus voice-to-text input via the microphone
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Publish & Public Gallery Section */}
+      <div id="public-gallery" className="w-full my-16 px-4 bg-gradient-to-b from-transparent via-blue-50/50 to-transparent dark:via-blue-950/20 py-16">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 items-center">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400">Create → Publish → Showcase</p>
+            <h2 className="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              Your Creations, in the Public Gallery
+            </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
+              Anything you generate in llms.py can be published with one click — landing in the live
+              showcase at{' '}
+              <a href="https://ai.llmspy.org" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">
+                ai.llmspy.org
+              </a>, browsable by everyone with categories, tags, ratings and infinite scroll.
+            </p>
+            <ul className="mt-6 space-y-3 text-slate-700 dark:text-slate-300">
+              <li className="flex items-start gap-3">
+                <Check className="w-5 h-5 mt-0.5 text-emerald-500 shrink-0" />
+                Browse generated images &amp; audio by category and tag
+              </li>
+              <li className="flex items-start gap-3">
+                <Check className="w-5 h-5 mt-0.5 text-emerald-500 shrink-0" />
+                Play full <Link href="#projects-built" className="text-blue-600 dark:text-blue-400 hover:underline">Projects built by AI</Link> — games and apps, ready to run
+              </li>
+              <li className="flex items-start gap-3">
+                <Check className="w-5 h-5 mt-0.5 text-emerald-500 shrink-0" />
+                Free &amp; anonymous publisher account — no email required
+              </li>
+            </ul>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a
+                href="https://ai.llmspy.org/m"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
+              >
+                <Globe className="w-5 h-5" />
+                Explore the Gallery
+              </a>
+              <Link
+                href="/docs/features/publishing"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-slate-300 dark:border-slate-600 bg-background hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-400 dark:hover:border-slate-500 transition-colors font-semibold"
+              >
+                Learn more →
+              </Link>
+            </div>
+          </div>
+          <ScreenshotTabs
+            alt="ai.llmspy.org Public Gallery"
+            href="https://ai.llmspy.org/m"
+            className="not-prose"
+            images={{
+              Images: '/img/publish/gallery-images.webp',
+              Audio: '/img/publish/gallery-audio.webp',
+              Projects: '/img/publish/gallery-projects.webp',
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Projects Built by AI Section */}
+      <div id="projects-built" className="w-full my-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-10">
+            <p className="text-sm font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400">Playable &amp; self-contained</p>
+            <h2 className="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              Projects Built by AI
+            </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+              Complete, self-contained apps &amp; games — generated with llms.py and published for anyone to open and play
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { name: 'Breakout', desc: 'Stunning sci-fi breakout game', img: '/img/publish/games/Breakout-home.webp' },
+              { name: '2048', desc: 'Neon 2048 Arcade game', img: '/img/publish/games/2048.webp' },
+              { name: 'Pac_Man', label: 'Pac Man', desc: 'Stunning Sci-Fi Pacman', img: '/img/publish/games/Pac_Man.webp' },
+              { name: 'Galaga', desc: 'Stunning sci-fi Galaga game in React', img: '/img/publish/games/Galaga.webp' },
+              { name: 'Asteroids', desc: 'The classic Asteroids game', img: '/img/publish/games/Asteroids.webp' },
+              { name: 'Pinball', desc: 'Stunning Steampunk Workshop themed Pinball', img: '/img/publish/games/Pinball.webp' },
+            ].map((game) => (
+              <a
+                key={game.name}
+                href={`https://ai.llmspy.org/p/llmspy/${game.name}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-lg hover:shadow-xl hover:border-blue-400 dark:hover:border-blue-500 transition-all"
+              >
+                <div className="relative">
+                  <img
+                    src={game.img}
+                    alt={game.label ?? game.name}
+                    loading="lazy"
+                    className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/0 to-black/0" />
+                  <div className="absolute inset-x-0 bottom-0 p-4">
+                    <h3 className="text-white font-bold flex items-center gap-2">
+                      <Gamepad2 className="w-4 h-4" />
+                      {game.label ?? game.name}
+                    </h3>
+                    <p className="text-slate-200 text-sm">{game.desc}</p>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+          <div className="text-center mt-10">
+            <a
+              href="https://ai.llmspy.org/m#projects"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline font-semibold"
+            >
+              Browse all projects →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Install */}
+      <div className="mt-8 w-full px-4">
+        <div className="max-w-3xl mx-auto rounded-lg bg-muted p-6">
+          <h3 className="font-semibold mb-4 text-center text-slate-900 dark:text-slate-100">Quick Install</h3>
+          <CopyBlock>pip install llms-py</CopyBlock>
+        </div>
+      </div>
+
+      {/* Console Carousel Section */}
+      <div className="mt-8 w-full px-4">
+        <div className="w-full max-w-4xl mx-auto">
+          <ConsoleCarousel screens={consoleScreens} />
+        </div>
+      </div>
+
+      <div className="mt-8 mb-8 w-full px-4">
+        <div className="max-w-3xl mx-auto rounded-lg bg-muted p-6">
+          <h3 className="font-semibold mb-4 text-center text-slate-900 dark:text-slate-100">Run Server</h3>
           <CopyBlock>llms --serve 8000</CopyBlock>
         </div>
       </div>

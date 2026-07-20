@@ -1,7 +1,15 @@
 ---
-title: Latest Features
-description: Latest features and updates in llms.py
+title: llms.py v4 is here!
+description: Announcing llms.py v4 - the latest major release packed with new features and updates
 ---
+
+![](/img/latest/llmspy-v4.webp)
+
+We're thrilled to announce **llms.py v4** - our biggest release yet! This milestone version brings
+together everything we've been building: publish and share your chat threads, projects, images and
+audio to the new [ai.llmspy.org](https://ai.llmspy.org) showcase, configurable **Agent Profiles**
+for specialized workflows, provider-hosted **Server Tools**, and a huge wave of new **Audio**,
+**Speech**, and **Image** generation models. Upgrade now to unlock it all.
 
 Get the latest features by [updating to the latest version](/docs/getting-started#updating):
 
@@ -15,14 +23,64 @@ To reset your configuration to the latest [llms.json](https://github.com/Service
 
 <ShellCommand>llms --reset all</ShellCommand>
 
-## July 19, 2026
+### Publishing
 
-- Refactor OpenRouter provider to use [Image Generation API](https://openrouter.ai/docs/guides/overview/multimodal/image-generation) for OpenRouter image models instead of the Chat Completion API, which is future proof and improves image generation performance and reliability.
+The new [Publishing](/docs/features/publishing) extension lets you share your AI creations with the
+world - straight from your workspace. Generate public, read-only links for chat threads, static
+projects, and individual media files, all hosted on [ai.llmspy.org/m](https://ai.llmspy.org/m) and
+available instantly.
 
-- Add support for latest Chutes Image Models: 
- - Z Image Turbo
- - Qwen-Image & Qwen-Image Edit
- - Flux, Dreamshaper, Juggernaut & Ilustmix
+Click the **Share** icon in the toolbar to open the publishing panel. Connecting a publisher account
+is completely **free** and **anonymous** - no email or personal details required - and you can disconnect at any time.
+
+<Screenshot src="/img/publish/share-panel.webp" alt="Publish Share Panel" />
+
+Everything you publish is hosted on the new [ai.llmspy.org](https://ai.llmspy.org) website - a public
+showcase where you can browse and discover the best AI-generated content shared by the community.
+Switch between the **Images**, **Audio**, and **Projects** galleries to explore what's been created:
+
+<ScreenshotTabs alt="ai.llmspy.org Showcase" href="https://ai.llmspy.org" images={{
+    'Images': '/img/publish/gallery-images.webp',
+    'Audio': '/img/publish/gallery-audio.webp',
+    'Projects': '/img/publish/gallery-projects.webp',
+}} />
+
+#### Share AI Chat Threads
+
+Publish an entire conversation - including code blocks, tables, and rich markdown formatting - as a
+permanent, styled web page. Choose from **8 beautiful themes** to give your shared threads a
+distinctive look, from the cool arctic tones of **Nord** to the neon-green glow of **Matrix**.
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-3 gap-4" images={{
+    'Nord': '/img/publish/themes/thread-nord.webp',
+    'Matrix': '/img/publish/themes/thread-matrix.webp',
+    'Blue Smoke': '/img/publish/themes/thread-blue-smoke.webp',
+}} />
+
+#### Share Projects (e.g. Games)
+
+Deploy a [static project](/docs/features/projects) - a game, web app, or any folder of HTML/JS/CSS - to a live public URL with a
+single click. The extension auto-detects your project's build folder, packages it, and returns a
+shareable link.
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    '2048': '/img/publish/games/2048.webp',
+    'Space Blocks': '/img/publish/games/Space_Blocks.webp',
+    'Breakout': '/img/publish/games/Breakout.webp',
+    'Pac Man': '/img/publish/games/Pac_Man.webp',
+}} />
+
+#### Share Images & Audio
+
+Share AI-generated **images** directly from the media gallery lightbox and generated **audio** clips
+from the audio player - both uploaded with their metadata and served on their own public page.
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Publish Image': '/img/publish/publish-image.webp',
+    'Publish Audio': '/img/publish/publish-audio.webp',
+}} />
+
+See the [Publishing docs](/docs/features/publishing) for the full walkthrough.
 
 ## July 3, 2026
 
@@ -60,6 +118,15 @@ Google's [Lyria 3](https://deepmind.google/models/lyria/) is DeepMind's latest m
 To pick up the latest Audio and Speech models, reset your providers configuration:
 
 <ShellCommand>llms --reset providers</ShellCommand>
+
+#### Image Generation Improvements
+
+- Refactor OpenRouter provider to use [Image Generation API](https://openrouter.ai/docs/guides/overview/multimodal/image-generation) for OpenRouter image models instead of the Chat Completion API, which is future proof and improves image generation performance and reliability.
+
+- Add support for latest Chutes Image Models: 
+ - Z Image Turbo
+ - Qwen-Image & Qwen-Image Edit
+ - Flux, Dreamshaper, Juggernaut & Ilustmix
 
 ## June 29, 2026
 

@@ -63,7 +63,7 @@ export const ConsoleCarousel: FC<ConsoleCarouselProps> = ({
 
   return (
     <div
-      className={cn("relative w-full w-[780px]", className)}
+      className={cn("relative w-full max-w-[780px] mx-auto", className)}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >

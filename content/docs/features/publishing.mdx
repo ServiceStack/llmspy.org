@@ -1,0 +1,220 @@
+---
+title: Publishing
+---
+
+Share your conversations, projects, and media with the world - straight from your workspace.
+
+The [publish](https://github.com/ServiceStack/llms/tree/main/llms/extensions/publish) extension lets you generate public, read-only links for chat threads, static projects
+(games, apps, dashboards), and individual media files (images and audio). Everything is hosted on
+[ai.llmspy.org/m](https://ai.llmspy.org/m) and available instantly.
+
+---
+
+## Getting Started
+
+### 1. Open the Share Panel
+
+Click the **Share** icon in the top toolbar to open the publishing panel.
+
+<Screenshot src="/img/publish/share-panel.webp" alt="Publish Share Panel" />
+
+### 2. Register & Connect
+
+If you haven't connected a publisher account yet, you'll see a registration form alongside
+a short list of benefits:
+
+- ✅ Completely **free** and **anonymous** - no email or personal identification required
+- ✅ Generate beautiful public read-only links
+- ✅ Retain full formatting of code, tables, and prompts
+- ✅ Revoke links or disconnect your account at any time
+
+Fill in your details in the embedded form. Registration takes less than a minute.
+Once complete, your API key is saved automatically and you'll see a green **Connected** badge.
+
+<Screenshot src="/img/publish/register-form.webp" alt="Register Form" />
+
+### 3. Manage Your Connection
+
+Once connected, a **Connected: @username** button appears in the top-right corner of the Share
+panel. Click it to view your API key, user info, or to **Disconnect** your account entirely.
+
+<Screenshot src="/img/publish/connected-menu.webp" alt="Connected Account Menu" />
+
+---
+
+## Publishing Chat Threads
+
+Share an entire conversation - including code blocks, tables, and rich formatting - as a
+permanent, styled web page.
+
+### How to Publish
+
+1. Open the **Share** panel while you have an active conversation.
+2. Make sure the **Publish Chat Thread** tab is selected.
+3. You'll see the thread title and model displayed in a summary card.
+4. Click **Publish Thread** (or **Update Thread** if previously published).
+5. A public URL is generated and displayed. Click the link to open it, or click the copy icon
+   to grab the URL.
+
+<Screenshot src="/img/publish/publish-thread.webp" alt="Connected Account Menu" />
+
+
+### Beautiful Themes
+
+Your published threads don't have to look generic. Choose from **8 beautiful themes** to give
+your shared conversations a distinctive look - from the cool arctic tones of **Nord** and the
+neon-green glow of **Matrix**, to the moody **Blue Smoke**, warm **Soft Pink**, and the clean,
+airy **Light Slate** and **Light Sky**. Plain **Light** and **Dark** themes are also available
+if you prefer a more minimal presentation.
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-3 gap-4" images={{
+    'Nord': '/img/publish/themes/thread-nord.webp',
+    'Matrix': '/img/publish/themes/thread-matrix.webp',
+    'Blue Smoke': '/img/publish/themes/thread-blue-smoke.webp',
+    'Soft Pink': '/img/publish/themes/thread-soft-pink.webp',
+    'Light Slate': '/img/publish/themes/thread-light-slate.webp',
+    'Light Sky': '/img/publish/themes/thread-light-sky.webp',
+}} />
+
+
+### Browse the Showcase
+
+Everything you publish is hosted on the new [ai.llmspy.org](https://ai.llmspy.org) website - a public
+showcase where you can browse and discover the best AI-generated content shared by the community.
+Switch between the **Images**, **Audio**, and **Projects** galleries to explore what others have created:
+
+<ScreenshotTabs alt="ai.llmspy.org Showcase" href="https://ai.llmspy.org" images={{
+    'Images': '/img/publish/gallery-images.webp',
+    'Audio': '/img/publish/gallery-audio.webp',
+    'Projects': '/img/publish/gallery-projects.webp',
+}} />
+
+
+### Re-publishing
+
+Already-published threads show a green **Published** status indicator with the timestamp.
+Hit **Update Thread** to push any new messages or edits to the same URL.
+
+### What Gets Published
+
+- All user and assistant messages
+- Code blocks with syntax highlighting
+- Tables, lists, and formatted markdown
+- User and assistant avatars
+- Referenced images and media cached locally (uploaded automatically)
+
+---
+
+## Publishing Projects
+
+Deploy a static project - a game, web app, or any folder of HTML/JS/CSS - to a live public URL
+with a single click.
+
+### How to Publish
+
+1. Switch to a workspace that has an **active project** (the project tab only appears when one
+   is active).
+2. Open the **Share** panel and select the **Publish Project** tab.
+3. The extension auto-detects your project's build/dist folder. You can change it manually or
+   use the **Browse** button to pick a different folder.
+4. Click **Publish Project**.
+5. Your project is packaged as a tarball, uploaded, and a live URL is returned.
+
+<Screenshot src="/img/publish/publish-project.webp" alt="Publish Project Tab" />
+
+### Build Directory Detection
+
+The extension looks for a `dist/` subfolder inside your project's configured paths. If it
+finds one, it pre-fills the path automatically. You can override this at any time by editing
+the text field or using the folder browser dialog.
+
+<Screenshot src="/img/publish/folder-dialog.webp" alt="Folder Browser Dialog" />
+
+### Published Projects Gallery
+
+Here are some example projects that have been published using this extension:
+
+| Project | Description | Link |
+|---------|-------------|------|
+| 🎮 **2048** | Neon 2048 Arcade game | [Play Neon 2048](https://ai.llmspy.org/p/llmspy/2048) |
+| 🎮 **Space Blocks** | Space themed blocks and powerups | [Play Space Blocks](https://ai.llmspy.org/p/llmspy/Space_Blocks) |
+| 🎮 **Breakout** | Stunning sci-fi breakout game | [Play Breakout](https://ai.llmspy.org/p/llmspy/Breakout) |
+| 👾 **Pac Man** | Stunning Sci-Fi Pacman | [Play Pac Man](https://ai.llmspy.org/p/llmspy/Pac_Man) |
+| 🏓 **Pong** | A stunning pong Web App | [Play Pong](https://ai.llmspy.org/p/llmspy/Pong) |
+| 🚀 **Galaga** | Stunning sci-fi Galaga game in React | [Play Galaga](https://ai.llmspy.org/p/llmspy/Galaga) |
+| ☄️ **Asteroids** | The classic Asteroids game | [Play Asteroids](https://ai.llmspy.org/p/llmspy/Asteroids) |
+| ⚙️ **Pinball** | Stunning Steampunk Workshop themed Pinball | [Play Pinball](https://ai.llmspy.org/p/llmspy/Pinball) |
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Space Blocks': '/img/publish/games/Space_Blocks.webp',
+    '2048': '/img/publish/games/2048.webp',
+    'Breakout': '/img/publish/games/Breakout.webp',
+    'Pac Man': '/img/publish/games/Pac_Man.webp',
+    'Pong': '/img/publish/games/Pong.webp',
+    'Galaga': '/img/publish/games/Galaga.webp',
+    'Asteroids': '/img/publish/games/Asteroids.webp',
+    'Pinball': '/img/publish/games/Pinball.webp',
+}} />
+
+
+---
+
+## Publishing Images
+
+Share AI-generated images directly from the media gallery lightbox.
+
+### How to Publish
+
+1. Open the **Gallery** and click on an image to open the lightbox.
+2. At the bottom of the lightbox, a **Share Image** button appears (only visible when your
+   publisher account is connected).
+3. Click **Share Image** - the image and its metadata are uploaded.
+4. Once published, the button is replaced with a green **Published** indicator and a link to
+   the public page.
+
+<Screenshot src="/img/publish/publish-image.webp" alt="Publish Image" />
+
+### What Gets Uploaded
+
+- The full-resolution image file
+- Sidecar metadata (model, prompt, dimensions, generation settings)
+- Media type information
+
+---
+
+## Publishing Audio
+
+Share generated audio clips from the audio player.
+
+### How to Publish
+
+1. Locate an audio item in the audio player or media list.
+2. Click the **share** pill button next to the audio controls.
+3. A brief **publishing...** spinner appears while the file uploads.
+4. Once complete, the button transforms into a green **open link** pill that links to the
+   public audio page.
+
+<Screenshot src="/img/publish/publish-audio.webp" alt="Publish Audio" />
+
+---
+
+## Quick Reference
+
+| Content Type | Where to Find It | Action |
+|---|---|---|
+| **Chat Thread** | Share panel → *Publish Chat Thread* tab | Publish / Update Thread |
+| **Project** | Share panel → *Publish Project* tab | Publish Project |
+| **Image** | Gallery lightbox footer | Share Image |
+| **Audio** | Audio player actions | share |
+
+## Disconnecting
+
+To unlink your publisher account:
+
+1. Open the **Share** panel.
+2. Click **Connected: @username** in the top-right.
+3. Click **Disconnect** in the dropdown.
+
+Your API key will be removed locally. Previously published content remains accessible at its
+public URL until you remove it from the hosting platform.
+
