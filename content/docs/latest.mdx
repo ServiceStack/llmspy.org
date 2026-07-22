@@ -82,6 +82,12 @@ from the audio player - both uploaded with their metadata and served on their ow
 
 See the [Publishing docs](/docs/features/publishing) for the full walkthrough.
 
+## Streaming Responses
+
+Streaming is now implemented across **all providers**, so responses render token-by-token in real time in the Chat UI instead of waiting for the full completion to arrive - giving immediate feedback for every model, including providers that previously only supported non-streamed responses.
+
+Streaming works the same way across every provider - Anthropic, OpenAI, Google, OpenRouter, Groq, Mistral, Cerebras, xAI, Fireworks, Ollama, LM Studio and all other OpenAI-compatible providers - so you get consistent real-time output no matter which model or provider you choose.
+
 ## July 3, 2026
 
 ### Audio & Speech Models via OpenRouter
