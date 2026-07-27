@@ -818,8 +818,8 @@ export default function HomePage() {
             </div>
             <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
               <LightboxImage
-                src="/img/profiles/galaga-menu.webp"
-                alt="Sci-Fi Space Game — Main Menu built by Coder agent"
+                src="/img/publish/games/2048_2076x1850.webp"
+                alt="2048 Game — built by Coder agent"
                 width={400}
                 height={300}
                 className="w-full h-auto"
@@ -827,8 +827,8 @@ export default function HomePage() {
             </div>
             <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
               <LightboxImage
-                src="/img/profiles/galaga-game.webp"
-                alt="Sci-Fi Space Game — Gameplay built by Coder agent"
+                src="/img/publish/games/Breakout_2076x1850.webp"
+                alt="Breakout — Gameplay built by Coder agent"
                 width={400}
                 height={300}
                 className="w-full h-auto"
