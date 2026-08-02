@@ -1,0 +1,280 @@
+---
+title: PDF Designer
+description: Design pixel-identical PDFs using Typst templates, real-time live preview, schema-driven form editing, typed code generation, and AI assistance.
+---
+
+The **PDF Designer** extension brings code-first document design to llms.py. Design PDFs the way you write code: a plain-text [Typst](https://typst.app) template on the left, the rendered page on the right, updating in real-time as you type or edit data.
+
+<Screenshot src="/img/pdf/designer-overview.webp" alt="The PDF Designer with a template open and its live preview" />
+
+Documents like invoices, certificates, reports, and statements are often trapped in binary Word or desktop publishing files that require manual edits. With the PDF Designer, the **layout** is a Typst template and the **content** is a JSON file—allowing the same design to be populated with different data (one customer or ten thousand) and rendered to a pixel-identical PDF every time.
+
+## Key Features
+
+- **Documents as Source Code**: Templates are stored as plain text—diff them, review them in PRs, and track them in git.
+- **Separation of Content and Design**: Update document wording without touching layout code, or restyle all documents at once by modifying a shared library file (`lib.typ`).
+- **Real-Time Live Preview**: Every keystroke or form edit instantly re-renders the true compiled PDF without approximations.
+- **Natural Language AI Editing**: Describe layout and styling changes in plain English, or attach a screenshot / PDF to generate a complete reusable template and data model automatically.
+- **Typed Application Code Generation**: Instantly generate matching C#, Python, TypeScript, or JavaScript classes from your template's data schema to produce expected JSON from application code.
+
+---
+
+## Prerequisites
+
+The PDF Designer requires the [Typst](https://github.com/typst/typst) CLI compiler on your system `PATH`. 
+
+Install it using your package manager of choice:
+
+```bash
+# Cargo (Rust)
+cargo install --locked typst-cli
+
+# macOS (Homebrew)
+brew install typst
+
+# Windows (WinGet)
+winget install --id Typst.Typst
+```
+
+<Info>
+If the `typst` CLI compiler is not detected on your `PATH`, the PDF extension automatically disables itself and hides the PDF toolbar icon.
+</Info>
+
+---
+
+## Getting Started
+
+Click the **PDF Designer** icon in the left toolbar or navigate to `/pdf`. The first time you launch the PDF Designer, a starter template set is initialized in `~/.llms/user/<user>/pdf`:
+
+| File | Description |
+| --- | --- |
+| `invoice.typ` | Worked invoice template written in Typst markup |
+| `invoice.json` | Data rendered into the invoice template |
+| `invoice.ui.json` | JSON Schema driving the interactive Form editor view |
+| `lib.typ` | Shared house-style library imported by templates (fonts, colors, helpers) |
+| `lib.preview.typ` | Live preview document demonstrating all styles in `lib.typ` |
+
+These files are your local copies—edit them freely. Upgrading llms.py will never overwrite your modified templates.
+
+---
+
+## Workspace Layout
+
+<Screenshot src="/img/pdf/designer-panes.webp" alt="The three panes: explorer, editor, preview" />
+
+The workspace is divided into three flexible columns:
+
+### 1. Explorer (Left Column)
+Lists all document templates and assets. Related files are automatically grouped together:
+- Clicking a document group (e.g., `invoice`) opens the document and its associated sidecars (`invoice.typ`, `invoice.json`, `invoice.ui.json`, generated code). A badge (e.g., `+2`) indicates hidden nested files.
+- Click the chevron to expand and inspect individual files within a group.
+- Right-click anywhere in the explorer (or click the context menu) to create a **New Template**, **New File**, **New Folder**, **Rename**, or **Delete**.
+
+### 2. Editor (Middle Column)
+Multi-tab editor showing open template markup, JSON data, form views, or generated source code.
+- Unsaved changes are held safely in memory and indicated by a dot indicator on the active file tab.
+- Press `Ctrl`+`S` (or `Cmd`+`S`) to save all unsaved buffers to disk.
+
+### 3. Preview (Right Column)
+Live compiled PDF canvas rendered via PDF.js.
+- Re-renders instantly on every edit.
+- Includes controls to zoom (`−` / `+`) or **Fit** the page width to the preview container (automatically re-fits when dragging the column splitter).
+- If a compilation error occurs, diagnostic line numbers appear above the preview—click a error line to jump directly to the offending line in the editor.
+
+---
+
+## Editing Document Data
+
+A template's data lives in the `.json` file beside it (e.g., `invoice.json`). Opening a `.json` tab provides two editing modes:
+
+### Code View
+Edit raw JSON directly with full syntax highlighting.
+
+<Screenshot src="/img/pdf/data-code.webp" alt="The Code view of a template's data" />
+
+### Form View
+Edit data using a structured UI form with labeled inputs, field descriptions, collapsible sections, and dynamic row addition/removal for lists and arrays.
+
+<Screenshot src="/img/pdf/data-form.webp" alt="The Form view of a template's data" />
+
+The Form UI is automatically driven by the template's `.ui.json` JSON Schema. If a template doesn't have a schema yet, click **Schema** in the toolbar to have an AI model automatically generate one from your sample data.
+
+You can use either the code or Form UI to edit PDFs and the previewer will auto sync in real-time.
+
+<Screenshot src="/img/pdf/data-form-edited.webp" alt="The Form view with edited data" />
+
+---
+
+## Code Generation for Applications
+
+To seamlessly integrate PDF generation into your backend or frontend applications, the PDF Designer generates strongly typed classes directly from your document's JSON data and schema.
+
+<Screenshot src="/img/pdf/generated-types-csharp.webp" alt="C# classes generated from the invoice data" />
+
+Click any of the language buttons on a `.json` tab:
+
+| Language | Output Specification |
+| --- | --- |
+| **C#** | `System.Text.Json` classes with `[JsonPropertyName]`, `List<T>`, and non-nullable type mappings |
+| **Python** | `@dataclass_json` dataclasses with `typing` annotations and field name aliases |
+| **TypeScript** | Exported ES classes with `constructor(init?: Partial<T>)` clean initializers |
+| **JavaScript** | Exported ES classes annotated with JSDoc `@type` comments |
+
+<Tip>
+Generating a `.ui.json` schema before generating application code yields richer types—turning `multipleOf: 0.01` into `decimal`, `format: date` into `DateTime` / `date`, `required` properties into non-nullable members, and `enum` fields into native Enums.
+</Tip>
+
+Code generation is instantaneous and executed locally without needing an LLM model call. Use the **Copy** button to copy generated code directly into your application codebase.
+
+---
+
+## Formatting Toolbar
+
+<Screenshot src="/img/pdf/toolbar.webp" alt="The formatting toolbar above a template" />
+
+Editing a `.typ` file displays a rich formatting toolbar above the editor:
+
+- **Text Formatting**: `B` (Bold), `I` (Italic), `U` (Underline), `S` (Strikethrough), and `` ` `` (Inline Code).
+- **Block Prefixes**: `H1`, `H2` (Headings), `•` (Bullet List), `1.` (Numbered List). Click again to toggle line prefixes on or off.
+- **Snippets**: Quick drop-in blocks for Hyperlinks, Tables (with header row configuration), Centered Alignment, Horizontal Rules, and Page Breaks.
+- **Images**: Upload or select images to insert `#image(...)` tags.
+- **Typography (`T`)**: Open font and text styling controls.
+- **Page Setup**: Configure paper dimensions, margins, and orientation.
+- **Markdown**: Insert or wrap content in embedded Markdown blocks.
+
+### Images & Assets
+<Screenshot src="/img/pdf/image-picker.webp" alt="The insert image dialog" />
+
+Click the Image button to upload a picture or select an existing image:
+- **Shared Images (`images/`)**: Uploads to a shared folder suitable for logos or signatures used across multiple templates.
+- **Template Images (`With this template`)**: Saves as `<template>.<name>.png`, keeping the asset grouped under the template in the explorer so it is renamed or deleted alongside the document.
+
+### Fonts & Typography (`T`)
+<Screenshot src="/img/pdf/font-picker.webp" alt="The text and font picker" />
+
+The Typography panel lists system fonts as well as custom fonts dropped into a `fonts/` directory alongside your templates. 
+- Filter by font family name and set font size, text color, font weight, and letter spacing with live font rendering.
+- Click **Apply Style** to wrap selected text in `#text(...)`, or apply a document-level `#set text(...)` rule when nothing is selected.
+
+### Page Setup
+<Screenshot src="/img/pdf/page-setup.webp" alt="The page setup dialog" />
+
+The Page Setup dialog provides interactive controls for:
+- Paper dimensions (A3–A6, US Letter, Legal, Tabloid, 16:9 / 4:3 slides, or custom mm dimensions)
+- Orientation (Portrait / Landscape)
+- Margins, multi-column layouts, page numbering formats, and background fill colors.
+
+### Markdown Integration
+If your content is written in Markdown (e.g., model responses, articles, notes), the **Markdown** toolbar button uses the [`cmarker`](https://typst.app/universe/package/cmarker) package to render Markdown within the Typst layout:
+
+```typst
+#import "@preview/cmarker:0.1.10"
+
+#cmarker.render(data.body)
+```
+
+Keeping prose in your JSON data as Markdown allows non-technical authors to edit content while Typst handles page furniture and styling.
+
+---
+
+## Editing & Creating Templates with AI
+
+The expandable **Edit with AI** panel at the bottom of the editor allows you to modify templates or generate new ones using natural language prompts.
+
+<Screenshot src="/img/pdf/edit-with-ai-before.webp" alt="The Edit with AI panel before prompt" />
+
+You can choose any preferred model (that supports image inputs) to make the changes, with the better the model, the more likely you are to get a working template without additional prompting. In most cases it should only take a few natural language prompts to get it looking the way you want.
+
+<Screenshot src="/img/pdf/edit-with-ai-after.webp" alt="The Edit with AI panel after prompt" />
+
+### Prompting Changes
+Type your request (e.g., *"Add a payment status badge and highlight overdue line items in red"*) and select your preferred LLM. The AI rewrites the template and sidecar data simultaneously.
+
+### Auto-Healing Compiler Errors
+If an AI model generates Typst code with compilation errors, the PDF Designer catches the error diagnostics (`file:line:col`) and automatically runs up to 3 repair passes in the background. If errors persist, you can inspect the diagnostic details and click **Undo** to revert to the pre-prompt state cleanly.
+
+### Generating Templates from Screenshots or PDFs
+
+To assist with converting existing designs into editable templates, the PDF Designer supports **visual input**. You can upload screenshots of PDFs or design mockups to use as visual references for the AI code generation process.
+
+<Screenshot src="/img/pdf/ai-attachment-new.webp" alt="Attaching a screenshot to the AI panel - new" />
+
+This can be done either before creating a new template or when editing an existing one. Click the **Attach** button (paperclip icon) in the AI panel to open the file picker.
+
+<Screenshot src="/img/pdf/ai-attachment-edit.webp" alt="Attaching a screenshot to the AI panel - edit" />
+
+Attach an existing document design, screenshot, or sample PDF by dragging files onto the AI panel, clicking the paperclip icon, or pasting a screenshot directly from your clipboard:
+
+- PDF files are automatically converted into page images (first 4 pages).
+- The AI prompt instructs the vision model to **decouple design from data**: visual layout, header styling, and typography become the Typst template (`.typ`), while invoice numbers, line items, customer details, and totals are extracted into the JSON sidecar (`.json`).
+
+<Info>
+Rebuilding templates from screenshots or PDFs requires selecting an AI model with vision capabilities (e.g., Claude 3.5 Sonnet, Gemini 1.5 Pro, GPT-4o).
+</Info>
+
+---
+
+## The Shared Library (`lib.typ`)
+
+Every new template starts with standard library import statements:
+
+```typst
+#import "lib.typ": *
+
+#let data = load-data("invoice.json")
+#show: theme
+```
+
+`lib.typ` serves as your central design system:
+- **Design Tokens**: Define primary brand colors, typography stacks, and rule line styles.
+- **Component Helpers**: Custom Typst functions for `#money()`, `#title-block()`, `#data-table()`, and branded headers/footers.
+- **Data Loader (`load-data`)**: Seamlessly reads local sidecar JSON during interactive design sessions, while accepting external CLI JSON input (`typst compile --input data='{...}'`) in production automated pipelines.
+
+### Live Library Preview (`lib.preview.typ`)
+<Screenshot src="/img/pdf/lib-preview.webp" alt="lib.preview.typ showing the library's styles" />
+
+Grouped beneath `lib.typ` in the Explorer is `lib.preview.typ`. This single-page document renders every component styled by `lib.typ` (headings, callouts, tables, totals, rules). Modifying `lib.typ` updates `lib.preview.typ` in real-time, letting you verify design system updates instantly across all document elements.
+
+---
+
+## Exporting & Saving PDFs
+
+The PDF Designer offers flexible options for saving and exporting your compiled documents:
+
+<Screenshot src="/img/pdf/saved-pdfs.webp" alt="Saved PDFs in the explorer" />
+
+- **PDF Download**: Click **PDF** in the top action bar to download the compiled PDF file immediately.
+- **Save Rendered Artifacts**: Click **Save** next to PDF to save a numbered versioned snapshot in `saved/<template>/` (e.g., `invoice-0001.pdf`, `invoice-0002.pdf`). Saved PDFs appear directly in the Explorer tree for easy auditing and reference.
+
+Clicking on a saved PDF will download and open it in your Operating Systems preferred PDF viewer.
+
+<Screenshot src="/img/pdf/download-pdf.webp" alt="Downloading PDF" />
+
+---
+
+## Useful Features & Tips
+
+- **Deep Link Navigation**: The current template state is reflected in the URL query string (`/pdf?template=invoice.typ`), enabling browser history navigation and bookmarking.
+- **Unsaved Work Safety**: Navigating between templates with dirty buffers prompts you to **Save**, **Discard**, or **Cancel**.
+- **Refactoring & Renaming**: Renaming a template renames its sidecar data files (`.json`, `.ui.json`), updates references within the file, and updates `#import` statements across dependent files.
+- **Diagnostic Error Jumping**: Clicking a Typst error banner immediately repositions the editor cursor on the exact line and column causing the error. Press **Fix** to send error logs to the AI model for automatic repair.
+
+---
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+| --- | --- |
+| `Ctrl` / `Cmd` + `S` | Save all unsaved files in current template |
+| `Enter` | Submit prompt in AI panel |
+| `Shift` + `Enter` | Insert newline in AI prompt box |
+| `↑` / `↓` (at prompt start) | Cycle through prompt history (up to 10 previous prompts) |
+| `Esc` | Close open dialogs or pickers |
+
+---
+
+## Next Steps & Learning Typst
+
+Typst templates are standard Typst documents. To explore advanced layout features, tables, page numbering, or math formatting:
+- Explore the official [Typst Documentation](https://typst.app/docs) and [Typst Tutorial](https://typst.app/docs/tutorial/).
+- Open `lib.preview.typ` in the PDF Designer to experiment with styles in real-time.

@@ -23,7 +23,57 @@ To reset your configuration to the latest [llms.json](https://github.com/Service
 
 <ShellCommand>llms --reset all</ShellCommand>
 
-### Publishing
+### PDF Designer
+
+The new **PDF Designer** extension brings code-first document design to llms.py. Design PDFs the way you write code: a plain-text [Typst](https://typst.app) template on the left, the rendered page on the right, updating in real-time as you type or edit data.
+
+<Screenshot src="/img/pdf/designer-overview.webp" alt="PDF Designer Overview" />
+
+The PDF Designer is a built-in extension that is automatically enabled whenever the [Typst](https://github.com/typst/typst) CLI compiler is available on your system `PATH`:
+
+```bash
+# Cargo (Rust)
+cargo install --locked typst-cli
+
+# macOS (Homebrew)
+brew install typst
+```
+
+#### Real-Time Live Preview & Schema-Driven Form UI
+
+Documents like invoices, certificates, and statements separate **layout** (`.typ` template) from **content** (`.json` data). Edit document data using raw JSON in **Code View** or an interactive, auto-generated **Form View**—re-rendering the compiled PDF instantly on every keystroke.
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Form View': '/img/pdf/data-form.webp',
+    'Code View': '/img/pdf/data-code.webp',
+}} />
+
+#### AI-Powered Editing & Vision Input
+
+Describe document layout and styling changes in plain English using the **Edit with AI** panel. Attach a screenshot or sample PDF to let vision models automatically decouple design from data—building a reusable Typst template and JSON data model for you, complete with auto-healing compiler error passes.
+
+<Screenshot src="/img/pdf/ai-attachment-new.webp" alt="Vision Input" />
+
+#### Visual Formatting Toolbar & Design Systems
+
+Rich visual pickers make styling intuitive without memorizing markup:
+- **Typography & Font Picker**: System & custom font previewing, sizing, line-height, and weight adjustments.
+- **Page Setup**: Interactive paper sizing (A3–A6, Letter, Legal, Slides), margins, and orientation.
+- **Shared Library (`lib.typ`)**: Maintain a central house style with `lib.preview.typ` live design system verification.
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-3 gap-4" images={{
+    'Font Picker': '/img/pdf/font-picker.webp',
+    'Page Setup': '/img/pdf/page-setup.webp',
+    'Library Preview': '/img/pdf/lib-preview.webp',
+}} />
+
+#### Typed Application Code Generation
+
+Turn your document's JSON schema into strongly typed C#, Python, TypeScript, or JavaScript classes with a single click—ensuring your backend application produces JSON matching your template's expected structure.
+
+<Screenshot src="/img/pdf/generated-types-csharp.webp" alt="C# Code Generation" />
+
+Check out the full [PDF Designer Documentation](/docs/extensions/pdf) for the complete walkthrough.
 
 The new [Publishing](/docs/features/publishing) extension lets you share your AI creations with the
 world - straight from your workspace. Generate public, read-only links for chat threads, static

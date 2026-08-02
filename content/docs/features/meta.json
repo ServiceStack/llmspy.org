@@ -12,6 +12,7 @@
     "analytics",
     "core-tools",
     "server-tools",
+    "pdf",
     "calculator-ui",
     "run-code-ui",
     "katex",

@@ -10,7 +10,7 @@ import { LightboxImage } from './lightbox-image';
 import { ThemeCarousel } from './theme-carousel';
 import { ScreenshotTabs } from '@/components/screenshot-tabs';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Star, Sparkles, Code2, Image as ImageIcon, Music, Calculator, Puzzle, Search, GalleryHorizontal, Sigma, Plug, Wand2, Mic, Monitor, Palette, ShieldCheck, Bot, FolderOpen, Server, MessageSquare, Check, Globe, Gamepad2 } from 'lucide-react';
+import { Star, Sparkles, Code2, Image as ImageIcon, Music, Calculator, Puzzle, Search, GalleryHorizontal, Sigma, Plug, Wand2, Mic, Monitor, Palette, ShieldCheck, Bot, FolderOpen, Server, MessageSquare, Check, Globe, Gamepad2, FileText } from 'lucide-react';
 import { YouTube } from '@/components/youtube';
 
 export default function HomePage() {
@@ -443,6 +443,22 @@ export default function HomePage() {
               </Card>
             </Link>
 
+            <Link href="/docs/features/pdf" className="block">
+              <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
+                    <FileText className="w-5 h-5 text-rose-500" />
+                    PDF Designer
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-700 dark:text-slate-300">
+                    Design pixel-identical PDFs using Typst templates, real-time live preview, schema-driven forms, and AI assistance
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
             <Link href="/docs/extensions/tools" className="block">
               <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
                 <CardHeader>
@@ -829,6 +845,86 @@ export default function HomePage() {
               <LightboxImage
                 src="/img/publish/games/Breakout_2076x1850.webp"
                 alt="Breakout — Gameplay built by Coder agent"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* PDF Designer Section */}
+      <div id="pdf-designer" className="w-full my-16 px-4 bg-gradient-to-b from-transparent via-rose-50/50 to-transparent dark:via-rose-950/20 py-16">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              PDF Designer
+            </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+              Design pixel-identical PDFs using Typst templates, real-time live preview, schema-driven forms, typed code generation, and AI assistance
+            </p>
+            <div className="flex items-center justify-center gap-4 mt-2">
+              <Link href="/docs/features/pdf" className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline">
+                PDF Designer Docs →
+              </Link>
+            </div>
+          </div>
+
+          <div className="rounded-xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 dark:bg-white mb-8">
+            <Image
+              src="/img/pdf/designer-overview.webp"
+              alt="PDF Designer Overview"
+              width={1200}
+              height={800}
+              className="w-full h-auto"
+            />
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/pdf/data-form.webp"
+                alt="Form View of Data"
+                width={600}
+                height={400}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/pdf/edit-with-ai-after.webp"
+                alt="Edit with AI Panel"
+                width={600}
+                height={400}
+                className="w-full h-auto"
+              />
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/pdf/font-picker.webp"
+                alt="Font and Typography Picker"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/pdf/page-setup.webp"
+                alt="Page Setup Dialog"
+                width={400}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
+              <LightboxImage
+                src="/img/pdf/generated-types-csharp.webp"
+                alt="Typed Application Code Generation"
                 width={400}
                 height={300}
                 className="w-full h-auto"
