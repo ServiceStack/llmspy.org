@@ -448,7 +448,7 @@ export default function HomePage() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
                     <FileText className="w-5 h-5 text-rose-500" />
-                    PDF Designer
+                    PDF Studio
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -854,19 +854,19 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* PDF Designer Section */}
+      {/* PDF Studio Section */}
       <div id="pdf-designer" className="w-full my-16 px-4 bg-gradient-to-b from-transparent via-rose-50/50 to-transparent dark:via-rose-950/20 py-16">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-              PDF Designer
+              PDF Studio
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
               Design pixel-identical PDFs using Typst templates, real-time live preview, schema-driven forms, typed code generation, and AI assistance
             </p>
             <div className="flex items-center justify-center gap-4 mt-2">
               <Link href="/docs/features/pdf" className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline">
-                PDF Designer Docs →
+                PDF Studio Docs →
               </Link>
             </div>
           </div>
@@ -874,7 +874,7 @@ export default function HomePage() {
           <div className="rounded-xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 dark:bg-white mb-8">
             <Image
               src="/img/pdf/designer-overview.webp"
-              alt="PDF Designer Overview"
+              alt="PDF Studio Overview"
               width={1200}
               height={800}
               className="w-full h-auto"

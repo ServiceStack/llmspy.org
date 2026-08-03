@@ -1,13 +1,13 @@
 ---
-title: PDF Designer
+title: PDF Studio
 description: Design pixel-identical PDFs using Typst templates, real-time live preview, schema-driven form editing, typed code generation, and AI assistance.
 ---
 
-The **PDF Designer** extension brings code-first document design to llms.py. Design PDFs the way you write code: a plain-text [Typst](https://typst.app) template on the left, the rendered page on the right, updating in real-time as you type or edit data.
+The **PDF Studio** extension brings code-first document design to llms.py. Design PDFs the way you write code: a plain-text [Typst](https://typst.app) template on the left, the rendered page on the right, updating in real-time as you type or edit data.
 
-<Screenshot src="/img/pdf/designer-overview.webp" alt="The PDF Designer with a template open and its live preview" />
+<Screenshot src="/img/pdf/designer-overview.webp" alt="The PDF Studio with a template open and its live preview" />
 
-Documents like invoices, certificates, reports, and statements are often trapped in binary Word or desktop publishing files that require manual edits. With the PDF Designer, the **layout** is a Typst template and the **content** is a JSON file—allowing the same design to be populated with different data (one customer or ten thousand) and rendered to a pixel-identical PDF every time.
+Documents like invoices, certificates, reports, and statements are often trapped in binary Word or desktop publishing files that require manual edits. With the PDF Studio, the **layout** is a Typst template and the **content** is a JSON file—allowing the same design to be populated with different data (one customer or ten thousand) and rendered to a pixel-identical PDF every time.
 
 ## Key Features
 
@@ -21,7 +21,7 @@ Documents like invoices, certificates, reports, and statements are often trapped
 
 ## Prerequisites
 
-The PDF Designer requires the [Typst](https://github.com/typst/typst) CLI compiler on your system `PATH`. 
+The PDF Studio requires the [Typst](https://github.com/typst/typst) CLI compiler on your system `PATH`. 
 
 Install it using your package manager of choice:
 
@@ -44,7 +44,7 @@ If the `typst` CLI compiler is not detected on your `PATH`, the PDF extension au
 
 ## Getting Started
 
-Click the **PDF Designer** icon in the left toolbar or navigate to `/pdf`. The first time you launch the PDF Designer, a starter template set is initialized in `~/.llms/user/<user>/pdf`:
+Click the **PDF Studio** icon in the left toolbar or navigate to `/pdf`. The first time you launch the PDF Studio, a starter template set is initialized in `~/.llms/user/<user>/pdf`:
 
 | File | Description |
 | --- | --- |
@@ -107,7 +107,7 @@ You can use either the code or Form UI to edit PDFs and the previewer will auto 
 
 ## Code Generation for Applications
 
-To seamlessly integrate PDF generation into your backend or frontend applications, the PDF Designer generates strongly typed classes directly from your document's JSON data and schema.
+To seamlessly integrate PDF generation into your backend or frontend applications, the PDF Studio generates strongly typed classes directly from your document's JSON data and schema.
 
 <Screenshot src="/img/pdf/generated-types-csharp.webp" alt="C# classes generated from the invoice data" />
 
@@ -191,11 +191,11 @@ You can choose any preferred model (that supports image inputs) to make the chan
 Type your request (e.g., *"Add a payment status badge and highlight overdue line items in red"*) and select your preferred LLM. The AI rewrites the template and sidecar data simultaneously.
 
 ### Auto-Healing Compiler Errors
-If an AI model generates Typst code with compilation errors, the PDF Designer catches the error diagnostics (`file:line:col`) and automatically runs up to 3 repair passes in the background. If errors persist, you can inspect the diagnostic details and click **Undo** to revert to the pre-prompt state cleanly.
+If an AI model generates Typst code with compilation errors, the PDF Studio catches the error diagnostics (`file:line:col`) and automatically runs up to 3 repair passes in the background. If errors persist, you can inspect the diagnostic details and click **Undo** to revert to the pre-prompt state cleanly.
 
 ### Generating Templates from Screenshots or PDFs
 
-To assist with converting existing designs into editable templates, the PDF Designer supports **visual input**. You can upload screenshots of PDFs or design mockups to use as visual references for the AI code generation process.
+To assist with converting existing designs into editable templates, the PDF Studio supports **visual input**. You can upload screenshots of PDFs or design mockups to use as visual references for the AI code generation process.
 
 <Screenshot src="/img/pdf/ai-attachment-new.webp" alt="Attaching a screenshot to the AI panel - new" />
 
@@ -239,7 +239,7 @@ Grouped beneath `lib.typ` in the Explorer is `lib.preview.typ`. This single-page
 
 ## Exporting & Saving PDFs
 
-The PDF Designer offers flexible options for saving and exporting your compiled documents:
+The PDF Studio offers flexible options for saving and exporting your compiled documents:
 
 <Screenshot src="/img/pdf/saved-pdfs.webp" alt="Saved PDFs in the explorer" />
 
@@ -277,4 +277,4 @@ Clicking on a saved PDF will download and open it in your Operating Systems pref
 
 Typst templates are standard Typst documents. To explore advanced layout features, tables, page numbering, or math formatting:
 - Explore the official [Typst Documentation](https://typst.app/docs) and [Typst Tutorial](https://typst.app/docs/tutorial/).
-- Open `lib.preview.typ` in the PDF Designer to experiment with styles in real-time.
+- Open `lib.preview.typ` in the PDF Studio to experiment with styles in real-time.
