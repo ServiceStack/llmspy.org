@@ -46,6 +46,71 @@ The application lists all available agent profiles in the **Agent Profile Select
 - **Planner**: A strategic agent optimized for multi-step reasoning, task decomposition, and execution planning.
 - **Coder**: An agent specialized in analyzing and implementing code, ideal for software development tasks.
 
+## Profile Manager
+
+The **Profile Manager** provides a full UI for inspecting, overriding, and creating agent profiles — no manual file editing required. Open it by clicking **Manage Profiles** at the bottom of the **Agent Profile Selector** dropdown.
+
+<Screenshot src="/img/profiles/manage-profiles-button.webp" alt="Manage Profiles button in the Agent Profile Selector dropdown" />
+
+The left sidebar lists every profile (built-in and custom). Select one to view and edit its configuration on the right. A lock icon (🔒) marks built-in profiles, and a blue dot (●) indicates the currently active profile.
+
+### Viewing & Overriding Built-in Profiles
+
+Built-in profiles (**Chat**, **Coder**, **Planner**) are shown as **Read-only** — their server-defined defaults are displayed but cannot be edited directly. You can, however, **override** the default model and theme for any built-in profile from the **Settings** tab. Overrides are stored as user preferences and take precedence over the server configuration without modifying the original profile files.
+
+<Screenshot src="/img/profiles/readonly-profile.webp" alt="Built-in Coder profile in read-only mode" />
+
+#### Override Model
+
+Click the **Selected Model** dropdown to pick a different default model for the profile. A full model selector opens where you can search, filter by provider, and browse all available models. Click **Clear Override** to revert to the server default.
+
+<Screenshot src="/img/profiles/profile-models.webp" alt="Model override selector for a profile" />
+
+#### Override Theme
+
+Use the **Theme** dropdown to choose a different UI theme for the profile. The dropdown shows all available light and dark themes.
+
+<Screenshot src="/img/profiles/profile-themes.webp" alt="Theme override selector for a profile" />
+
+### Creating Custom Profiles
+
+Click the **+** button next to **SELECT PROFILE** in the sidebar to create a new custom profile. Custom profiles are fully editable — you can change the profile name, set a default model and theme, upload a custom avatar, configure tool and skill restrictions, and manage all prompt files.
+
+Custom profiles are saved to your user profiles directory (`~/.llms/user/<user>/profiles/`) and can be deleted via the **Delete Profile** button.
+
+### Profile Manager Tabs
+
+The Profile Manager organizes each profile's configuration across four tabs:
+
+#### Settings
+
+Configure the profile's display name, default model, and theme. For built-in profiles, this tab shows the server configuration defaults and lets you set personal overrides. For custom profiles, all fields are directly editable.
+
+#### Skills
+
+View and configure which skills the profile is allowed to invoke. Skills are grouped by their source directory (e.g. `~/.llms/.agent/skills`, `.agent/skills`). Toggle individual skills on or off to build the exact skill set your agent needs. When all skills are enabled, the tab header shows **Skills (All)**.
+
+<Screenshot src="/img/profiles/profile-skills.webp" alt="Skills tab showing allowed skills grouped by source" />
+
+#### Tools
+
+View and configure which system and extension tools the profile can execute. Tools are grouped by category (e.g. `core_tools`, `computer`, `filesystem`). Toggle individual tools on or off to restrict the agent's capabilities. When all tools are enabled, the tab header shows **Tools (All)**.
+
+<Screenshot src="/img/profiles/profile-tools.webp" alt="Tools tab showing allowed tools grouped by category" />
+
+#### Files
+
+Browse and edit the profile's prompt files — `SYSTEM.md`, `SYSTEM.template`, and any additional `.md` files used as template variables. For built-in profiles, files are displayed as **Read-Only**. For custom profiles, you can edit file contents inline, create new files with the **+** button, and delete files.
+
+<Screenshot src="/img/profiles/profile-system-prompt.webp" alt="Files tab showing the system prompt for the Coder profile" />
+
+Custom profiles using composite prompts (`SYSTEM.template`) show all template files as selectable tabs, making it easy to manage complex multi-file prompt architectures entirely from the UI:
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'SYSTEM.template': '/img/profiles/SYSTEM.template.webp',
+    'Editing Prompt Files': '/img/profiles/new-ubi-profile.webp',
+}} />
+
 ### Planner → Coder Workflow
 
 A common and effective pattern is to use the **Planner** and **Coder** profiles together in a two-phase workflow:

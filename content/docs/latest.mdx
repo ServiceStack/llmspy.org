@@ -140,6 +140,30 @@ Streaming is now implemented across **all providers**, so responses render token
 
 Streaming works the same way across every provider - Anthropic, OpenAI, Google, OpenRouter, Groq, Mistral, Cerebras, xAI, Fireworks, Ollama, LM Studio and all other OpenAI-compatible providers - so you get consistent real-time output no matter which model or provider you choose.
 
+## August 3, 2026
+
+### Profile Manager
+
+The new **Profile Manager** provides a full UI for viewing, overriding, and creating [Agent Profiles](/docs/features/agents) — no manual file editing required. Access it from the **Manage Profiles** option at the bottom of the Agent Profile Selector dropdown.
+
+<Screenshot src="/img/profiles/manage-profiles-button.webp" alt="Manage Profiles button" />
+
+Built-in profiles (**Chat**, **Coder**, **Planner**) are displayed as **Read-only** with their server-defined defaults visible. You can **override** the default model and theme for any built-in profile through the **Settings** tab — overrides are stored as user preferences and take effect immediately without modifying the original profile files.
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Built-in Profile (Read-only)': '/img/profiles/readonly-profile.webp',
+    'Model Override Selector': '/img/profiles/profile-models.webp',
+}} />
+
+Create entirely new custom profiles with the **+** button — each with its own name, avatar, default model, theme, tool/skill restrictions, and system prompt files. Custom profiles support inline editing of `SYSTEM.md`, `SYSTEM.template`, and all template variable files, plus the ability to add and delete prompt files directly from the UI.
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Custom Profile Files': '/img/profiles/new-ubi-profile.webp',
+    'SYSTEM.template Editor': '/img/profiles/SYSTEM.template.webp',
+}} />
+
+See the [Profile Manager docs](/docs/features/agents#profile-manager) for the full walkthrough.
+
 ## July 3, 2026
 
 ### Audio & Speech Models via OpenRouter
