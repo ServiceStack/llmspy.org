@@ -38,10 +38,10 @@ Which will prevent extensions like `browser` from being enabled, alternatively i
 
 Open the Browser page from the left sidebar icon. The interface has four main areas:
 
-1. **Navigation bar** — enter URLs, go back/forward, reload, save session state, or close the browser
-2. **Screenshot view** — live view of the browser page, click directly on it to interact
-3. **Script editor** — write and run automation scripts with AI assistance
-4. **Debug log** — real-time terminal showing every `agent-browser` command and its output
+1. **Navigation bar** - enter URLs, go back/forward, reload, save session state, or close the browser
+2. **Screenshot view** - live view of the browser page, click directly on it to interact
+3. **Script editor** - write and run automation scripts with AI assistance
+4. **Debug log** - real-time terminal showing every `agent-browser` command and its output
 
 ### Opening a Page
 
@@ -54,9 +54,9 @@ The screenshot view is clickable. Click anywhere on the rendered page to send a 
 coordinates to the actual browser. Combined with the quick action bar at the bottom, you can
 interact with pages without writing any code:
 
-- **Type text** — enter text in the input field and click **Send** to type it into the focused element
-- **Key buttons** — press Enter, Tab, Escape, or arrow keys with a single click
-- **Scroll** — scroll the page up or down
+- **Type text** - enter text in the input field and click **Send** to type it into the focused element
+- **Key buttons** - press Enter, Tab, Escape, or arrow keys with a single click
+- **Scroll** - scroll the page up or down
 
 The screenshot auto-refreshes on a configurable interval (1s, 3s, 5s, or 10s) so you always
 see the current state. Toggle auto-refresh off when you want a stable view.
@@ -92,9 +92,9 @@ as bash files. Open it by clicking **+ New** in the Scripts panel or by clicking
 ### Editor Features
 
 - **Syntax highlighting** via CodeMirror with shell mode and the Catppuccin Mocha theme
-- **Run** (Ctrl+Enter) — saves and executes the full script, or just the selected text if you have a selection
-- **Save** (Ctrl+S) — persists the script to disk
-- **Auto-save on run** — the script is automatically saved before execution
+- **Run** (Ctrl+Enter) - saves and executes the full script, or just the selected text if you have a selection
+- **Save** (Ctrl+S) - persists the script to disk
+- **Auto-save on run** - the script is automatically saved before execution
 
 ### Running Selected Text
 
@@ -143,9 +143,9 @@ You can also customize the system prompt by copying the `generate-script.txt` fi
 Scripts are saved as `.sh` files in your user's `browser/scripts/` directory. The **Scripts** panel
 in the sidebar lists all saved scripts with controls to:
 
-- **Run** (play button) — execute the script immediately
-- **Edit** (click the name) — open in the script editor
-- **Delete** (trash icon) — remove the script with confirmation
+- **Run** (play button) - execute the script immediately
+- **Edit** (click the name) - open in the script editor
+- **Delete** (trash icon) - remove the script with confirmation
 
 Scripts are standard bash files. You can also edit them with any external editor and they will
 appear in the list.
@@ -155,9 +155,9 @@ appear in the list.
 The debug log at the bottom of the page shows every `agent-browser` command executed by the
 extension in real-time. It displays in an xterm.js terminal with color-coded output:
 
-- **Green** — successful commands with their return code and execution time
-- **Red** — failed commands with error output
-- **Gray** — commands currently in progress
+- **Green** - successful commands with their return code and execution time
+- **Red** - failed commands with error output
+- **Gray** - commands currently in progress
 
 The log shows the full command string, stdout/stderr output, return code, and execution duration
 in milliseconds. This is essential for understanding what happened during script execution and
@@ -243,7 +243,7 @@ The most important concept in `agent-browser` automation is the **snapshot-first
 4. **Interact** using those refs
 5. **Re-snapshot** after any action that changes the page
 
-Refs like `@e1` are ephemeral — they only refer to specific elements at the time the snapshot
+Refs like `@e1` are ephemeral - they only refer to specific elements at the time the snapshot
 was taken. After clicking a link, submitting a form, or triggering dynamic content, the refs are
 stale and you must snapshot again.
 

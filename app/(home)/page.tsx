@@ -30,7 +30,7 @@ export default function HomePage() {
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             The self-hosted, OpenAI-compatible AI gateway for <span className="text-slate-900 dark:text-slate-100 font-semibold">text, image &amp; audio</span>
-            {' '}— a lightweight CLI, server and OSS Open WebUI alternative for Local and Cloud LLMs
+            {' '}- a lightweight CLI, server and OSS Open WebUI alternative for Local and Cloud LLMs
           </p>
         </div>
 
@@ -72,7 +72,7 @@ export default function HomePage() {
           <Link href="/docs/latest" className="block">
             <Image
               src="/img/latest/llmspy-v4.webp"
-              alt="llms.py v4 — Text, Image, Audio, Speech & Projects"
+              alt="llms.py v4 - Text, Image, Audio, Speech & Projects"
               width={1376}
               height={768}
               priority
@@ -113,7 +113,7 @@ export default function HomePage() {
               Generate Anything
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              From a single self-hosted gateway — chat with 530+ models, create images, and synthesize speech across 24 providers
+              From a single self-hosted gateway - chat with 530+ models, create images, and synthesize speech across 24 providers
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
@@ -127,7 +127,7 @@ export default function HomePage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-slate-700 dark:text-slate-300">
-                    A fast, private, ChatGPT-like web UI over every local &amp; cloud LLM — with tools, MCP, skills, agents and 200+ system prompts
+                    A fast, private, ChatGPT-like web UI over every local &amp; cloud LLM - with tools, MCP, skills, agents and 200+ system prompts
                   </p>
                 </CardContent>
               </Card>
@@ -143,7 +143,7 @@ export default function HomePage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-slate-700 dark:text-slate-300">
-                    Create images via Gemini, OpenAI, OpenRouter, Chutes, Z.ai &amp; Nvidia — right inside the chat and gallery workflow
+                    Create images via Gemini, OpenAI, OpenRouter, Chutes, Z.ai &amp; Nvidia - right inside the chat and gallery workflow
                   </p>
                 </CardContent>
               </Card>
@@ -177,7 +177,7 @@ export default function HomePage() {
               Your Creations, in the Public Gallery
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-              Anything you generate in llms.py can be published with one click — landing in the live
+              Anything you generate in llms.py can be published with one click - landing in the live
               showcase at{' '}
               <a href="https://ai.llmspy.org" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">
                 ai.llmspy.org
@@ -190,11 +190,11 @@ export default function HomePage() {
               </li>
               <li className="flex items-start gap-3">
                 <Check className="w-5 h-5 mt-0.5 text-emerald-500 shrink-0" />
-                Play full <Link href="#projects-built" className="text-blue-600 dark:text-blue-400 hover:underline">Projects built by AI</Link> — games and apps, ready to run
+                Play full <Link href="#projects-built" className="text-blue-600 dark:text-blue-400 hover:underline">Projects built by AI</Link> - games and apps, ready to run
               </li>
               <li className="flex items-start gap-3">
                 <Check className="w-5 h-5 mt-0.5 text-emerald-500 shrink-0" />
-                Free &amp; anonymous publisher account — no email required
+                Free &amp; anonymous publisher account - no email required
               </li>
             </ul>
             <div className="mt-8 flex flex-wrap gap-3">
@@ -237,7 +237,7 @@ export default function HomePage() {
               Projects Built by AI
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              Complete, self-contained apps &amp; games — generated with llms.py and published for anyone to open and play
+              Complete, self-contained apps &amp; games - generated with llms.py and published for anyone to open and play
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -761,7 +761,7 @@ export default function HomePage() {
               Agent Profiles &amp; Projects
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              Configure specialized AI agents with custom prompts, tools, and themes — and scope their filesystem access to secure project workspaces
+              Configure specialized AI agents with custom prompts, tools, and themes - and scope their filesystem access to secure project workspaces
             </p>
             <div className="flex items-center justify-center gap-4 mt-2">
               <Link href="/docs/features/agents" className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline">
@@ -835,7 +835,7 @@ export default function HomePage() {
             <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
               <LightboxImage
                 src="/img/publish/games/2048_2076x1850.webp"
-                alt="2048 Game — built by Coder agent"
+                alt="2048 Game - built by Coder agent"
                 width={400}
                 height={300}
                 className="w-full h-auto"
@@ -844,7 +844,7 @@ export default function HomePage() {
             <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
               <LightboxImage
                 src="/img/publish/games/Breakout_2076x1850.webp"
-                alt="Breakout — Gameplay built by Coder agent"
+                alt="Breakout - Gameplay built by Coder agent"
                 width={400}
                 height={300}
                 className="w-full h-auto"

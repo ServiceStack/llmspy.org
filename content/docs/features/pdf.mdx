@@ -7,11 +7,11 @@ The **PDF Studio** extension brings code-first document design to llms.py. Desig
 
 <Screenshot src="/img/pdf/designer-overview.webp" alt="The PDF Studio with a template open and its live preview" />
 
-Documents like invoices, certificates, reports, and statements are often trapped in binary Word or desktop publishing files that require manual edits. With the PDF Studio, the **layout** is a Typst template and the **content** is a JSON file—allowing the same design to be populated with different data (one customer or ten thousand) and rendered to a pixel-identical PDF every time.
+Documents like invoices, certificates, reports, and statements are often trapped in binary Word or desktop publishing files that require manual edits. With the PDF Studio, the **layout** is a Typst template and the **content** is a JSON file-allowing the same design to be populated with different data (one customer or ten thousand) and rendered to a pixel-identical PDF every time.
 
 ## Key Features
 
-- **Documents as Source Code**: Templates are stored as plain text—diff them, review them in PRs, and track them in git.
+- **Documents as Source Code**: Templates are stored as plain text-diff them, review them in PRs, and track them in git.
 - **Separation of Content and Design**: Update document wording without touching layout code, or restyle all documents at once by modifying a shared library file (`lib.typ`).
 - **Real-Time Live Preview**: Every keystroke or form edit instantly re-renders the true compiled PDF without approximations.
 - **Natural Language AI Editing**: Describe layout and styling changes in plain English, or attach a screenshot / PDF to generate a complete reusable template and data model automatically.
@@ -54,7 +54,7 @@ Click the **PDF Studio** icon in the left toolbar or navigate to `/pdf`. The fir
 | `lib.typ` | Shared house-style library imported by templates (fonts, colors, helpers) |
 | `lib.preview.typ` | Live preview document demonstrating all styles in `lib.typ` |
 
-These files are your local copies—edit them freely. Upgrading llms.py will never overwrite your modified templates.
+These files are your local copies-edit them freely. Upgrading llms.py will never overwrite your modified templates.
 
 ---
 
@@ -79,7 +79,7 @@ Multi-tab editor showing open template markup, JSON data, form views, or generat
 Live compiled PDF canvas rendered via PDF.js.
 - Re-renders instantly on every edit.
 - Includes controls to zoom (`−` / `+`) or **Fit** the page width to the preview container (automatically re-fits when dragging the column splitter).
-- If a compilation error occurs, diagnostic line numbers appear above the preview—click a error line to jump directly to the offending line in the editor.
+- If a compilation error occurs, diagnostic line numbers appear above the preview-click a error line to jump directly to the offending line in the editor.
 
 ---
 
@@ -121,7 +121,7 @@ Click any of the language buttons on a `.json` tab:
 | **JavaScript** | Exported ES classes annotated with JSDoc `@type` comments |
 
 <Tip>
-Generating a `.ui.json` schema before generating application code yields richer types—turning `multipleOf: 0.01` into `decimal`, `format: date` into `DateTime` / `date`, `required` properties into non-nullable members, and `enum` fields into native Enums.
+Generating a `.ui.json` schema before generating application code yields richer types-turning `multipleOf: 0.01` into `decimal`, `format: date` into `DateTime` / `date`, `required` properties into non-nullable members, and `enum` fields into native Enums.
 </Tip>
 
 Code generation is instantaneous and executed locally without needing an LLM model call. Use the **Copy** button to copy generated code directly into your application codebase.

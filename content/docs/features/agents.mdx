@@ -48,7 +48,7 @@ The application lists all available agent profiles in the **Agent Profile Select
 
 ## Profile Manager
 
-The **Profile Manager** provides a full UI for inspecting, overriding, and creating agent profiles — no manual file editing required. Open it by clicking **Manage Profiles** at the bottom of the **Agent Profile Selector** dropdown.
+The **Profile Manager** provides a full UI for inspecting, overriding, and creating agent profiles - no manual file editing required. Open it by clicking **Manage Profiles** at the bottom of the **Agent Profile Selector** dropdown.
 
 <Screenshot src="/img/profiles/manage-profiles-button.webp" alt="Manage Profiles button in the Agent Profile Selector dropdown" />
 
@@ -56,7 +56,7 @@ The left sidebar lists every profile (built-in and custom). Select one to view a
 
 ### Viewing & Overriding Built-in Profiles
 
-Built-in profiles (**Chat**, **Coder**, **Planner**) are shown as **Read-only** — their server-defined defaults are displayed but cannot be edited directly. You can, however, **override** the default model and theme for any built-in profile from the **Settings** tab. Overrides are stored as user preferences and take precedence over the server configuration without modifying the original profile files.
+Built-in profiles (**Chat**, **Coder**, **Planner**) are shown as **Read-only** - their server-defined defaults are displayed but cannot be edited directly. You can, however, **override** the default model and theme for any built-in profile from the **Settings** tab. Overrides are stored as user preferences and take precedence over the server configuration without modifying the original profile files.
 
 <Screenshot src="/img/profiles/readonly-profile.webp" alt="Built-in Coder profile in read-only mode" />
 
@@ -74,7 +74,7 @@ Use the **Theme** dropdown to choose a different UI theme for the profile. The d
 
 ### Creating Custom Profiles
 
-Click the **+** button next to **SELECT PROFILE** in the sidebar to create a new custom profile. Custom profiles are fully editable — you can change the profile name, set a default model and theme, upload a custom avatar, configure tool and skill restrictions, and manage all prompt files.
+Click the **+** button next to **SELECT PROFILE** in the sidebar to create a new custom profile. Custom profiles are fully editable - you can change the profile name, set a default model and theme, upload a custom avatar, configure tool and skill restrictions, and manage all prompt files.
 
 Custom profiles are saved to your user profiles directory (`~/.llms/user/<user>/profiles/`) and can be deleted via the **Delete Profile** button.
 
@@ -100,7 +100,7 @@ View and configure which system and extension tools the profile can execute. Too
 
 #### Files
 
-Browse and edit the profile's prompt files — `SYSTEM.md`, `SYSTEM.template`, and any additional `.md` files used as template variables. For built-in profiles, files are displayed as **Read-Only**. For custom profiles, you can edit file contents inline, create new files with the **+** button, and delete files.
+Browse and edit the profile's prompt files - `SYSTEM.md`, `SYSTEM.template`, and any additional `.md` files used as template variables. For built-in profiles, files are displayed as **Read-Only**. For custom profiles, you can edit file contents inline, create new files with the **+** button, and delete files.
 
 <Screenshot src="/img/profiles/profile-system-prompt.webp" alt="Files tab showing the system prompt for the Coder profile" />
 
@@ -119,7 +119,7 @@ A common and effective pattern is to use the **Planner** and **Coder** profiles 
 
 2. **Implement** - Once the plan is ready, click **Execute PLAN.md** (or **Execute Plan**) to switch to the **Coder** profile. The Coder reads the plan and implements it step by step, writing the actual code to disk.
 
-This separation keeps planning and implementation concerns distinct — the Planner focuses on *what* to build and *how* to structure it, while the Coder focuses on *writing the code*.
+This separation keeps planning and implementation concerns distinct - the Planner focuses on *what* to build and *how* to structure it, while the Coder focuses on *writing the code*.
 
 <ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
     'Planner': '/img/profiles/profiles-planner.webp',
@@ -295,7 +295,7 @@ When no `PLAN.md` file is present in the working directory, two buttons are show
 
 | Button | Behavior |
 |---|---|
-| **Execute Plan** | Switches to the `coder` profile and starts a new thread to execute the plan from the conversation context directly — without saving it to a file first. |
+| **Execute Plan** | Switches to the `coder` profile and starts a new thread to execute the plan from the conversation context directly - without saving it to a file first. |
 | **Save to PLAN.md** | Sends the message `"Save to PLAN.md"` to the current planner agent, instructing it to persist the generated plan to a `PLAN.md` file in the working directory. |
 
 #### After `PLAN.md` exists
@@ -306,7 +306,7 @@ Once a `PLAN.md` file has been saved, the above two buttons disappear and are re
 |---|---|
 | **Execute PLAN.md** | Sends the message `"Execute PLAN.md"` and switches to the `coder` profile, starting a new thread where the coder agent reads and executes the steps defined in the saved `PLAN.md` file. |
 
-This pattern gives the user a two-phase workflow: **plan first, then execute** — with the option to either execute immediately from conversation context or persist the plan for review before execution.
+This pattern gives the user a two-phase workflow: **plan first, then execute** - with the option to either execute immediately from conversation context or persist the plan for review before execution.
 
 ## Agent Avatars
 
@@ -327,7 +327,7 @@ The [assistant](https://github.com/ServiceStack/llms/tree/main/examples/profiles
 assistant/
 ├── config.json          # Agent name, theme, and model preferences
 ├── SYSTEM.template      # Composite template that assembles the prompt
-├── IDENTITY.md          # Who the agent is — name, personality, voice
+├── IDENTITY.md          # Who the agent is - name, personality, voice
 ├── AGENTS.md            # Workspace rules, memory system, safety guidelines
 ├── USER.md              # Information about the human the agent is helping
 ├── SOUL.md              # Core values, boundaries, and behavioral principles
@@ -353,11 +353,11 @@ At load time, the system reads every `.md` file in the profile directory and map
 
 | File | Purpose |
 |---|---|
-| **IDENTITY.md** | Defines the agent's name, creature description, personality traits, and voice. This is the agent's *character sheet* — who it is and how it presents itself. |
+| **IDENTITY.md** | Defines the agent's name, creature description, personality traits, and voice. This is the agent's *character sheet* - who it is and how it presents itself. |
 | **AGENTS.md** | The agent's *operating manual*. Covers session startup routines, the memory system (`memory/` daily logs + `MEMORY.md` long-term memory), safety rules, tool usage patterns, and proactive behaviors like checking email and calendar. |
-| **USER.md** | A living document about the human the agent assists — their name, timezone, projects, and repositories. The agent is encouraged to update this file as it learns more. |
+| **USER.md** | A living document about the human the agent assists - their name, timezone, projects, and repositories. The agent is encouraged to update this file as it learns more. |
 | **SOUL.md** | The agent's *value system*. Defines core behavioral principles (be direct, think before speaking, earn trust), personality traits, communication boundaries, and voice guidelines. This file is designed to evolve as the agent develops. |
-| **TOOLS.md** | A local scratchpad for environment-specific details — camera names, SSH aliases, TTS voice preferences. Kept separate from skills so it can be maintained independently. |
+| **TOOLS.md** | A local scratchpad for environment-specific details - camera names, SSH aliases, TTS voice preferences. Kept separate from skills so it can be maintained independently. |
 
 ### Configuration
 

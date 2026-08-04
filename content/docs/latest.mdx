@@ -45,7 +45,7 @@ brew install typst
 
 #### Real-Time Live Preview & Schema-Driven Form UI
 
-Documents like invoices, certificates, and statements separate **layout** (`.typ` template) from **content** (`.json` data). Edit document data using raw JSON in **Code View** or an interactive, auto-generated **Form View**—re-rendering the compiled PDF instantly on every keystroke.
+Documents like invoices, certificates, and statements separate **layout** (`.typ` template) from **content** (`.json` data). Edit document data using raw JSON in **Code View** or an interactive, auto-generated **Form View**-re-rendering the compiled PDF instantly on every keystroke.
 
 <ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
     'Form View': '/img/pdf/data-form.webp',
@@ -54,7 +54,7 @@ Documents like invoices, certificates, and statements separate **layout** (`.typ
 
 #### AI-Powered Editing & Vision Input
 
-Describe document layout and styling changes in plain English using the **Edit with AI** panel. Attach a screenshot or sample PDF to let vision models automatically decouple design from data—building a reusable Typst template and JSON data model for you, complete with auto-healing compiler error passes.
+Describe document layout and styling changes in plain English using the **Edit with AI** panel. Attach a screenshot or sample PDF to let vision models automatically decouple design from data-building a reusable Typst template and JSON data model for you, complete with auto-healing compiler error passes.
 
 <Screenshot src="/img/pdf/ai-attachment-new.webp" alt="Vision Input" />
 
@@ -73,7 +73,7 @@ Rich visual pickers make styling intuitive without memorizing markup:
 
 #### Typed Application Code Generation
 
-Turn your document's JSON schema into strongly typed C#, Python, TypeScript, or JavaScript classes with a single click—ensuring your backend application produces JSON matching your template's expected structure.
+Turn your document's JSON schema into strongly typed C#, Python, TypeScript, or JavaScript classes with a single click-ensuring your backend application produces JSON matching your template's expected structure.
 
 <Screenshot src="/img/pdf/generated-types-csharp.webp" alt="C# Code Generation" />
 
@@ -148,18 +148,18 @@ Streaming works the same way across every provider - Anthropic, OpenAI, Google, 
 
 ### Profile Manager
 
-The new **Profile Manager** provides a full UI for viewing, overriding, and creating [Agent Profiles](/docs/features/agents) — no manual file editing required. Access it from the **Manage Profiles** option at the bottom of the Agent Profile Selector dropdown.
+The new **Profile Manager** provides a full UI for viewing, overriding, and creating [Agent Profiles](/docs/features/agents) - no manual file editing required. Access it from the **Manage Profiles** option at the bottom of the Agent Profile Selector dropdown.
 
 <Screenshot src="/img/profiles/manage-profiles-button.webp" alt="Manage Profiles button" />
 
-Built-in profiles (**Chat**, **Coder**, **Planner**) are displayed as **Read-only** with their server-defined defaults visible. You can **override** the default model and theme for any built-in profile through the **Settings** tab — overrides are stored as user preferences and take effect immediately without modifying the original profile files.
+Built-in profiles (**Chat**, **Coder**, **Planner**) are displayed as **Read-only** with their server-defined defaults visible. You can **override** the default model and theme for any built-in profile through the **Settings** tab - overrides are stored as user preferences and take effect immediately without modifying the original profile files.
 
 <ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
     'Built-in Profile (Read-only)': '/img/profiles/readonly-profile.webp',
     'Model Override Selector': '/img/profiles/profile-models.webp',
 }} />
 
-Create entirely new custom profiles with the **+** button — each with its own name, avatar, default model, theme, tool/skill restrictions, and system prompt files. Custom profiles support inline editing of `SYSTEM.md`, `SYSTEM.template`, and all template variable files, plus the ability to add and delete prompt files directly from the UI.
+Create entirely new custom profiles with the **+** button - each with its own name, avatar, default model, theme, tool/skill restrictions, and system prompt files. Custom profiles support inline editing of `SYSTEM.md`, `SYSTEM.template`, and all template variable files, plus the ability to add and delete prompt files directly from the UI.
 
 <ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
     'Custom Profile Files': '/img/profiles/new-ubi-profile.webp',
@@ -250,7 +250,7 @@ A powerful two-phase workflow: use the **Planner** to break a goal into a struct
     'Coder': '/img/profiles/profiles-coder.webp',
 }} />
 
-Here's the workflow in action — the **Planner** was given the prompt **"Build a Sci-Fi GALAGA game"**, produced a full architecture plan saved to `PLAN.md`, and the **Coder** implemented the complete game:
+Here's the workflow in action - the **Planner** was given the prompt **"Build a Sci-Fi GALAGA game"**, produced a full architecture plan saved to `PLAN.md`, and the **Coder** implemented the complete game:
 
 <ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
     'Galaga Menu': '/img/profiles/galaga-menu.webp',
@@ -259,7 +259,7 @@ Here's the workflow in action — the **Planner** was given the prompt **"Build 
 
 #### Custom Personal Assistant
 
-The [assistant example profile](https://github.com/ServiceStack/llms/tree/main/examples/profiles/assistant) shows how to build a fully personalized AI companion using a `SYSTEM.template` that composes separate markdown files for identity, user context, values, and tools — with a custom avatar:
+The [assistant example profile](https://github.com/ServiceStack/llms/tree/main/examples/profiles/assistant) shows how to build a fully personalized AI companion using a `SYSTEM.template` that composes separate markdown files for identity, user context, values, and tools - with a custom avatar:
 
 <Screenshot src="/img/profiles/profiles-ubi.webp" alt="Ubi Personal Assistant" />
 
@@ -267,7 +267,7 @@ See the [Agent Profiles docs](/docs/features/agents) for the full configuration 
 
 ### Projects
 
-The new [Projects](/docs/features/projects) feature provides a secure workspace sandboxing system. Each project defines one or more allowed directories — all AI agent filesystem tools (read, write, edit, search, list) are restricted exclusively to those paths.
+The new [Projects](/docs/features/projects) feature provides a secure workspace sandboxing system. Each project defines one or more allowed directories - all AI agent filesystem tools (read, write, edit, search, list) are restricted exclusively to those paths.
 
 <Screenshot src="/img/projects/projects-menu.webp" alt="Projects Menu" />
 

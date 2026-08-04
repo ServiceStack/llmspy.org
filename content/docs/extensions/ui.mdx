@@ -353,7 +353,7 @@ async function generateStory() {
     ext.state.story = `Santa begins to tell you a christmas story...`
     const request = ctx.chat.createRequest({
         model: availableStoryModel,
-        text: `Write a short, feel-good Christmas story set on a quiet winter evening. Focus on simple kindness, cozy details, and gentle magic—twinkling lights, warm drinks, falling snow, and a small act of generosity that brings people together. Keep the tone hopeful and comforting, with a soft, joyful ending that leaves the reader smiling.`,
+        text: `Write a short, feel-good Christmas story set on a quiet winter evening. Focus on simple kindness, cozy details, and gentle magic-twinkling lights, warm drinks, falling snow, and a small act of generosity that brings people together. Keep the tone hopeful and comforting, with a soft, joyful ending that leaves the reader smiling.`,
         systemPrompt: santaSystemPrompt,
     })
     const api = await ctx.chat.completion({
