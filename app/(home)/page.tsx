@@ -60,7 +60,7 @@ export default function HomePage() {
           </a>
         </div>
         <p className="text-sm text-muted-foreground">
-          <span className="text-slate-400 dark:text-slate-500">August 04, 2026</span>
+          <span className="text-slate-400 dark:text-slate-500">August 07, 2026</span>
           {' - '}
           <Link href="/docs/latest" className="text-blue-600 dark:text-blue-400 hover:underline">
             v4 Released! →

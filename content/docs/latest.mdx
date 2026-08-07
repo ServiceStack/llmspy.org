@@ -144,6 +144,24 @@ Streaming is now implemented across **all providers**, so responses render token
 
 Streaming works the same way across every provider - Anthropic, OpenAI, Google, OpenRouter, Groq, Mistral, Cerebras, xAI, Fireworks, Ollama, LM Studio and all other OpenAI-compatible providers - so you get consistent real-time output no matter which model or provider you choose.
 
+## August 7, 2026
+
+### User Analytics & Multi-User Management
+
+The **Analytics** extension now includes multi-user management and per-user analytics for **Admin** users:
+
+- **Searchable User Selection**: Switch between viewing aggregate metrics across **All Users** or filter Cost Analysis, Token Usage, and Activity logs for specific users using a searchable autocomplete dropdown.
+- **Dedicated Users Tab**: View a comprehensive breakdown of all active users, including total requests, total cost, input/output tokens, total combined tokens, and last active timestamps formatted in relative time.
+- **Interactive Column Sorting**: Click any table column header (**User**, **Requests**, **Total Cost**, **Input Tokens**, **Output Tokens**, **Total Tokens**, **Last Active**) to sort all users across the system ascending or descending.
+- **Admin Thread Access**: Admins can inspect and view conversation thread transcripts for any user directly from the Activity log.
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Searchable User Selector': '/img/analytics/analytics-users-filter.webp',
+    'User Analytics Breakdown': '/img/analytics/analytics-users-page.webp',
+}} />
+
+See the [Analytics docs](/docs/features/analytics#user-analytics) for the full walkthrough.
+
 ## August 3, 2026
 
 ### Profile Manager

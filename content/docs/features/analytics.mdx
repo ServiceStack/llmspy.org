@@ -12,6 +12,7 @@ The analytics system provides:
 - **Real-time Metrics**: See costs and tokens for every request
 - **Historical Data**: Track usage over time
 - **Provider Breakdown**: Compare costs and performance per provider
+- **User Analytics**: Per-user cost/token breakdown, searchable autocomplete, and thread access
 - **Activity Logs**: Detailed request history
 
 ## Token Metrics
@@ -115,6 +116,32 @@ Each entry includes:
 - Filter by provider
 - Filter by model
 - Sort by any column
+
+## User Analytics
+
+### User Selection & Filtering
+
+Admin users can switch between viewing aggregate system metrics across **All Users** or filtering analytics for a specific user using the searchable autocomplete dropdown:
+
+<Screenshot src="/img/analytics/analytics-users-filter.webp" />
+
+Features:
+- **Searchable Autocomplete**: Instantly search through large user bases
+- **Global or User-Specific Views**: Filter Cost Analysis, Token Usage, and Activity logs per user
+
+### User Analytics Overview
+
+The dedicated **Users** tab provides a complete usage and cost breakdown per user:
+
+<Screenshot src="/img/analytics/analytics-users-page.webp" />
+
+Key capabilities:
+- **Comprehensive Metrics**: View Total Requests, Total Cost, Input Tokens, Output Tokens, Combined Tokens, and Last Active timestamps per user
+- **Interactive Column Sorting**: Click any table column header to sort all users in the database ascending or descending
+- **Flexible Pagination**: Configurable page sizes (25, 50, 100, 200 users per page)
+- **Relative Time Formatting**: Last active dates shown in relative time (e.g. `just now`, `5m ago`, `3d ago`) with hover tooltips for exact timestamps
+- **Quick Analytics Drilldown**: Click any user row or the **View** button to inspect Cost and Token analytics for that specific user
+- **Admin Thread Access**: Admins can open and inspect thread transcripts for any user directly from the Activity log
 
 ## Data Storage
 
