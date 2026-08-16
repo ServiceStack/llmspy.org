@@ -24,8 +24,8 @@ needs `sudo`.
 
 ## Prerequisites
 
-Docker, and the Docker daemon actually running. That's it — Python, `bun` and the
-.NET SDK that llms.py extensions use are all inside the image.
+Docker, and the Docker daemon actually running. That's it — Python, `bun`, the
+.NET SDK and `typst` that llms.py extensions use are all inside the image.
 
 If Docker isn't installed the script stops and prints the right command for your
 platform:
@@ -150,6 +150,68 @@ reboot. `llms down` stops that.
 If a different `llms` is already on your PATH, the installer says so and
 additionally installs the Docker version as `llms-docker`, leaving your existing
 `llms` untouched. Both read the same `~/.llms` config directory.
+
+## Logging
+
+The server is quiet by default. To see requests:
+
+```bash
+llms up --verbose          # request logging
+llms up --debug            # verbose + debug logging
+llms up --debug -f         # ...and follow the logs
+llms restart --debug       # turn it on for an already-running server
+llms --debug ls            # one-shot commands too
+llms logs                  # last 200 lines
+llms logs -f               # follow
+llms status                # shows the active log level
+```
+
+These set `VERBOSE=1` / `DEBUG=1` inside the container, which is what llms.py
+itself reads — the equivalent of `DEBUG=1 llms --serve 8000 --verbose`. Make it
+permanent with `LLMS_VERBOSE=1` or `LLMS_DEBUG=1` in `~/.llms/config`.
+
+## Voice input
+
+The microphone is in your browser, so nothing needs to be passed into the
+container. Add a speech-to-text key and restart:
+
+```bash
+echo 'GROQ_API_KEY=gsk_...' >> ~/.llms/.env
+llms restart
+```
+
+Choose the provider and model under `defaults` in `~/.llms/llms.json`:
+
+```json
+{
+  "defaults": {
+    "voice": {
+      "provider": "groq",
+      "model": "whisper-large-v3"
+    }
+  }
+}
+```
+
+See [Voice Input](/docs/features/voice-input) for local speech-to-text servers,
+the other modes, and every setting.
+
+**If the microphone button doesn't appear**, it's almost certainly the browser,
+not llms.py: `getUserMedia` only exists over HTTPS or on
+`localhost`/`127.0.0.1`. The default `llms up` binds to `127.0.0.1` so it works,
+but browsing to `http://<lan-ip>:8000` silently disables the microphone API. Use
+an SSH tunnel or a TLS reverse proxy.
+
+## Your own environment variables
+
+Everything in `~/.llms/.env` is passed into the container, not just API keys:
+
+```bash
+echo 'TZ=Australia/Perth' >> ~/.llms/.env
+llms restart
+```
+
+`llms setup` preserves anything there that isn't a provider API key.
 
 ## What it creates
 

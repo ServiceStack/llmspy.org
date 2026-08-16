@@ -342,6 +342,35 @@ COMMON_ARGS="-v $LLMS_HOME:/home/llms/.llms --add-host=host.docker.internal:host
 ENV_ARGS=""
 [ -s "$LLMS_HOME/.env" ] && ENV_ARGS="--env-file $LLMS_HOME/.env"
 
+# VERBOSE=1 and DEBUG=1 are both read by llms itself, so logging is turned on
+# by passing them into the container. --debug implies --verbose.
+LLMS_VERBOSE="${LLMS_VERBOSE:-0}"
+LLMS_DEBUG="${LLMS_DEBUG:-0}"
+log_args() {
+    LOG_ARGS=""
+    [ "$LLMS_DEBUG" = "1" ] && LLMS_VERBOSE=1
+    [ "$LLMS_VERBOSE" = "1" ] && LOG_ARGS="-e VERBOSE=1"
+    [ "$LLMS_DEBUG" = "1" ] && LOG_ARGS="$LOG_ARGS -e DEBUG=1"
+}
+log_args
+
+# Consume -v/--verbose, -d/--debug and -f/--follow, leaving everything else in
+# REST so `llms up 3000 --debug` and `llms up --debug` both work.
+parse_log_flags() {
+    REST=""
+    FOLLOW=0
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            -v|--verbose) LLMS_VERBOSE=1 ;;
+            -d|--debug)   LLMS_DEBUG=1 ;;
+            -f|--follow)  FOLLOW=1 ;;
+            *)            REST="$REST $1" ;;
+        esac
+        shift
+    done
+    log_args
+}
+
 server_running() { [ "$(docker inspect -f '{{.State.Running}}' "$LLMS_CONTAINER" 2>/dev/null)" = "true" ]; }
 
 server_up() {
@@ -351,8 +380,13 @@ server_up() {
     docker run -d --name "$LLMS_CONTAINER" \
         -p "$LLMS_BIND:$port:8000" \
         --restart unless-stopped \
-        $COMMON_ARGS $ENV_ARGS \
+        $COMMON_ARGS $ENV_ARGS $LOG_ARGS \
         "$LLMS_IMAGE" llms --serve 8000 >/dev/null || die "could not start the container"
+    if [ "$LLMS_DEBUG" = "1" ]; then
+        printf '%sdebug + verbose logging on%s\n' "$DIM" "$N"
+    elif [ "$LLMS_VERBOSE" = "1" ]; then
+        printf '%sverbose logging on%s\n' "$DIM" "$N"
+    fi
     printf '%sllms is starting on%s http://localhost:%s\n' "$DIM" "$N" "$port"
     local i code
     for i in $(seq 1 60); do
@@ -379,7 +413,15 @@ Container management:
   llms down                  stop and remove the server
   llms restart               restart the server
   llms status                show whether the server is running
-  llms logs [-f]             show server logs
+  llms logs [-f]             show server logs (last 200 lines, -f to follow)
+
+Logging (equivalent to DEBUG=1 llms --serve 8000 --verbose):
+  llms up --verbose          request logging
+  llms up --debug            verbose + debug logging
+  llms up --debug -f         ...and follow the logs
+  llms restart --debug       turn it on for an already-running server
+  llms --debug ls            for one-shot commands too
+  Persist it by setting LLMS_VERBOSE=1 or LLMS_DEBUG=1 in $LLMS_HOME/config
   llms setup                 choose providers and enter API keys
   llms update                pull the latest image and restart
   llms shell                 open a shell inside the container
@@ -389,25 +431,56 @@ Config lives in $LLMS_HOME (llms.json, providers.json, .env)
 USAGE
 }
 
+# Leading --verbose / --debug are wrapper flags, consumed here so they don't
+# reach the llms CLI (which has --verbose but no --debug). Both are turned into
+# container env vars, which llms reads on startup.
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -d|--debug)   LLMS_DEBUG=1; shift ;;
+        -v|--verbose) LLMS_VERBOSE=1; shift ;;
+        *) break ;;
+    esac
+done
+log_args
+
 case "${1:-}" in
     up|start)
-        shift; server_up "${1:-$LLMS_PORT}" ;;
+        shift; parse_log_flags "$@"
+        # shellcheck disable=SC2086
+        set -- $REST
+        server_up "${1:-$LLMS_PORT}"
+        [ "$FOLLOW" = "1" ] && exec docker logs -f "$LLMS_CONTAINER" ;;
     down|stop)
         docker rm -f "$LLMS_CONTAINER" >/dev/null 2>&1 \
             && printf '%sstopped%s\n' "$DIM" "$N" \
             || printf '%snot running%s\n' "$DIM" "$N" ;;
     restart)
-        server_up "$LLMS_PORT" ;;
+        shift; parse_log_flags "$@"
+        # shellcheck disable=SC2086
+        set -- $REST
+        server_up "${1:-$LLMS_PORT}"
+        [ "$FOLLOW" = "1" ] && exec docker logs -f "$LLMS_CONTAINER" ;;
     status)
         if server_running; then
             printf '%s✓%s running — %s\n' "$GRN" "$N" \
                 "$(docker inspect -f '{{range $p, $c := .NetworkSettings.Ports}}{{$p}} -> {{range $c}}{{.HostIp}}:{{.HostPort}}{{end}} {{end}}' "$LLMS_CONTAINER" 2>/dev/null)"
             docker inspect -f '  image:  {{.Config.Image}}{{if .State.Health}}{{"\n"}}  health: {{.State.Health.Status}}{{end}}' "$LLMS_CONTAINER" 2>/dev/null
+            RUNNING_ENV="$(docker inspect -f '{{range .Config.Env}}{{.}} {{end}}' "$LLMS_CONTAINER" 2>/dev/null)"
+            RUNNING_LOG="off"
+            case " $RUNNING_ENV " in *" VERBOSE=1 "*) RUNNING_LOG="verbose" ;; esac
+            case " $RUNNING_ENV " in *" DEBUG=1 "*) RUNNING_LOG="verbose + debug" ;; esac
+            printf '  logging: %s\n' "$RUNNING_LOG"
+            [ "$RUNNING_LOG" = "off" ] && printf '  %sturn it on with:%s llms restart --verbose   %s(or --debug)%s\n' "$DIM" "$N" "$DIM" "$N"
         else
             printf '%snot running%s — start it with: %sllms up%s\n' "$DIM" "$N" "$B" "$N"
         fi ;;
     logs)
-        shift; docker logs "$@" "$LLMS_CONTAINER" ;;
+        shift
+        server_running || printf '%snot running — showing the last run%s\n' "$DIM" "$N" >&2
+        case " $* " in
+            *" -f "*|*" --follow "*|*" -n "*|*" --tail "*) docker logs "$@" "$LLMS_CONTAINER" ;;
+            *) docker logs --tail 200 "$@" "$LLMS_CONTAINER" ;;
+        esac ;;
     setup)
         shift; exec "$LLMS_HOME/bin/llms-setup" "$@" ;;
     update)
@@ -426,7 +499,7 @@ case "${1:-}" in
         TTY_ARGS="-i"
         [ -t 0 ] && [ -t 1 ] && TTY_ARGS="-it"
         # shellcheck disable=SC2086
-        exec docker run --rm $TTY_ARGS $COMMON_ARGS $ENV_ARGS \
+        exec docker run --rm $TTY_ARGS $COMMON_ARGS $ENV_ARGS $LOG_ARGS \
             -v "$PWD:/work" -w /work \
             --entrypoint llms "$LLMS_IMAGE" "$@" ;;
 esac
