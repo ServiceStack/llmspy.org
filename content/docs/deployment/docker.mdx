@@ -3,32 +3,49 @@ title: Docker Deployment
 description: Deploy llms.py using Docker and docker compose
 ---
 
-## Quick Start
+The Docker image bundles llms.py with everything its extensions need — Python,
+`bun` and the .NET SDK — so nothing has to be installed on the host beyond
+Docker itself.
 
-llms.py is available as pre-built Docker images with full support for docker compose.
+If you just want it running, use the [one-line installer](/docs/deployment/install):
+
+```bash
+curl -fsSL https://llmspy.org/install.sh | bash
+```
+
+The rest of this page covers running the image directly.
+
+## Quick Start
 
 ### Using Pre-built Images
 
-Pull and run the latest image:
-
 ```bash
 docker pull ghcr.io/servicestack/llms:latest
-docker run -p 8000:8000 -e OPENROUTER_API_KEY="your-key" ghcr.io/servicestack/llms:latest
+
+docker run -d --name llms \
+  -p 127.0.0.1:8000:8000 \
+  -v ~/.llms:/home/llms/.llms \
+  --add-host=host.docker.internal:host-gateway \
+  -e OPENROUTER_API_KEY="sk-or-..." \
+  ghcr.io/servicestack/llms:latest
 ```
+
+Then open http://localhost:8000
 
 ### Using docker compose (Recommended)
 
-1. Create a `.env` file with your API keys:
+1. Create a `.env` file with your API keys — one `VAR=value` per line, no quotes,
+   no spaces around `=`:
 
 ```bash
 OPENROUTER_API_KEY=sk-or-...
 GROQ_API_KEY=gsk_...
-GOOGLE_FREE_API_KEY=AIza...
+GOOGLE_API_KEY=AIza...
 ANTHROPIC_API_KEY=sk-ant-...
 OPENAI_API_KEY=sk-...
-GROK_API_KEY=xai-...
+XAI_API_KEY=xai-...
 DASHSCOPE_API_KEY=sk-...
-ZAI_API_KEY=sk-...
+ZHIPU_API_KEY=...
 MISTRAL_API_KEY=...
 ```
 
@@ -40,318 +57,257 @@ docker compose up -d
 
 3. Access the UI at http://localhost:8000
 
+`docker-compose.yml` uses `env_file: .env`, so every key in that file is passed
+through without needing an entry per provider.
+
+## API Key Environment Variables
+
+Each provider reads a specific environment variable, defined by its `env` entry
+in `providers.json`. The current set:
+
+| Provider | Environment variable |
+| --- | --- |
+| Alibaba (Qwen) | `DASHSCOPE_API_KEY` |
+| Anthropic | `ANTHROPIC_API_KEY` |
+| Cerebras | `CEREBRAS_API_KEY` |
+| Chutes | `CHUTES_API_KEY` |
+| Codestral | `CODESTRAL_API_KEY` |
+| DeepSeek | `DEEPSEEK_API_KEY` |
+| Fireworks AI | `FIREWORKS_API_KEY` |
+| GitHub Copilot | `GITHUB_TOKEN` |
+| Google | `GOOGLE_API_KEY`, `GOOGLE_GENERATIVE_AI_API_KEY` or `GEMINI_API_KEY` |
+| Groq | `GROQ_API_KEY` |
+| Hugging Face | `HF_TOKEN` |
+| llmspy | `LLMSPY_API_KEY` |
+| LM Studio | `LMSTUDIO_API_KEY` |
+| MiniMax | `MINIMAX_API_KEY` |
+| Mistral | `MISTRAL_API_KEY` |
+| Moonshot AI | `MOONSHOT_API_KEY` |
+| Nvidia | `NVIDIA_API_KEY` |
+| Ollama Cloud | `OLLAMA_API_KEY` |
+| OpenAI | `OPENAI_API_KEY` |
+| OpenRouter | `OPENROUTER_API_KEY` |
+| xAI | `XAI_API_KEY` |
+| Z.AI / Z.AI Coding Plan | `ZHIPU_API_KEY` |
+
+`.env.example` in the repo has the full list with links to where you get each
+key. `llms setup --list` prints the same table annotated with which ones you
+already have configured.
+
 ## Docker Images
 
 ### Available Images
 
-Pre-built images are automatically published to GitHub Container Registry:
+Published to GitHub Container Registry and Docker Hub on every push to `main`
+and every `v*` tag:
 
 - **Latest stable**: `ghcr.io/servicestack/llms:latest`
-- **Specific version**: `ghcr.io/servicestack/llms:v2.0.30`
+- **Specific version**: `ghcr.io/servicestack/llms:4.0.10`
+- **Minor series**: `ghcr.io/servicestack/llms:4.0`
 - **Main branch**: `ghcr.io/servicestack/llms:main`
 
 ### Multi-Architecture Support
 
-Images support:
-- `linux/amd64` (Intel/AMD x86_64)
-- `linux/arm64` (ARM64/Apple Silicon)
-
-Docker automatically pulls the correct image for your platform.
+Images support `linux/amd64` and `linux/arm64`; Docker pulls the right one for
+your platform automatically.
 
 ## Usage Examples
 
-### Basic Server
-
-```bash
-docker run -p 8000:8000 \
-  -e OPENROUTER_API_KEY="your-key" \
-  ghcr.io/servicestack/llms:latest
-```
-
-### With Multiple API Keys
-
-```bash
-docker run -p 8000:8000 \
-  -e OPENROUTER_API_KEY="sk-or-..." \
-  -e GROQ_API_KEY="gsk_..." \
-  -e GOOGLE_FREE_API_KEY="AIza..." \
-  -e ANTHROPIC_API_KEY="sk-ant-..." \
-  ghcr.io/servicestack/llms:latest
-```
-
-### With Persistent Storage
-
-```bash
-docker run -p 8000:8000 \
-  -v llms-data:/home/llms/.llms \
-  -e OPENROUTER_API_KEY="your-key" \
-  ghcr.io/servicestack/llms:latest
-```
-
 ### CLI Usage
 
-Use the Docker container for CLI commands:
+Mount your config directory so the container has your providers and keys:
 
 ```bash
 # Single query
-docker run --rm \
-  -e OPENROUTER_API_KEY="your-key" \
-  ghcr.io/servicestack/llms:latest \
-  llms "What is the capital of France?"
+docker run --rm -v ~/.llms:/home/llms/.llms \
+  --entrypoint llms ghcr.io/servicestack/llms:latest \
+  "What is the capital of France?"
 
 # List models
-docker run --rm \
-  -e OPENROUTER_API_KEY="your-key" \
-  ghcr.io/servicestack/llms:latest \
-  llms --list
+docker run --rm -v ~/.llms:/home/llms/.llms \
+  --entrypoint llms ghcr.io/servicestack/llms:latest ls
 
-# Check provider
-docker run --rm \
-  -e GROQ_API_KEY="your-key" \
-  ghcr.io/servicestack/llms:latest \
-  llms --check groq
+# Check a provider
+docker run --rm -e GROQ_API_KEY="gsk_..." \
+  --entrypoint llms ghcr.io/servicestack/llms:latest --check groq
 ```
+
+The [one-line installer](/docs/deployment/install) wraps all of this behind an
+`llms` command, so `llms ls` and `llms --check groq` work directly.
 
 ### Custom Port
 
-Run on a different port:
-
 ```bash
-docker run -p 3000:8000 \
-  -e OPENROUTER_API_KEY="your-key" \
-  ghcr.io/servicestack/llms:latest
+docker run -p 3000:8000 -v ~/.llms:/home/llms/.llms ghcr.io/servicestack/llms:latest
 ```
 
 ### With Verbose Logging
 
 ```bash
-docker run -p 8000:8000 \
-  -e OPENROUTER_API_KEY="your-key" \
-  -e VERBOSE=1 \
-  ghcr.io/servicestack/llms:latest
+docker run -p 8000:8000 -v ~/.llms:/home/llms/.llms \
+  ghcr.io/servicestack/llms:latest \
+  llms --serve 8000 --verbose
 ```
 
-## Docker Compose
+## Reaching Services on the Host
 
-### Using Pre-built Image
-
-The default `docker-compose.yml` uses the pre-built image:
-
-```yaml
-version: '3.8'
-
-services:
-  llms:
-    image: ghcr.io/servicestack/llms:latest
-    ports:
-      - "8000:8000"
-    environment:
-      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
-      - GROQ_API_KEY=${GROQ_API_KEY}
-      - GOOGLE_FREE_API_KEY=${GOOGLE_FREE_API_KEY}
-    volumes:
-      - llms-data:/home/llms/.llms
-    restart: unless-stopped
-
-volumes:
-  llms-data:
-```
-
-Commands:
+Inside a container `localhost` refers to the container, not your machine. To use
+a local Ollama or LM Studio, start the container with:
 
 ```bash
-# Start services
-docker compose up -d
-
-# View logs
-docker compose logs -f
-
-# Stop services
-docker compose down
+--add-host=host.docker.internal:host-gateway
 ```
 
-### Building from Source
+and point the provider at `host.docker.internal` in `llms.json`:
 
-If you've cloned the repository, use `docker-compose.local.yml`:
-
-```bash
-# Build and start
-docker compose -f docker-compose.local.yml up -d --build
-
-# View logs
-docker compose -f docker-compose.local.yml logs -f
-
-# Stop
-docker compose -f docker-compose.local.yml down
+```json
+{
+  "providers": {
+    "ollama": {
+      "enabled": true,
+      "api": "http://host.docker.internal:11434"
+    }
+  }
+}
 ```
+
+`llms setup` makes this rewrite for you when you enable a local provider.
 
 ## Data Persistence
 
-The container stores configuration and analytics in `/home/llms/.llms`.
+The container stores configuration and analytics data in `/home/llms/.llms`, and
+creates default `llms.json` and `providers.json` there on first run.
 
-On first run, default `llms.json` and `ui.json` files are automatically created.
+### Bind Mount (Recommended)
 
-### Named Volume (Recommended)
-
-```bash
-docker run -p 8000:8000 \
-  -v llms-data:/home/llms/.llms \
-  -e OPENROUTER_API_KEY="your-key" \
-  ghcr.io/servicestack/llms:latest
-```
-
-### Local Directory
+Keeps the files editable on the host:
 
 ```bash
-docker run -p 8000:8000 \
-  -v $(pwd)/llms-config:/home/llms/.llms \
-  -e OPENROUTER_API_KEY="your-key" \
-  ghcr.io/servicestack/llms:latest
+docker run -p 8000:8000 -v ~/.llms:/home/llms/.llms ghcr.io/servicestack/llms:latest
 ```
 
-## Custom Configuration
-
-### Method 1: Mount a Directory
-
-1. Create a directory with your config files:
+### Named Volume
 
 ```bash
-mkdir -p config
-# Add your custom llms.json and ui.json to config/
+docker run -p 8000:8000 -v llms-data:/home/llms/.llms ghcr.io/servicestack/llms:latest
 ```
 
-2. Mount the directory:
+## Custom Configuration Files
+
+### Method 1: Mount a Local Directory (Recommended)
+
+Extract the defaults, edit them, then mount the directory:
 
 ```bash
-docker run -p 8000:8000 \
-  -v $(pwd)/config:/home/llms/.llms \
-  -e OPENROUTER_API_KEY="your-key" \
-  ghcr.io/servicestack/llms:latest
+./docker-extract-configs.sh config
+# edit config/llms.json
+docker run -p 8000:8000 -v $(pwd)/config:/home/llms/.llms ghcr.io/servicestack/llms:latest
 ```
 
-With docker compose:
+Or with docker compose:
 
 ```yaml
 volumes:
   - ./config:/home/llms/.llms
 ```
 
-### Method 2: Mount Individual Files
+### Method 2: Mount Individual Config Files
+
+Mount specific files read-only to pin them:
 
 ```bash
 docker run -p 8000:8000 \
   -v $(pwd)/my-llms.json:/home/llms/.llms/llms.json:ro \
-  -v $(pwd)/my-ui.json:/home/llms/.llms/ui.json:ro \
-  -e OPENROUTER_API_KEY="your-key" \
+  -v $(pwd)/my-providers-extra.json:/home/llms/.llms/providers-extra.json:ro \
   ghcr.io/servicestack/llms:latest
 ```
 
-### Method 3: Extract Default Configs
+### What Can You Customize?
 
-1. Run container to initialize defaults:
+**In `llms.json`:**
+- Enable/disable providers
+- Add or remove models
+- Configure API endpoints
+- Set pricing information
+- Customize default chat templates
+- Configure provider-specific settings
 
-```bash
-docker run --rm \
-  -v llms-data:/home/llms/.llms \
-  ghcr.io/servicestack/llms:latest \
-  llms --init
+**In `providers-extra.json`:**
+- Additional providers and models
+
+### Example: Custom Provider Configuration
+
+```json
+{
+  "defaults": {
+    "text": {
+      "model": "llama-3.3-70b-versatile",
+      "messages": [{ "role": "user", "content": "" }]
+    }
+  },
+  "providers": {
+    "groq": { "enabled": true }
+  }
+}
 ```
 
-2. Extract the configs:
-
 ```bash
-docker run -d --name llms-temp -v llms-data:/home/llms/.llms ghcr.io/servicestack/llms:latest sleep 60
-docker cp llms-temp:/home/llms/.llms/llms.json ./llms.json
-docker cp llms-temp:/home/llms/.llms/ui.json ./ui.json
-docker rm -f llms-temp
-```
-
-3. Edit and copy back:
-
-```bash
-# After editing
-docker run -d --name llms-temp -v llms-data:/home/llms/.llms ghcr.io/servicestack/llms:latest sleep 60
-docker cp ./llms.json llms-temp:/home/llms/.llms/llms.json
-docker cp ./ui.json llms-temp:/home/llms/.llms/ui.json
-docker rm -f llms-temp
+docker run -p 8000:8000 \
+  -v $(pwd)/custom-llms.json:/home/llms/.llms/llms.json:ro \
+  -e GROQ_API_KEY="gsk_..." \
+  ghcr.io/servicestack/llms:latest
 ```
 
 ## Building Locally
 
-### Using Build Script
-
 ```bash
-./docker-build.sh
+./docker-build.sh                  # builds llms-py:latest
+./docker-build.sh v4.0.10          # with a tag
+
+docker compose -f docker-compose.local.yml up -d --build
 ```
 
-### Manual Build
+## Testing an Image
+
+`scripts/test-docker.sh` in the repo pulls the image and exercises it end to
+end — metadata, multi-arch manifest, non-root user, toolchain versions,
+`llms --init`, `llms ls`, a live HTTP server and Docker's own health check:
 
 ```bash
-docker build -t llms-py:latest .
+./scripts/test-docker.sh                        # test the published latest
+./scripts/test-docker.sh --image llms-py:dev    # test a local build
+./scripts/test-docker.sh --quick                # skip the server tests
 ```
 
-### With Custom Tag
-
-```bash
-./docker-build.sh v2.0.30
-```
-
-### Run Local Build
-
-```bash
-docker run -p 8000:8000 \
-  -e OPENROUTER_API_KEY="your-key" \
-  llms-py:latest
-```
+It exits non-zero if any check fails, so it works as a release gate.
 
 ## Health Checks
 
-The Docker image includes health checks:
-
-### Check Container Health
+The image includes a `HEALTHCHECK`. To see it:
 
 ```bash
-docker ps
-```
-
-Look for health status in the STATUS column.
-
-### View Health Details
-
-```bash
-docker inspect --format='{{json .State.Health}}' container-name | jq
-```
-
-## Security
-
-The container:
-- Runs as non-root user (UID 1000)
-- Only exposes port 8000
-- No unnecessary packages installed
-- Multi-stage build reduces attack surface
-
-### Permissions
-
-If mounting local directories, ensure they're writable:
-
-```bash
-mkdir -p llms-config
-chmod 777 llms-config  # Or more restrictive with correct ownership
+docker ps                                                  # STATUS column
+docker inspect --format='{{json .State.Health}}' llms | jq
 ```
 
 ## Troubleshooting
 
 ### Container Won't Start
 
-Check logs:
+```bash
+docker logs llms
+```
+
+### Permission Issues (Linux)
+
+The container runs as UID 1000. If your UID is different, bind-mounted config
+won't be writable — run the container as yourself:
 
 ```bash
-docker logs container-name
+docker run --user $(id -u):$(id -g) -v ~/.llms:/home/llms/.llms ...
 ```
 
 ### Port Already in Use
-
-Change the host port:
 
 ```bash
 docker run -p 3000:8000 ...
@@ -359,47 +315,16 @@ docker run -p 3000:8000 ...
 
 ### API Keys Not Working
 
-Verify environment variables:
-
 ```bash
-docker exec container-name env | grep API_KEY
+docker exec llms env | grep -i api_key
 ```
 
-### Permission Issues
+Note that `--env-file` does no quote stripping — `GROQ_API_KEY="gsk_..."` in a
+`.env` file passes the quotes through as part of the key. Leave them off.
 
-The container runs as user `llms` (UID 1000). Ensure mounted directories have correct permissions.
+## Security Considerations
 
-## Production Deployment
-
-For production:
-
-1. **Use HTTPS**: Put behind reverse proxy (nginx, Traefik)
-2. **Persistent Storage**: Use named volumes or bind mounts
-3. **Restart Policy**: Use `restart: unless-stopped`
-4. **Resource Limits**: Set CPU and memory limits
-5. **Monitoring**: Monitor container health
-6. **Backups**: Regular backups of `/home/llms/.llms`
-
-Example with resource limits:
-
-```yaml
-services:
-  llms:
-    image: ghcr.io/servicestack/llms:latest
-    deploy:
-      resources:
-        limits:
-          cpus: '2'
-          memory: 2G
-        reservations:
-          memory: 512M
-    restart: unless-stopped
-```
-
-## Next Steps
-
-<Cards>
-  <Card title="GitHub OAuth" href="/docs/deployment/github-oauth" />
-  <Card title="Configuration" href="/docs/configuration" />
-  <Card title="CLI Reference" href="/docs/cli" />
-</Cards>
+- Container runs as a non-root user (UID 1000)
+- Only port 8000 is exposed; publish it on `127.0.0.1` to keep it off your network
+- Multi-stage build keeps the final image small
+- Images are published with build provenance attestations

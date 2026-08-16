@@ -3,6 +3,7 @@
   "defaultOpen": true,
   "pages": [
     "index",
+    "install",
     "docker",
     "custom-build"
   ]
