@@ -3,12 +3,14 @@ title: Voice Input
 description: Adds voice-to-text transcription to the chat UI via a microphone button or ALT+D keyboard shortcut.
 ---
 
-The [voice](https://github.com/ServiceStack/llms/tree/main/llms/extensions/voice) extension supports three transcription modes tried in order: `voxtype`, `transcribe`, and `voxtral-mini-latest`, using the first one that's available.
+The [voice](https://github.com/ServiceStack/llms/tree/main/llms/extensions/voice) extension supports four transcription modes tried in order: `voxtype`, `transcribe`, `api`, and `voxtral-mini-latest`, using the first one that's available.
+
+Local tools are tried first, so a machine with `voxtype` or your own `transcribe` script keeps transcribing locally even when API keys are present.
 
 To remove modes or change their priority, override with the `LLMS_VOICE` environment variable, e.g:
 
 ```bash
-export LLMS_VOICE="transcribe,voxtral-mini-latest"
+export LLMS_VOICE="api,voxtral-mini-latest"
 ```
 
 ## Usage
@@ -16,7 +18,6 @@ export LLMS_VOICE="transcribe,voxtral-mini-latest"
 ### 🎤 Microphone Button
 
 Click the microphone icon in the chat input area to start recording. Click again to stop and transcribe.
-
 
 If the **voice** extension is enabled the microphone button will appear in the chat input area, and the `ALT+D` keyboard shortcut will be available for voice input.
 
@@ -29,7 +30,7 @@ If the **voice** extension is enabled the microphone button will appear in the c
 
 <Screenshot src="/img/features/voice-input.webp"  />
 
-The transcribed text is appended to the current message input. 
+The transcribed text is appended to the current message input.
 
 <Screenshot src="/img/features/voice-recording.webp"  />
 
@@ -39,6 +40,109 @@ Voice input can be disabled by [disabling the voice extension](/docs/configurati
 
 Voice Input will use the first available mode.
 
+## api
+
+Sends the recording to any **OpenAI-compatible** `/v1/audio/transcriptions` endpoint. This is the most flexible mode — it covers hosted providers and any local speech-to-text server, and it's the only one that needs nothing installed alongside llms.py.
+
+**Requirements:**
+- An API key for a supported provider, **or** a `url` and `model` for your own endpoint
+
+With no configuration at all it uses the first provider API key it finds:
+
+| Environment variable | Provider | Default model |
+| --- | --- | --- |
+| `GROQ_API_KEY` | Groq | `whisper-large-v3-turbo` |
+| `OPENAI_API_KEY` | OpenAI | `whisper-1` |
+| `MISTRAL_API_KEY` | Mistral | `voxtral-mini-latest` |
+
+llms.py ships with `mistral` / `voxtral-mini-latest` configured in `defaults.voice`. If that
+provider has no API key it **falls back** to any other provider that does, so the shipped default
+never disables voice input for someone using a different provider — `--verbose` logs `[fallback]`
+when that happens.
+
+> **Audio format.** Browsers record `webm/opus`, which Groq and OpenAI accept but Mistral rejects
+> with *"Audio input could not be decoded"*. The chat UI converts the recording to 16 kHz mono WAV
+> before uploading, so every provider works with no extra software. If the browser can't do the
+> conversion the server falls back to `ffmpeg` when it's installed, and otherwise sends the
+> original — in which case use `groq` or `openai`, which decode `webm` directly.
+
+### Configuring in llms.json
+
+Add a `voice` section under `defaults` in `llms.json` to choose the provider and model:
+
+```json
+{
+  "defaults": {
+    "voice": {
+      "provider": "groq",
+      "model": "whisper-large-v3",
+      "language": "en"
+    }
+  }
+}
+```
+
+| Setting | Purpose |
+| --- | --- |
+| `provider` | `groq`, `openai` or `mistral` — selects the endpoint and default model |
+| `model` | Model id, e.g. `whisper-large-v3` |
+| `url` | Full endpoint URL. Set this instead of `provider` to use any other server |
+| `api_key` | API key. Use `$SOME_VAR` to read an environment variable rather than storing it inline |
+| `language` | ISO-639-1 hint, e.g. `en`. Omit to auto-detect |
+| `prompt` | Biasing prompt to improve recognition of names and jargon |
+
+Switching model within a provider is a single key:
+
+```json
+{
+  "defaults": {
+    "voice": {
+      "model": "whisper-large-v3"
+    }
+  }
+}
+```
+
+### Using a local speech-to-text server
+
+Point `url` at any OpenAI-compatible server — [speaches](https://github.com/speaches-ai/speaches), faster-whisper-server, or your own. No API key is needed:
+
+```json
+{
+  "defaults": {
+    "voice": {
+      "url": "http://localhost:8001/v1/audio/transcriptions",
+      "model": "Systran/faster-whisper-small"
+    }
+  }
+}
+```
+
+This keeps audio on your own hardware while still using the `api` mode, and is the recommended way to run offline transcription in Docker, where the host's `localhost` is reachable as `host.docker.internal`.
+
+> `defaults` is sent to the browser by `/config`, so prefer `"api_key": "$SOME_VAR"` over a literal
+> key. A literal `api_key` is stripped from that response, but keeping secrets in the environment
+> is still the safer habit.
+
+### Environment variable overrides
+
+Every setting has an environment variable that **takes precedence** over `llms.json`, useful for one-off runs or for keeping keys out of config:
+
+| Variable | `llms.json` equivalent |
+| --- | --- |
+| `LLMS_TRANSCRIBE_PROVIDER` | `provider` |
+| `LLMS_TRANSCRIBE_MODEL` | `model` |
+| `LLMS_TRANSCRIBE_URL` | `url` |
+| `LLMS_TRANSCRIBE_KEY` | `api_key` |
+| `LLMS_TRANSCRIBE_LANG` | `language` |
+| `LLMS_TRANSCRIBE_PROMPT` | `prompt` |
+
+Run with `--verbose` to see which provider and model were selected, and where each value came from:
+
+```
+Using api for voice: groq [llms.json] model=whisper-large-v3 [llms.json]
+```
+
 ## voxtype
 
 Uses the [voxtype.io](https://voxtype.io) CLI tool for local transcription.
@@ -46,6 +150,8 @@ Uses the [voxtype.io](https://voxtype.io) CLI tool for local transcription.
 **Requirements:**
 - `voxtype` must be installed and on your `$PATH`
 - `ffmpeg` must be installed for audio format conversion
+
+Voxtype requires a graphical desktop session, so it isn't available in headless or containerised deployments — use `api` with a local server instead.
 
 #### Installation
 
@@ -69,13 +175,17 @@ See [Creating a transcribe Script](#creating-a-transcribe-script) for implementa
 
 ## voxtral-mini-latest
 
-Uses [Mistral's Voxtral model](https://docs.mistral.ai/models/voxtral-mini-transcribe-26-02) for cloud-based transcription. A good option if you want to avoid downloading a large model and using local CPU resources.
+Uses [Mistral's Voxtral model](https://docs.mistral.ai/models/voxtral-mini-transcribe-26-02) for cloud-based transcription, through the configured Mistral provider.
 
 **Requirements:**
 - Mistral provider must be enabled in your configuration
 - `MISTRAL_API_KEY` environment variable must be set
 
 **Pricing:** ~$0.003/minute
+
+Any `voxtral*` model id may be used, e.g. `LLMS_VOICE="voxtral-small-latest"`.
+
+The `api` mode reaches the same endpoint and defaults to the same model, so this mode is mainly useful when you want transcription to go through the Mistral provider's own configuration.
 
 ---
 
@@ -142,3 +252,21 @@ trap 'rm -f "$TMPFILE" "${TMPFILE}.txt"' EXIT
 cat "${TMPFILE}.txt"
 ```
 
+---
+
+## Troubleshooting
+
+### The microphone button doesn't appear
+
+Browsers only expose the microphone API in a **secure context**: HTTPS, or `http://localhost` / `http://127.0.0.1`. Browsing to a plain-HTTP address such as `http://192.168.1.10:8000` silently disables it, so no button is shown regardless of your configuration.
+
+Reach the server over an SSH tunnel (`ssh -L 8000:localhost:8000 host`) or put it behind a TLS-terminating reverse proxy.
+
+Otherwise, no mode was available. Run with `--verbose` to see why each was skipped:
+
+```
+Cannot use voxtype - voxtype not installed
+Cannot use transcribe - transcribe not installed
+Cannot use api - no voice provider configured, see defaults.voice in llms.json
+Cannot use voxtral-mini-latest - Mistral not enabled
+```
