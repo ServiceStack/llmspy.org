@@ -1,0 +1,193 @@
+---
+title: One-line Install
+description: Install, configure and run llms.py with a single command using Docker
+---
+
+If you have Docker, this is the fastest way to get llms.py running with a chat
+UI, an OpenAI-compatible API, and the providers you have keys for:
+
+```bash
+curl -fsSL https://llmspy.org/install.sh | bash
+```
+
+It pulls the latest image, installs an `llms` command on your PATH, and opens a
+setup screen to pick providers and enter API keys. When it finishes:
+
+```bash
+llms up                    # start the server on http://localhost:8000
+llms ls                    # list enabled providers and models
+llms "what is 2+2?"        # ask the default model
+```
+
+Nothing is installed outside `~/.llms` and your local bin directory, and nothing
+needs `sudo`.
+
+## Prerequisites
+
+Docker, and the Docker daemon actually running. That's it — Python, `bun` and the
+.NET SDK that llms.py extensions use are all inside the image.
+
+If Docker isn't installed the script stops and prints the right command for your
+platform:
+
+```bash
+brew install --cask docker              # macOS
+curl -fsSL https://get.docker.com | sh  # Linux
+```
+
+## Choosing providers
+
+The installer opens a picker listing every provider in `providers.json`:
+
+```
+ llms.py — providers
+
+ ●  Anthropic            ANTHROPIC_API_KEY          saved  sk-a..7Yq2      13
+ ○  Cerebras             CEREBRAS_API_KEY           -      -                3
+ ●  Groq                 GROQ_API_KEY               shell  gsk_..1f9c      15
+ ○  Ollama               -                          local  -                0
+ ○  OpenAI               OPENAI_API_KEY             -      -               47
+
+ ↑↓ move  space toggle  enter set key  x clear  a all  n none  s save  q quit
+```
+
+The **source** column shows where each key came from:
+
+| Source | Meaning |
+| --- | --- |
+| `saved` | Already stored in `~/.llms/.env` — pre-selected |
+| `shell` | Found in the environment you ran the installer from — pre-selected, and copied to `~/.llms/.env` when you save |
+| `local` | Runs on your own machine (Ollama, LM Studio) — no key needed |
+| `-` | No key yet — press <kbd>enter</kbd> to paste one |
+
+So if you already have `GROQ_API_KEY` or `OPENAI_API_KEY` exported in your shell,
+they're picked up automatically and setup is a single keystroke: <kbd>s</kbd>.
+
+`GITHUB_TOKEN` is deliberately never pre-selected — it's usually the `gh` CLI's
+token rather than a Copilot subscription, so you have to opt in.
+
+Press <kbd>enter</kbd> on any provider to paste an API key. The docs URL for
+getting one is shown under the list. Input is hidden, and the key is echoed back
+masked so you can confirm the paste worked.
+
+Saving writes your keys to `~/.llms/.env` (mode `600`) and enables the
+corresponding providers in `~/.llms/llms.json`.
+
+## Re-running it
+
+The script is designed to be re-run. It's the update mechanism:
+
+```bash
+curl -fsSL https://llmspy.org/install.sh | bash
+```
+
+This pulls the latest image, tells you whether anything changed, refreshes the
+`llms` command, and re-opens the picker — now showing which providers you've
+already configured, so you can add another key or turn one off.
+
+To skip the picker, or only show the picker:
+
+```bash
+curl -fsSL https://llmspy.org/install.sh | bash -s -- --no-setup
+llms setup                                                        # picker only
+llms update                                                       # image only
+```
+
+## Options
+
+Pass options after `| bash -s --`:
+
+```bash
+curl -fsSL https://llmspy.org/install.sh | bash -s -- --port 3000 --no-setup
+```
+
+| Option | Description |
+| --- | --- |
+| `--no-setup` | Don't open the provider setup screen |
+| `--no-pull` | Skip pulling the image |
+| `--setup-only` | Just re-open the provider setup screen |
+| `--image IMAGE` | Image to use (default `ghcr.io/servicestack/llms:latest`) |
+| `--port PORT` | Host port for the server (default `8000`) |
+| `--bind ADDR` | Host address to publish on (default `127.0.0.1`) |
+| `--dir DIR` | Config directory (default `~/.llms`) |
+| `--bin-dir DIR` | Where to install the `llms` command |
+| `--uninstall` | Remove the command and container (keeps your config) |
+
+## The llms command
+
+The wrapper passes llms CLI arguments straight through to the container, so every
+example in these docs works unchanged:
+
+```bash
+llms ls                              # list enabled providers and models
+llms ls anthropic                    # filter to one provider
+llms --check groq                    # verify a provider's models
+llms -m gpt-5 "explain monads"       # pick a model
+llms --image ./photo.png "describe"  # the current directory is mounted at /work
+```
+
+Plus container management:
+
+| Command | Description |
+| --- | --- |
+| `llms up [port]` | Start the server in the background |
+| `llms down` | Stop and remove the server |
+| `llms restart` | Restart the server |
+| `llms status` | Show whether the server is running, and its health |
+| `llms logs [-f]` | Show server logs |
+| `llms setup` | Re-open the provider picker |
+| `llms update` | Pull the latest image and restart if running |
+| `llms shell` | Open a shell inside the container |
+| `llms uninstall` | Remove the command and container |
+
+`llms --serve [port]` is accepted as an alias for `llms up`.
+
+The server starts with `--restart unless-stopped`, so it comes back after a
+reboot. `llms down` stops that.
+
+### If you already have llms-py installed with pip
+
+If a different `llms` is already on your PATH, the installer says so and
+additionally installs the Docker version as `llms-docker`, leaving your existing
+`llms` untouched. Both read the same `~/.llms` config directory.
+
+## What it creates
+
+| Path | Purpose |
+| --- | --- |
+| `~/.llms/llms.json` | Providers, models, defaults |
+| `~/.llms/providers.json` | Provider/model catalogue |
+| `~/.llms/.env` | Your API keys, mode `600` |
+| `~/.llms/config` | Settings for the `llms` command |
+| `~/.llms/docker-compose.yml` | Optional alternative to `llms up` |
+| `~/.llms/bin/llms` | The wrapper |
+| `~/.llms/bin/llms-setup` | The provider picker |
+| `~/.local/bin/llms` | Symlink to the wrapper |
+
+Every setting can be overridden per-command or edited in `~/.llms/config`:
+
+```bash
+LLMS_PORT=3000 llms up
+LLMS_BIND=0.0.0.0 llms up                            # expose on your LAN
+LLMS_IMAGE=ghcr.io/servicestack/llms:4.0.10 llms ls  # pin a version
+```
+
+## Uninstalling
+
+```bash
+llms uninstall            # removes the command and container
+rm -rf ~/.llms            # also removes config, keys and chat history
+```
+
+## Prefer not to pipe to bash?
+
+Download it first and read it — it's a single self-contained shell script:
+
+```bash
+curl -fsSL https://llmspy.org/install.sh -o install.sh
+less install.sh
+bash install.sh
+```
+
+Or skip it entirely and use [Docker directly](/docs/deployment/docker), or
+[install with pip](/docs/getting-started).
