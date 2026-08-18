@@ -162,6 +162,31 @@ The **Analytics** extension now includes multi-user management and per-user anal
 
 See the [Analytics docs](/docs/features/analytics#user-analytics) for the full walkthrough.
 
+## August 18, 2026
+
+### Core Agent Tools: `fetch_url` & `grep_search`
+
+The built-in `core_tools` extension now includes two new zero-dependency core tools designed to empower AI assistants and coding agents with web reading and fast codebase navigation:
+
+#### `fetch_url`
+
+A lightweight, dependency-free tool that fetches content from HTTP/HTTPS URLs and converts HTML pages into clean, token-efficient Markdown:
+
+- **HTML to Markdown Conversion**: Automatically strips boilerplate elements (`<script>`, `<style>`, `<head>`, `<svg>`, `<noscript>`, `<iframe>`, `<nav>`, `<footer>`, `<aside>`).
+- **Semantic Formatting**: Accurately formats headings, paragraphs, lists, bold/italic markers, code blocks, blockquotes, tables, and hyperlinks (resolving relative URLs to absolute links).
+- **Token Efficiency**: Reduces raw HTML token overhead by up to 90%+, preserving context window space for LLMs.
+- **Non-HTML Support**: Returns raw text for JSON, plain text, and API responses.
+- **Length Truncation**: Enforces a configurable `max_length` (default: 20,000 characters) with truncation notices to avoid context window overflow.
+
+#### `grep_search`
+
+A fast text and regular expression search tool across workspace directories and files:
+
+- **Regex & Literal Search**: Search for exact text or regex patterns across files.
+- **Automated Directory Pruning**: Automatically ignores non-source and virtual environment directories (`.git`, `.venv`, `node_modules`, `__pycache__`, `dist`, `build`, `bin`, `obj`, etc.) and skips binary files.
+- **File Pattern Filtering**: Filter search targets with glob patterns like `*.py`, `*.ts`, or `*.cs`.
+- **Structured Output**: Returns matching relative file paths, 1-indexed line numbers, and line contents, capped at configurable match limits (default: 50).
+
 ## August 3, 2026
 
 ### Profile Manager
