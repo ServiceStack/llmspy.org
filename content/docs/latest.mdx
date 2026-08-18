@@ -164,6 +164,20 @@ See the [Analytics docs](/docs/features/analytics#user-analytics) for the full w
 
 ## August 18, 2026
 
+### Durable Long-Running Agents & Scalable Chat History
+
+The agent runtime has been redesigned for long-running, multi-step agent workflows. Agents can now work autonomously across extensive tasks requiring dozens or hundreds of model iterations, tool calls, file modifications, and verification steps without being limited by single HTTP request timeouts, browser lifecycles, or model context windows.
+
+#### Key Capabilities & Benefits
+
+- **Durable Background Execution**: Submitting a prompt immediately returns UI control while the agent executes asynchronously as a background run. Tasks execute in bounded slices, checkpointing state, steps, and canonical messages between slices rather than failing at arbitrary tool iteration limits.
+- **Resilient to Refreshes & Restarts**: Run state, steps, tool progress, and canonical messages are durably persisted in the database. Closing or refreshing the browser does not interrupt active runs, and server restarts cleanly requeue interrupted work without leaving orphaned tasks.
+- **Automatic Non-Destructive Context Compaction**: AI.Chat actively tracks model context window consumption. When nearing context limits, older conversation turns are hierarchically summarized into structured context snapshots while preserving initial instructions and recent verbatim messages. Canonical chat history remains intact and fully auditable.
+- **High-Performance Head/Tail Thread Loading**: Massive conversations with thousands of messages load instantly without freezing the browser or transferring multi-megabyte payloads. AI.Chat initially loads the first 20 requirements messages and the latest 100 messages with sequence-aware gap navigation to expand history on demand.
+- **Real-Time Streaming with Auto-Fallback**: Live updates and token streaming default to low-overhead Server-Sent Events (SSE), with automatic client-side fallback to long polling when proxies or networks block event streams.
+- **Enhanced Progress & Diagnostics UX**: Features a real-time context utilization indicator, live progress during context reduction, elapsed waiting timers that reset on activity (eliminating false stalled warnings), and persistent error state reporting.
+- **Safe Model & Tool Compatibility**: Provider payloads are projected independently from canonical history, ensuring strict text-only models safely handle media attachments and tool call/result pairs remain atomically linked across checkpoints.
+
 ### Core Agent Tools: `fetch_url` & `grep_search`
 
 The built-in `core_tools` extension now includes two new zero-dependency core tools designed to empower AI assistants and coding agents with web reading and fast codebase navigation:
