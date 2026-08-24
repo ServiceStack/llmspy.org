@@ -1,0 +1,418 @@
+---
+title: Gemini RAG Screenshots
+description: **Gemini RAG** (Retrieval-Augmented Generation) enables developers and teams to combine large language models with external knowledge sources. By creating **File Stores**, indexing local folders or crawling web documentation, and applying rich metadata, you can ground chat conversations and publish embeddable website assistants that produce accurate, verifiable answers backed by citations.
+---
+
+## File Stores Overview
+
+File Stores act as isolated knowledge bases for your documents, allowing you to organize, index, and query content using Gemini search grounding.
+
+### Managing File Stores
+
+The main File Stores view lists all existing stores along with their total document count and disk size. You can quickly launch a grounded chat session directly from any store or create a new store by entering a name.
+
+<Screenshot src="/img/gemini/rag/gemini-01-filestores.webp" alt="File Stores Overview and Creation" />
+
+- **Store List**: Displays configured stores (e.g. `docs.servicestack.net`, `servicestack.net`) with document counts and storage metrics.
+- **Create New Store**: Enter a descriptive store name (such as `react-templates.net`) and click **Create**.
+- **Chat Launcher**: Click the chat bubble icon on any store to instantly open a grounded conversation.
+
+---
+
+### Store Dashboard
+
+Opening a File Store presents a dashboard with three main sections: **Explore**, **Import**, and **Assistants**.
+
+<Screenshot src="/img/gemini/rag/gemini-02-filestore.webp" alt="File Store Dashboard" />
+
+- **Explore**: Browse, search, filter, and inspect imported documents and their metadata.
+- **Import**: Ingest documents via direct file uploads, local directories, or automated web crawls.
+- **Assistants**: Build and configure embeddable website chat widgets grounded in this store's documents.
+- **Sync Store**: Synchronize local document records with remote Gemini vector stores to detect and repair discrepancies.
+- **Delete Store**: Permanently remove the store, indexed documents, imports, assistants, and conversation histories.
+
+---
+
+## Ingesting Knowledge
+
+Gemini RAG supports multiple ingestion methods: automated web crawling, folder syncing, and manual file uploads.
+
+### Web Crawling
+
+The **Web crawl** import fetches an entire website or documentation portal, converts HTML pages into clean Markdown, applies regex transforms, and imports them into your store.
+
+#### 1. Configuring the Web Crawl
+
+Specify the crawling boundaries, URL filters, and robot instructions.
+
+<Screenshot src="/img/gemini/rag/gemini-03-import-web-crawl.webp" alt="Web Crawl Configuration" />
+
+- **Start URL**: The entry point URL to start crawling (e.g. `https://react-templates.net`).
+- **Import folder**: Destination folder name for the crawled Markdown files.
+- **Max pages & Max depth**: Safety limits to bound the crawl depth and total page volume.
+- **Include / Exclude paths**: Glob patterns (e.g. `/**` or `/archives/**`) controlling crawled URLs.
+- **Crawl directives**: Toggles to respect `robots.txt`, honor `noindex`, follow `nofollow` links, canonicalize URLs, and remove duplicate content.
+
+#### 2. Advanced Crawl Rules
+
+Define granular path rules to control how specific file types or URLs are handled during crawling.
+
+<Screenshot src="/img/gemini/rag/gemini-04-import-web-crawl-config.webp" alt="Web Crawl Advanced Rules" />
+
+- **Path glob**: Match specific URL patterns (e.g. `**/*.json`).
+- **Action**: Choose actions such as *Follow links only* to traverse discovered links without indexing the raw payload.
+
+#### 3. Regex Content Transforms
+
+Clean and normalize crawled Markdown content before indexing using regex pattern matching and replacement rules.
+
+<Screenshot src="/img/gemini/rag/gemini-05-import-web-crawl-transforms.webp" alt="Regex Content Transforms Configuration" />
+
+- **File glob**: Target specific Markdown files (e.g. `**/*.md`).
+- **Regex pattern & Replacement**: Find and replace patterns using capture groups (e.g. converting `\b0(\d)\b` to `\1.`).
+- **Flags**: Support for global (`g`), case-insensitive (`i`), multiline (`m`), and dot-all (`s`) matching.
+
+#### 4. Applying & Saving Transforms
+
+Execute regex transforms across all crawled pages and persist rules to `import.json`.
+
+<Screenshot src="/img/gemini/rag/gemini-06-import-web-crawl-transforms-applied.webp" alt="Regex Transforms Applied and Saved" />
+
+- **Feedback Indicator**: Confirms the number of updated pages and persisted transform configuration.
+- **View crawled pages**: Open the interactive page inspector to review transformed documents.
+- **Import this folder**: Proceed with importing the processed Markdown folder into Gemini.
+
+#### 5. Inspecting Crawled Markdown Pages
+
+Review the crawled directory structure and preview rendered Markdown files before committing the import.
+
+<Screenshot src="/img/gemini/rag/gemini-07-import-web-crawl-view-pages.webp" alt="Inspecting Crawled Markdown Pages" />
+
+- **File Tree Navigator**: Browse folders and individual Markdown files (`index.md`, `next-rsc.md`, templates, etc.).
+- **Live Markdown Preview**: Inspect the exact text and headings that Gemini will index for semantic search.
+
+---
+
+### Theme & Style Customization Preview
+
+Themes can be customized across the platform and in embedded assistants, supporting bespoke color schemes like the Matrix preset.
+
+<Screenshot src="/img/gemini/rag/gemini-12-assistant-appearance-matrix.webp" alt="Matrix Theme Appearance Preview" />
+
+- **Theme Preset**: Select from preset themes such as *Matrix* featuring dark backgrounds with high-contrast green accents.
+- **Variable Overrides**: Fine-tune CSS variables for assistant/user bubbles, borders, accent colors, and typography.
+- **Live Preview**: See real-time updates of assistant chat bubbles and launcher button appearance.
+
+---
+
+### Saved Imports & Recurring Sync
+
+Manage saved import jobs and configure trusted directory roots for server imports.
+
+<Screenshot src="/img/gemini/rag/gemini-20-import-saved.webp" alt="Saved Imports and Trusted Folders" />
+
+- **Saved imports**: Re-run existing import configurations (e.g. `web crawl`) with a single click to synchronize changes.
+- **Preview Summary**: Displays counts for discovered, new, changed, unchanged, removed, and embedded documents.
+- **Trusted import folders**: Configure directories that non-admin users are permitted to import from.
+
+---
+
+### File Store Sync Status
+
+Verify that local document records match the remote Gemini vector store.
+
+<Screenshot src="/img/gemini/rag/gemini-21-filestore-sync.webp" alt="File Store Sync Status" />
+
+- **Local Documents**: Number of document records stored locally.
+- **Remote Documents**: Number of vector documents indexed remotely in Gemini.
+- **Matched Documents**: Documents successfully in sync.
+- **Perfect Sync Banner**: Confirms healthy state with all documents properly synchronized.
+
+---
+
+### Uploading Files & Archives
+
+Directly drag-and-drop individual files or `.zip` archives into your store.
+
+<Screenshot src="/img/gemini/rag/gemini-22-import-upload-files.webp" alt="Upload Files and Zip Archives" />
+
+- **Supported formats**: PDF, Markdown, Plain Text, HTML, or `.zip` archives.
+- **Zip Expansion**: Uploaded `.zip` archives are automatically extracted with their folder structure mapped to document categories.
+- **Destination category**: Optional category prefix for uploaded files.
+
+---
+
+### Importing Local Folders & Metadata
+
+Index local filesystem folders directly into Gemini RAG with rich metadata tagging.
+
+#### 1. Folder Import Configuration
+
+Select a local directory and configure path filters and recurring import options.
+
+<Screenshot src="/img/gemini/rag/gemini-23-import-folder.webp" alt="Folder Import Configuration" />
+
+- **Folder path**: Local path on disk to index (with folder browser picker).
+- **Category root**: Strip common prefix folders from document categories.
+- **Include only & Exclude**: Filter files using globs (e.g. `**/*.md`, exclude `**/drafts/**`).
+- **Save as recurring import**: Save this configuration for repeated one-click re-indexing.
+
+#### 2. Configuring Import Metadata
+
+Assign multi-dimensional metadata attributes to all documents in the import.
+
+<Screenshot src="/img/gemini/rag/gemini-23-import-folder-metadata-dialog.webp" alt="Import Metadata Configuration Dialog" />
+
+- **Standard Attributes**: Assign `Doc type` (e.g. `reference`), `Status` (`published`), `Product` (`ServiceStack`), and `Locale`.
+- **Versions & Tags**: Add comma-separated version tags (`v2, v3`) and topic labels (`react`).
+- **Source URL Template**: Generate canonical web URLs dynamically using tokens like `https://react-templates.net/{category}/{pathNoExt}`.
+- **Rules by Path**: Define overrides for specific subdirectories.
+
+#### 3. Applied Metadata Badges
+
+Review active metadata tags before running the preview.
+
+<Screenshot src="/img/gemini/rag/gemini-24-import-folder-metadata.webp" alt="Applied Metadata Badges" />
+
+- **Metadata Badges**: Visual tags showing active filters (`Doc type: reference`, `Status: published`, `Product: ServiceStack`, `Tags: react`).
+- **Edit metadata**: Reopen the dialog to modify metadata settings anytime.
+
+#### 4. Import Preview & Derived Metadata
+
+Validate how files and URLs will be indexed before uploading.
+
+<Screenshot src="/img/gemini/rag/gemini-25-import-folder-preview.webp" alt="Import Preview and Metadata Verification" />
+
+- **Diff Breakdown**: Detailed stats on discovered, new, changed, unchanged, and removed files.
+- **Derived Metadata Samples**: Preview resolved URLs and tag badges for individual files.
+- **Import Documents**: Click to begin uploading and indexing documents to Gemini.
+
+#### 5. Document Upload Progress
+
+Monitor real-time document upload and indexing progress.
+
+<Screenshot src="/img/gemini/rag/gemini-26-import-folder-uploading.webp" alt="Document Upload Progress State" />
+
+- **Progress Indicator**: Shows current batch progress (e.g. `Uploading 4/18 documents to Gemini...`).
+- **View uploads**: Open the detailed upload log to track individual file completions.
+
+---
+
+## Exploring & Grounded Search
+
+Once documents are indexed, you can explore the knowledge graph, filter by facets, and execute grounded chat queries with verifiable citations.
+
+### Knowledge Base Explorer
+
+The **Explore** tab allows you to navigate folder hierarchies, inspect document metadata, and perform individual document operations.
+
+<Screenshot src="/img/gemini/rag/gemini-27-explore.webp" alt="Knowledge Base Explorer" />
+
+- **Folder Hierarchy**: Navigate nested categories (`autoquery`, `security`, `templates`, `vibe-coding`).
+- **Document Metadata**: View file sizes, timestamps, and metadata badges (`reference`, `published`, `ServiceStack`, `react`).
+- **Item Actions**: Edit document metadata, delete documents, download source Markdown, or launch a direct chat scoped to that item.
+
+---
+
+### Grounded Chat with Citations
+
+Ask questions in natural language and receive comprehensive answers grounded exclusively in your indexed documents.
+
+<Screenshot src="/img/gemini/rag/gemini-28-chat-ask.webp" alt="Grounded Chat Query with Citations" />
+
+- **Search Grounding**: Gemini synthesizes responses strictly from retrieved documents in the selected store.
+- **Inline Citations**: Numbered references (`[1]`, `[2]`, `[3]`) link directly to source documents supporting each claim.
+- **Token & Cost Tracking**: Full visibility into token consumption and model execution metrics.
+
+---
+
+### Grounding Sources Inspector
+
+Inspect the exact reference documents and text excerpts used by the model to generate the response.
+
+<Screenshot src="/img/gemini/rag/gemini-29-chat-ask-sources.webp" alt="Grounding Sources Inspector" />
+
+- **Source Cards**: List of referenced documents with titles, URLs, and snippet excerpts.
+- **Collapsible Previews**: Expand each source card to inspect the exact matching context passed to the LLM.
+
+---
+
+### Multi-Facet Metadata Filtering
+
+Filter knowledge base documents in the Explore view by selecting specific metadata values.
+
+<Screenshot src="/img/gemini/rag/gemini-30-explore-filters.webp" alt="Multi-Facet Metadata Filtering" />
+
+- **Facet Filters**: Filter by `docType = reference`, `status = published`, `product = ServiceStack`, `versions`, or `tags`.
+- **Instant Search**: Narrow down large document collections to specific versions or product modules.
+
+---
+
+### Scoped Grounding in Chat
+
+Apply metadata filter badges to constrain chat responses to a specific subset of documents.
+
+<Screenshot src="/img/gemini/rag/gemini-31-chat-filters.webp" alt="Scoped Chat Grounding with Metadata Filters" />
+
+- **Filter Badge**: Displays active filter constraints (e.g. `react-templates.net (3)` with `doc type = reference`, `status = published`, `product = ServiceStack`).
+- **Targeted Grounding**: Ensures the model only retrieves context from documents matching all criteria.
+
+---
+
+## Website Assistants
+
+Publish document-grounded AI assistants as isolated Shadow DOM widgets embeddable on any website.
+
+### Website Assistants Overview
+
+Manage all assistants associated with the current File Store.
+
+<Screenshot src="/img/gemini/rag/gemini-40-assistants.webp" alt="Website Assistants Overview" />
+
+- **Saved assistants**: List of created assistants with deployment status.
+- **New assistant**: Click to open the assistant creation wizard.
+
+---
+
+### Assistant Identity & Prompting
+
+Configure how the assistant presents itself to end users.
+
+<Screenshot src="/img/gemini/rag/gemini-41-assistant-identity.webp" alt="Assistant Identity Configuration" />
+
+- **Internal Name**: Name used internally within the dashboard (e.g. `React Assistant`).
+- **Display Title & Description**: Public header title (`Ask our assistant`) and description shown in the chat window.
+- **Welcome Message**: Initial greeting sent when the widget opens.
+- **Suggested Questions**: Configurable prompt chips allowing visitors to ask common questions with one click.
+- **Live Preview**: Interactive preview showing real-time widget behavior.
+
+---
+
+### Assistant Behavior & Safety Controls
+
+Configure the Gemini model, system prompt templates, trigger behaviors, and grounding strictness.
+
+<Screenshot src="/img/gemini/rag/gemini-42-assistant-behavior.webp" alt="Assistant Behavior and Safety Controls" />
+
+- **Gemini Model**: Select the model used for generating responses (or use server default).
+- **When to Open**: Choose trigger behavior (`Only when initiated` or automatic popup) with optional keyboard shortcut (`Ctrl/⌘+K`).
+- **System Prompt Templates**: Choose specialized templates (e.g. *Developer/API assistant*) or supply custom system instructions.
+- **Response Style**: Select tone (*Balanced*, *Precise*, or *Creative*).
+- **Grounding Requirements**: Require strictly grounded answers and enable inline source citations.
+- **Fallback Message**: Custom response returned when no relevant documentation is found.
+
+---
+
+### Assistant Document Scope
+
+Restrict the assistant's knowledge base to specific subsets of documents using metadata facets.
+
+<Screenshot src="/img/gemini/rag/gemini-43-assistant-document.webp" alt="Assistant Document Scope Configuration" />
+
+- **Category & DocType Filters**: Restrict knowledge to specific categories or document types (e.g. `docType = reference`).
+- **Status & Version Filters**: Ensure public widgets only answer using `status = published` and targeted product versions.
+- **Server Enforcement**: All scope filters are enforced server-side and cannot be tampered with by the client website.
+
+---
+
+### Assistant Appearance & Themes
+
+Customize widget colors and styling using built-in theme presets or granular CSS variable overrides.
+
+#### Light Theme
+
+Clean, modern light palette suitable for bright documentation sites.
+
+<Screenshot src="/img/gemini/rag/gemini-44-assistant-appearance-light.webp" alt="Light Theme Preset" />
+
+#### Dark Theme
+
+Sleek dark theme with dark panels and contrasting message bubbles.
+
+<Screenshot src="/img/gemini/rag/gemini-45-assistant-appearance-dark.webp" alt="Dark Theme Preset" />
+
+#### Nord Theme
+
+Arctic-inspired palette utilizing cool slate and muted blue hues.
+
+<Screenshot src="/img/gemini/rag/gemini-46-assistant-appearance-nord.webp" alt="Nord Theme Preset" />
+
+#### Soft Pink Theme
+
+Vibrant, welcoming theme with pink accents and soft pastel bubbles.
+
+<Screenshot src="/img/gemini/rag/gemini-47-assistant-appearance-softpink.webp" alt="Soft Pink Theme Preset" />
+
+---
+
+### Floating Launcher Button Customization
+
+Customize the appearance, size, and icon of the floating launcher button.
+
+<Screenshot src="/img/gemini/rag/gemini-48-assistant-appearance-button.webp" alt="Floating Launcher Button Customization" />
+
+- **Button Position & Size**: Adjust placement (`Bottom right` or `Bottom left`), diameter (40–96 px), and corner radius.
+- **Icon Size & Shadow**: Configure icon dimensions, shadow depth, and border styling.
+- **Built-in Icons or Data URI**: Choose built-in icons (e.g. `Chat`, `Sparkle`) or supply custom SVG/PNG Data URIs.
+
+---
+
+### Hosting & Access Security
+
+Control CORS origins and set rate limits to protect your assistant against abuse.
+
+<Screenshot src="/img/gemini/rag/gemini-49-assistant-hosting.webp" alt="Hosting and Access Security" />
+
+- **Allowed Origins**: Whitelist host domains (e.g. `https://docs.example.com`, `https://*.example.com`, `http://localhost:5173`). Leave blank to permit any website.
+- **Rate Limiting**: Enforce per-client request limits (e.g. `30` requests per minute).
+
+---
+
+### Deployment & Embed Script
+
+Publish your assistant and copy the embed script snippet to install it on your website.
+
+<Screenshot src="/img/gemini/rag/gemini-50-assistant-publish.webp" alt="Published Assistant and Embed Script" />
+
+- **Embed Snippet**: Copy the generated `<script>` tag into your site's HTML:
+  ```html
+  <script src="https://localhost:5001/chat/ext/gemini/public/assistants/widget.js?g=s8igUb9gJ3u1YvDxztHzuSX" async></script>
+  ```
+- **Unpublish**: Temporarily disable public access without losing configuration.
+- **Regenerate ID**: Invalidate old embed tokens and issue a fresh public widget ID.
+- **Archive / Delete**: Archive the assistant or permanently remove it.
+
+---
+
+## Lifecycle Management
+
+### Archiving Assistants
+
+Temporarily deactivate an assistant while retaining its full configuration and chat histories.
+
+<Screenshot src="/img/gemini/rag/gemini-51-assistant-archive.webp" alt="Archived Assistant State" />
+
+- **Archived State**: Deactivates the public widget endpoint immediately.
+- **Restore Assistant**: Reactivate the assistant at any time with a single click.
+
+---
+
+### Deleting Assistants
+
+Permanently delete an assistant and its associated records.
+
+<Screenshot src="/img/gemini/rag/gemini-52-assistant-delete.webp" alt="Permanent Assistant Deletion Modal" />
+
+- **Impact Summary**: Shows counts for assistant configurations, published deployments, customer conversations, and messages to be removed.
+- **Safety Confirmation**: Requires typing the assistant's name (e.g. `React Assistant`) to prevent accidental deletion.
+
+---
+
+### Deleting a File Store
+
+Permanently delete an entire File Store and all linked data.
+
+<Screenshot src="/img/gemini/rag/gemini-53-filestore-delete.webp" alt="Permanent File Store Deletion Modal" />
+
+- **Comprehensive Cleanup**: Purges the Gemini File Search Store, all remote vector documents (e.g. 18 documents / 235 KB), local records, saved imports, run histories, published assistants, and conversation histories.
+- **Confirmation Guard**: Requires typing the exact store name (`react-templates.net`) to execute the deletion.
