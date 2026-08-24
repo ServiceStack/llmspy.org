@@ -27,6 +27,65 @@ To reset your configuration to the latest [llms.json](https://github.com/Service
 
 <ShellCommand>llms --reset all</ShellCommand>
 
+## August 24, 2026
+
+### Gemini RAG Knowledge Bases & Website Assistants
+
+The new [Gemini RAG extension](/docs/extensions/gemini) turns Google Gemini File Search into a
+complete knowledge-management and customer-support workflow. Build isolated File Stores from
+files, documentation repositories, or websites; organize them with categories and metadata; ask
+questions over precisely filtered document sets; and publish grounded AI Assistants on any website.
+
+#### Curated, Repeatable Knowledge Ingestion
+
+Import individual files and ZIP archives, or preview and synchronize complete server folders.
+Recurring imports detect new, changed, metadata-only, unchanged, and removed documents before any
+work is committed. Imports preserve directory categories, support versioned `import.json`
+configuration, resume interrupted uploads after application restarts, and expose live upload
+progress in Explorer.
+
+The two-stage **Web crawl** workflow fetches a site into an inspectable Markdown workspace first.
+Control crawl depth, page limits, paths, query strings, content types, and ordered rules; then apply
+saved regex transforms, inspect the generated files, and hand the cleaned folder to the same
+previewable import pipeline.
+
+#### Precise Retrieval with Verifiable Answers
+
+Explorer provides deep-linkable categories and compact filters for document type, status, locale,
+product, versions, and tags. Filtered views can be passed directly to **Ask about this**, preserving
+the same category and metadata scope in the Gemini File Search query. Grounded responses include
+inline citations, expandable source excerpts, and links back to canonical source URLs.
+
+Bulk metadata editing, coverage reports, pending-change review, upload states, and **Sync Store**
+make the relationship between the local catalogue and Gemini's indexed copy visible and
+recoverable.
+
+#### Publish Branded Website Assistants
+
+Turn an entire File Store—or an approved filtered subset—into a named Website Assistant embedded
+with one `<script>` tag. Select a specialist behavior template, edit its system prompt, choose an
+optional Gemini model, configure suggested questions and opening behavior, then preview the real
+widget as you design it.
+
+Assistants render inside a Shadow DOM and support Light, Dark, Nord, Matrix, Soft Pink, and Auto
+themes with editable CSS color variables and typography. Customize the launcher, restrict allowed
+website origins, set request limits, and retain customer conversations for support review. Draft,
+publish, unpublish, archive, restore, regenerate, and typed deletion confirmations provide a clear
+lifecycle from initial design through production operation.
+
+<ScreenshotsGalleryView alt="Gemini RAG" images={{
+    'File Store workspace': '/img/gemini/gemini-02-filestore.webp',
+    'Preview folder changes': '/img/gemini/gemini-25-import-folder-preview.webp',
+    'Inspect crawled pages': '/img/gemini/gemini-07-import-web-crawl-view-pages.webp',
+    'Filter the knowledge base': '/img/gemini/gemini-30-explore-filters.webp',
+    'Review grounded sources': '/img/gemini/gemini-29-chat-ask-sources.webp',
+    'Design the Assistant': '/img/gemini/gemini-47-assistant-appearance-softpink.webp',
+    'Publish and embed': '/img/gemini/gemini-50-assistant-publish.webp',
+}} />
+
+See the complete [Gemini RAG documentation](/docs/extensions/gemini) for installation, imports,
+metadata, retrieval, Assistant design, deployment, conversation review, and operational guidance.
+
 ### PDF Studio
 
 The new **PDF Studio** extension brings code-first document design to llms.py. Design PDFs the way you write code: a plain-text [Typst](https://typst.app) template on the left, the rendered page on the right, updating in real-time as you type or edit data.

@@ -8,6 +8,7 @@ import { Tip } from '@/components/tip';
 import { YouTube } from '@/components/youtube';
 import { Screenshot } from '@/components/screenshot';
 import { ScreenshotsGallery } from '@/components/screenshots-gallery';
+import { ScreenshotsGalleryView } from '@/components/screenshots-gallery-view';
 import { ScreenshotTabs } from '@/components/screenshot-tabs';
 import { SystemPrompts } from '@/components/system-prompts';
 import { ThemeCarousel } from '@/app/(home)/theme-carousel';
@@ -24,6 +25,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     YouTube,
     Screenshot,
     ScreenshotsGallery,
+    ScreenshotsGalleryView,
     ScreenshotTabs,
     SystemPrompts,
     ThemeCarousel,

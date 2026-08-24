@@ -934,83 +934,227 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Gemini File Search Section */}
-      <div id="rag" className="w-full my-16 px-4 bg-gradient-to-b from-transparent via-cyan-50/50 to-transparent dark:via-cyan-950/20 py-16">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-              Gemini File Search & RAG
+      {/* Gemini RAG Section */}
+      <section id="rag" className="relative isolate w-full my-20 overflow-hidden border-y border-cyan-100/80 bg-gradient-to-b from-white via-cyan-50/70 to-blue-50/40 px-4 py-20 dark:border-cyan-950 dark:from-slate-950 dark:via-cyan-950/25 dark:to-blue-950/20">
+        <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+          <div className="absolute left-[-8rem] top-28 size-80 rounded-full bg-cyan-300/20 blur-3xl dark:bg-cyan-500/10" />
+          <div className="absolute right-[-10rem] top-1/3 size-96 rounded-full bg-blue-300/20 blur-3xl dark:bg-blue-500/10" />
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent" />
+        </div>
+
+        <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-4xl text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200 bg-white/80 px-4 py-1.5 text-sm font-bold text-cyan-700 shadow-sm backdrop-blur dark:border-cyan-800 dark:bg-slate-900/70 dark:text-cyan-300">
+              <Sparkles className="size-4" />
+              Gemini-powered knowledge, from source to answer
+            </div>
+            <h2 className="mt-5 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl dark:text-white">
+              Turn your content into a trusted AI Assistant
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400">
-              Build knowledge bases with document stores and contextual AI chat
+            <p className="mx-auto mt-5 max-w-3xl text-lg leading-relaxed text-slate-600 sm:text-xl dark:text-slate-300">
+              Ingest files, repositories, and websites into managed Gemini File Stores. Curate the
+              exact knowledge each answer can use, verify every citation, then publish a beautiful
+              support Assistant anywhere with one script tag.
             </p>
-            <Link
-              href="/docs/extensions/gemini"
-              className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline mt-2"
-            >
-              Learn more →
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link
+                href="/docs/extensions/gemini"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-600 px-6 py-3 font-bold text-white shadow-lg shadow-cyan-600/20 transition-all hover:bg-cyan-700 hover:shadow-xl hover:shadow-cyan-600/25 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400"
+              >
+                Explore Gemini RAG
+                <span aria-hidden="true">→</span>
+              </Link>
+              <a
+                href="#gemini-workflow"
+                className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white/80 px-6 py-3 font-semibold text-slate-700 shadow-sm backdrop-blur transition-colors hover:border-cyan-400 hover:text-cyan-700 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200 dark:hover:border-cyan-600 dark:hover:text-cyan-300"
+              >
+                See the workflow
+              </a>
+            </div>
+          </div>
+
+          <div className="relative mx-auto mt-14 max-w-6xl">
+            <div className="absolute -inset-6 -z-10 rounded-[2.5rem] bg-gradient-to-r from-cyan-400/20 via-blue-400/15 to-violet-400/20 blur-2xl dark:from-cyan-500/10 dark:via-blue-500/10 dark:to-violet-500/10" />
+            <div className="overflow-hidden rounded-[1.75rem] border border-white/80 bg-white/80 p-2 shadow-[0_30px_90px_-35px_rgba(8,145,178,0.55)] backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/80 dark:shadow-[0_30px_90px_-35px_rgba(34,211,238,0.25)]">
+              <LightboxImage
+                src="/img/gemini/gemini-02-filestore.webp"
+                alt="Gemini RAG File Store with Explore, Import and Assistants workspaces"
+                width={1600}
+                height={900}
+                className="h-auto w-full rounded-[1.25rem]"
+              />
+            </div>
+            <div className="absolute -bottom-5 left-1/2 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full border border-cyan-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-lg dark:border-cyan-800 dark:bg-slate-900 dark:text-slate-200">
+              <span className="size-2 rounded-full bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.12)]" />
+              One workspace for documents, imports, and Assistants
+            </div>
+          </div>
+
+          <div className="mt-20 grid gap-5 md:grid-cols-3">
+            {[
+              {
+                icon: FolderOpen,
+                color: 'text-cyan-600 dark:text-cyan-300',
+                iconBg: 'bg-cyan-500/10',
+                title: 'Curate every source',
+                text: 'Upload files and ZIPs, sync folders, or crawl websites into inspectable Markdown before indexing.',
+              },
+              {
+                icon: Search,
+                color: 'text-blue-600 dark:text-blue-300',
+                iconBg: 'bg-blue-500/10',
+                title: 'Retrieve precisely',
+                text: 'Scope Gemini by category, type, status, locale, product, version, tags, or a single document.',
+              },
+              {
+                icon: Bot,
+                color: 'text-violet-600 dark:text-violet-300',
+                iconBg: 'bg-violet-500/10',
+                title: 'Publish with confidence',
+                text: 'Ship a branded, citation-backed Website Assistant and review real customer conversations.',
+              },
+            ].map(({ icon: Icon, color, iconBg, title, text }) => (
+              <div key={title} className="rounded-2xl border border-slate-200/80 bg-white/75 p-6 shadow-sm backdrop-blur transition-all hover:-translate-y-1 hover:border-cyan-300 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900/65 dark:hover:border-cyan-800">
+                <div className={`flex size-11 items-center justify-center rounded-xl ${iconBg} ${color}`}>
+                  <Icon className="size-5" />
+                </div>
+                <h3 className="mt-4 text-xl font-bold text-slate-900 dark:text-white">{title}</h3>
+                <p className="mt-2 leading-relaxed text-slate-600 dark:text-slate-400">{text}</p>
+              </div>
+            ))}
+          </div>
+
+          <div id="gemini-workflow" className="mt-20 space-y-16 scroll-mt-24">
+            <div className="grid items-center gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+              <div>
+                <p className="text-sm font-bold uppercase tracking-[0.2em] text-cyan-600 dark:text-cyan-400">01 · Ingest &amp; refine</p>
+                <h3 className="mt-3 text-3xl font-black tracking-tight text-slate-900 dark:text-white">A clean knowledge pipeline, not a black box</h3>
+                <p className="mt-4 text-lg leading-relaxed text-slate-600 dark:text-slate-300">
+                  Preview folder changes before committing, save repeatable imports, and monitor every
+                  upload. The web crawler stages pages as Markdown so you can inspect and transform
+                  extracted content before Gemini ever sees it.
+                </p>
+                <ul className="mt-6 space-y-3 text-slate-700 dark:text-slate-300">
+                  {['Files, ZIP archives, folders, and websites', 'Diff previews and recurring import.json rules', 'Resumable background uploads with live progress'].map(item => (
+                    <li key={item} className="flex items-start gap-3">
+                      <Check className="mt-0.5 size-5 shrink-0 text-emerald-500" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="grid gap-5 sm:grid-cols-2">
+                {[
+                  { src: '/img/gemini/gemini-25-import-folder-preview.webp', alt: 'Preview a recurring folder import', label: 'Preview every change' },
+                  { src: '/img/gemini/gemini-07-import-web-crawl-view-pages.webp', alt: 'Inspect pages extracted by the web crawler', label: 'Inspect crawled Markdown' },
+                  { src: '/img/gemini/gemini-26-import-folder-uploading.webp', alt: 'Monitor Gemini document upload progress', label: 'Watch uploads live' },
+                  { src: '/img/gemini/gemini-05-import-web-crawl-transforms.webp', alt: 'Define reusable web crawl transformations', label: 'Clean content with rules' },
+                ].map(image => (
+                  <figure key={image.src} className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl dark:border-slate-700 dark:bg-slate-900">
+                    <LightboxImage src={image.src} alt={image.alt} width={800} height={450} className="aspect-video w-full object-cover" />
+                    <figcaption className="border-t border-slate-100 px-4 py-3 text-sm font-semibold text-slate-700 dark:border-slate-800 dark:text-slate-200">{image.label}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_0.8fr]">
+              <div className="order-2 grid gap-5 sm:grid-cols-2 lg:order-1">
+                <figure className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl sm:col-span-2 dark:border-slate-700 dark:bg-slate-900">
+                  <LightboxImage src="/img/gemini/gemini-29-chat-ask-sources.webp" alt="Grounded Gemini answer with cited source evidence" width={1600} height={900} className="aspect-video w-full object-cover" />
+                  <figcaption className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 px-5 py-3 dark:border-slate-800">
+                    <span className="font-semibold text-slate-800 dark:text-slate-100">Answers backed by inspectable evidence</span>
+                    <span className="text-sm text-cyan-700 dark:text-cyan-300">Inline citations · Source excerpts · Canonical links</span>
+                  </figcaption>
+                </figure>
+                <figure className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl dark:border-slate-700 dark:bg-slate-900">
+                  <LightboxImage src="/img/gemini/gemini-30-explore-filters.webp" alt="Filter Gemini documents by metadata" width={800} height={450} className="aspect-video w-full object-cover" />
+                  <figcaption className="border-t border-slate-100 px-4 py-3 text-sm font-semibold text-slate-700 dark:border-slate-800 dark:text-slate-200">Build precise document scopes</figcaption>
+                </figure>
+                <figure className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl dark:border-slate-700 dark:bg-slate-900">
+                  <LightboxImage src="/img/gemini/gemini-21-filestore-sync.webp" alt="Reconcile local documents with the Gemini File Store" width={800} height={450} className="aspect-video w-full object-cover" />
+                  <figcaption className="border-t border-slate-100 px-4 py-3 text-sm font-semibold text-slate-700 dark:border-slate-800 dark:text-slate-200">Audit coverage and sync state</figcaption>
+                </figure>
+              </div>
+              <div className="order-1 lg:order-2">
+                <p className="text-sm font-bold uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">02 · Ask with evidence</p>
+                <h3 className="mt-3 text-3xl font-black tracking-tight text-slate-900 dark:text-white">The right answer from exactly the right documents</h3>
+                <p className="mt-4 text-lg leading-relaxed text-slate-600 dark:text-slate-300">
+                  Browse by category, compose metadata filters, and carry that precise scope into a
+                  grounded Gemini chat. Every response can surface the retrieved evidence and link
+                  readers back to the original source.
+                </p>
+                <div className="mt-6 rounded-2xl border border-blue-200/70 bg-blue-50/70 p-5 dark:border-blue-900 dark:bg-blue-950/30">
+                  <div className="flex items-center gap-3 font-bold text-blue-900 dark:text-blue-100">
+                    <ShieldCheck className="size-5 text-blue-600 dark:text-blue-400" />
+                    Retrieval scope stays visible
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-blue-800/80 dark:text-blue-200/75">
+                    Categories appear as paths and additional filters remain inspectable, so users
+                    always know which knowledge shaped the answer.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="overflow-hidden rounded-[2rem] border border-violet-200/80 bg-gradient-to-br from-white via-violet-50/80 to-pink-50/70 p-6 shadow-xl sm:p-10 dark:border-violet-900/70 dark:from-slate-900 dark:via-violet-950/35 dark:to-pink-950/20">
+              <div className="grid items-center gap-10 lg:grid-cols-[0.78fr_1.22fr]">
+                <div>
+                  <p className="text-sm font-bold uppercase tracking-[0.2em] text-violet-600 dark:text-violet-400">03 · Design &amp; publish</p>
+                  <h3 className="mt-3 text-3xl font-black tracking-tight text-slate-900 dark:text-white">Your own support Assistant, beautifully on-brand</h3>
+                  <p className="mt-4 text-lg leading-relaxed text-slate-600 dark:text-slate-300">
+                    Choose a behavior template, system prompt, Gemini model, document scope, opening
+                    behavior, and suggested questions. Then style every surface and launcher color
+                    before publishing the self-contained Shadow DOM widget with one script tag.
+                  </p>
+                  <div className="mt-7 grid grid-cols-2 gap-3 text-sm font-semibold text-slate-700 dark:text-slate-200">
+                    {['6 theme presets', 'Custom CSS colors', 'Origin allowlists', 'Conversation review'].map(item => (
+                      <div key={item} className="flex items-center gap-2 rounded-xl border border-white/80 bg-white/65 px-3 py-2.5 shadow-sm dark:border-slate-700 dark:bg-slate-900/60">
+                        <Check className="size-4 shrink-0 text-violet-500" />
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                  <Link href="/docs/extensions/gemini#publish-a-website-assistant" className="mt-8 inline-flex items-center gap-2 font-bold text-violet-700 hover:text-violet-900 dark:text-violet-300 dark:hover:text-violet-100">
+                    Design a Website Assistant <span aria-hidden="true">→</span>
+                  </Link>
+                </div>
+                <figure className="overflow-hidden rounded-2xl border border-white/80 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900">
+                  <LightboxImage src="/img/gemini/gemini-47-assistant-appearance-softpink.webp" alt="Design a Soft Pink Gemini Website Assistant with live preview" width={1600} height={900} className="aspect-video w-full object-cover" />
+                  <figcaption className="flex items-center justify-between gap-3 border-t border-slate-100 px-5 py-3 text-sm dark:border-slate-800">
+                    <span className="font-semibold text-slate-800 dark:text-slate-100">Live preview matches the real widget</span>
+                    <span className="text-violet-600 dark:text-violet-300">Soft Pink</span>
+                  </figcaption>
+                </figure>
+              </div>
+
+              <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                {[
+                  { src: '/img/gemini/gemini-42-assistant-behavior.webp', alt: 'Configure Gemini Assistant behavior and prompting', label: 'Behavior templates' },
+                  { src: '/img/gemini/gemini-43-assistant-document.webp', alt: 'Choose the Gemini Assistant document scope', label: 'Server-enforced scope' },
+                  { src: '/img/gemini/gemini-12-assistant-appearance-matrix.webp', alt: 'Matrix theme for a Gemini Website Assistant', label: 'Theme presets' },
+                  { src: '/img/gemini/gemini-50-assistant-publish.webp', alt: 'Publish and embed a Gemini Website Assistant', label: 'Publish & embed' },
+                ].map(image => (
+                  <figure key={image.src} className="overflow-hidden rounded-xl border border-white/80 bg-white/85 shadow-md transition-transform hover:-translate-y-1 dark:border-slate-700 dark:bg-slate-900/80">
+                    <LightboxImage src={image.src} alt={image.alt} width={600} height={338} className="aspect-video w-full object-cover" />
+                    <figcaption className="border-t border-slate-100 px-3 py-2.5 text-xs font-bold text-slate-700 dark:border-slate-800 dark:text-slate-200">{image.label}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-14 flex flex-col items-center justify-between gap-5 rounded-2xl border border-cyan-200/80 bg-white/75 px-6 py-6 shadow-sm backdrop-blur sm:flex-row dark:border-cyan-900 dark:bg-slate-900/70">
+            <div>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white">Ready to ground Gemini in your own knowledge?</h3>
+              <p className="mt-1 text-slate-600 dark:text-slate-400">Install the extension, create a File Store, and ask your first citation-backed question.</p>
+            </div>
+            <Link href="/docs/extensions/gemini" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3 font-bold text-white transition-colors hover:bg-cyan-700 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400">
+              Read the Gemini RAG guide <span aria-hidden="true">→</span>
             </Link>
           </div>
-          <div className="rounded-xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 dark:bg-white mb-8">
-            <Image
-              src="/img/gemini/gemini-filestores-upload-folder.webp"
-              alt="Document Upload with Categories"
-              width={1200}
-              height={800}
-              className="w-full h-auto"
-            />
-          </div>
-          <div className="grid md:grid-cols-2 gap-6 mb-8">
-            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
-              <LightboxImage
-                src="/img/gemini/gemini-filestores.webp"
-                alt="Filestore Management"
-                width={600}
-                height={400}
-                className="w-full h-auto"
-              />
-            </div>
-            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
-              <LightboxImage
-                src="/img/gemini/gemini-sync.webp"
-                alt="Bidirectional Sync"
-                width={600}
-                height={400}
-                className="w-full h-auto"
-              />
-            </div>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
-              <LightboxImage
-                src="/img/gemini/gemini-search-all.webp"
-                alt="Search All Documents"
-                width={400}
-                height={300}
-                className="w-full h-auto"
-              />
-            </div>
-            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
-              <LightboxImage
-                src="/img/gemini/gemini-search-category.webp"
-                alt="Search by Category"
-                width={400}
-                height={300}
-                className="w-full h-auto"
-              />
-            </div>
-            <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
-              <LightboxImage
-                src="/img/gemini/gemini-search-document.webp"
-                alt="Gemini RAG chat with document context"
-                width={400}
-                height={300}
-                className="w-full h-auto"
-              />
-            </div>
-          </div>
         </div>
-      </div>
+      </section>
 
       {/* Tools & Function Calling Section */}
       <div id="tools" className="w-full my-16 px-4 bg-slate-50 dark:bg-slate-900/50 py-16">
