@@ -8,6 +8,10 @@ Gemini RAG turns your documents into a managed knowledge system built on Google 
 or entire websites into isolated **File Stores**, organize them with categories and metadata, then
 ask questions over exactly the documents you choose.
 
+It ships with llms.py as a native, dependency-free extension, implemented directly in the
+[ServiceStack/llms repository](https://github.com/ServiceStack/llms/tree/main/llms/extensions/gemini).
+There is no separate extension or Python package to install.
+
 The same knowledge base can power private research chats and public, embeddable **Website
 Assistants**. Responses stay grounded in your indexed content and can include citations that lead
 readers back to the original source.
@@ -25,11 +29,7 @@ readers back to the original source.
 | **Website Assistants** | Publish a branded Shadow DOM chat widget using one script tag. |
 | **Operational visibility** | Preview changes, watch upload progress, audit coverage, and reconcile local and Gemini state. |
 
-## Install and configure
-
-Install the Gemini extension:
-
-<ShellCommand>llms --add gemini</ShellCommand>
+## Configure Gemini
 
 Create an API key in [Google AI Studio](https://aistudio.google.com/) and add either variable to the
 server environment or `.env` file:
@@ -40,9 +40,10 @@ GOOGLE_API_KEY=your_api_key
 GEMINI_API_KEY=your_api_key
 ```
 
-`GOOGLE_API_KEY` takes precedence when both are present. Restart llms.py after changing the server
-environment. You also need at least one Google Gemini chat model configured in llms.py; the Gemini
-model selector only lists compatible Google chat models.
+`GOOGLE_API_KEY` takes precedence when both are present. The bundled Gemini extension is enabled
+automatically when either key is configured; restart llms.py after changing the server environment.
+You also need at least one Google Gemini chat model configured in llms.py; the Gemini model selector
+only lists compatible Google chat models.
 
 <Info title="Local catalogue, remote retrieval">
 llms.py keeps the document catalogue, cached source files, imports, metadata, Assistants, and
@@ -737,8 +738,9 @@ inspect them, open Explorer at the destination category and sort by **Uploading*
 
 ### The Gemini icon is missing
 
-Confirm `GOOGLE_API_KEY` or `GEMINI_API_KEY` is present in the server environment, restart llms.py,
-and verify the Gemini extension and its Python dependencies are installed.
+Confirm `GOOGLE_API_KEY` or `GEMINI_API_KEY` is present in the server environment and restart
+llms.py. Gemini is bundled with llms.py and does not require a separate extension installation or
+additional Python dependencies.
 
 ### No Gemini model is available
 

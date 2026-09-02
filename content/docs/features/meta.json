@@ -13,6 +13,7 @@
     "core-tools",
     "server-tools",
     "pdf",
+    "gemini",
     "calculator-ui",
     "run-code-ui",
     "katex",

@@ -27,6 +27,28 @@ To reset your configuration to the latest [llms.json](https://github.com/Service
 
 <ShellCommand>llms --reset all</ShellCommand>
 
+## September 2, 2026
+
+### Gemini is now a Native, Dependency-Free Extension
+
+The [Gemini RAG extension](/docs/features/gemini) is now included with llms.py as a native
+built-in extension. It previously shipped as an external extension because its File Search,
+document upload, and grounded-generation features depended on Google's `google-genai` Python SDK.
+
+The integration has been rewritten to call Gemini's REST and streaming APIs directly, including
+File Search Store management, resumable document uploads, operation polling, grounded content
+generation, and SSE streaming. It now adds **no extra Python dependencies**, needs no separate
+extension installation, and is upgraded automatically with llms.py.
+
+If you previously installed the external Gemini extension, remove it after upgrading so it does
+not override the new built-in version:
+
+<ShellCommand>llms --remove gemini</ShellCommand>
+
+Your existing Gemini configuration, local database, cached documents, and File Search Stores are
+unaffected. Restart llms.py after removing the external extension and the native version will load
+automatically whenever `GOOGLE_API_KEY` or `GEMINI_API_KEY` is configured.
+
 ## August 24, 2026
 
 ### Gemini RAG Knowledge Bases & Website Assistants
