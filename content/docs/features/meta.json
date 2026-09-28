@@ -12,6 +12,7 @@
     "analytics",
     "core-tools",
     "server-tools",
+    "mcp_client",
     "pdf",
     "gemini",
     "calculator-ui",

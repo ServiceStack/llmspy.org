@@ -1,0 +1,253 @@
+---
+title: MCP Connections
+description: Connect llms.py to remote MCP tools with Bearer tokens or OAuth, select tools per conversation, and review calls before they run.
+---
+
+The built-in **`mcp_client`** extension brings tools from remote Model Context Protocol (MCP) servers
+into llms.py conversations. Add a connection from the **Tools → MCP Connections** page, choose the
+tools a model can use, and review its calls before they reach the remote service.
+
+`mcp_client` is **included and enabled by default**. There is no extension to install and no
+additional Python dependency beyond llms.py's normal runtime dependencies. Its shared connection
+UI also appears in ServiceStack AI.Chat.
+
+<Screenshot src="/img/mcp-client/mcp_client-01-tools.webp" alt="MCP Connections in the llms.py Tools page" />
+
+## How it differs from fast_mcp
+
+[`fast_mcp`](/docs/mcp/fast_mcp) remains a separate extension built on the FastMCP Python
+framework. It supports command-based MCP servers configured in its `mcp.json`, and must be installed
+with `llms --add fast_mcp`. The built-in `mcp_client` instead connects to **remote Streamable HTTP**
+servers and manages them through a per-user UI and `config.json`. It does **not** launch local stdio
+server processes.
+
+| | Built-in `mcp_client` | External `fast_mcp` |
+| --- | --- | --- |
+| Installation | Included with llms.py; enabled by default | Install separately with `llms --add fast_mcp` |
+| Dependencies | No additional framework package | Uses the FastMCP Python framework |
+| Connection type | Remote Streamable HTTP | Command-based servers such as `npx` or `uvx` |
+| Configuration | Tools UI or `mcp_client/config.json` | `fast_mcp/mcp.json` |
+| Credentials | Bearer tokens and OAuth sign-in, stored in the MCP database | Server-specific command and environment configuration |
+| Tool calls | Per-call approval and optional per-tool approval grant | Managed by its own extension workflow |
+
+The two extensions have different configuration files and can coexist. A connection added to one
+does not automatically appear in the other. Use `mcp_client` for a hosted HTTP endpoint such as
+GitHub's MCP server; use `fast_mcp` when you need its command-based local-server workflow.
+
+## Add a connection
+
+Open **Tools → MCP Connections → Add connection**. Enter a **Name** and **Server URL**, choose
+Authentication, then select **Connect**. Leave Authentication at **None** for a server that does not
+require remote credentials. The connected server's tools appear on the same page.
+
+No MCP server needs to be preconfigured for this section to appear. Personal connections are
+managed by the current account; in llms.py's default single-user mode, that account is `default`.
+On authenticated hosts, administrators can also provide read-only **Shared** connections.
+
+### GitHub with a personal access token
+
+1. Enter `GitHub` as the name and `https://api.githubcopilot.com/mcp/` as the Server URL.
+2. Choose **Bearer token / personal access token**.
+3. Paste the PAT **without** the `Bearer ` prefix, then select **Connect**.
+4. Open **Tools** on the connected server and select the tools for your conversation.
+
+<Screenshot src="/img/mcp-client/mcp_client-02-add-connection-bearer-token.webp" alt="Add a GitHub MCP connection with a Bearer token" />
+
+llms.py sends `Authorization: Bearer <token>` to the MCP server. The PAT is stored in the MCP database,
+separately from `config.json`, and is never returned to the browser. Leave the token field blank
+when editing to retain it; enter a new token to rotate it. A connection settings change can require
+you to enter it again. **Clear saved credentials** deletes it; **Disable** keeps it for later.
+
+### GitHub with OAuth
+
+OAuth is enabled by default with `mcp_client`. On a local installation, llms.py derives the
+callback URL from the loopback address serving the Tools page, including its port. If the host uses
+GitHub authentication, llms.py derives the MCP callback from that sign-in URL instead. The
+connection form shows the exact URL to register with your GitHub OAuth App. No extra MCP callback
+setting is needed for either setup.
+
+For a remote installation without GitHub authentication, configure its public HTTPS callback in
+`llms.json` before adding an OAuth connection:
+
+```json
+{
+  "mcp_client": {
+    "oauthRedirectUri": "https://chat.example.com/ext/mcp_client/oauth/callback"
+  }
+}
+```
+
+Use the exact callback URL shown in the connection form. For GitHub's hosted MCP server,
+create a **GitHub OAuth App** with that URL, then add a connection with:
+
+| Field | Value |
+| --- | --- |
+| Server URL | `https://api.githubcopilot.com/mcp/` |
+| Authentication | OAuth |
+| Client ID and client secret | From your registered GitHub OAuth App |
+| Scopes | Optional fallback if the MCP server does not advertise OAuth scopes |
+
+The sign-in provider is discovered from the MCP server's protected-resource metadata. If the
+server advertises more than one, choose the provider where you registered your App. The Advanced
+issuer setting lets you choose an advertised provider explicitly; the MCP server must still publish
+protected-resource metadata. GitHub does not dynamically register an OAuth client for this MCP
+server, so the OAuth App must already exist. The client secret and resulting tokens are stored in
+the MCP database, never written to the connection JSON.
+
+<Screenshot src="/img/mcp-client/mcp_client-09-add-connection-oauth.webp" alt="Configure a GitHub OAuth MCP connection" />
+
+Select **Connect**, then **Open sign-in** to authorize the App. On success, the callback tab
+attempts to close and the Tools page loads the server's tools. If the tab remains open, select
+**Close this tab**; use **Load tools** on the Tools page if needed.
+
+llms.py chooses OAuth scopes in the same order as AI.Chat: scopes in the MCP server's authorization
+challenge, scopes advertised in its protected-resource metadata, then the optional **Scopes** value
+in Advanced OAuth settings. When the authorization server advertises `offline_access`, llms.py also
+requests it so the provider can issue a refresh token. GitHub advertises its MCP scopes, so its
+connection normally needs no manual scope entry. If an existing connection reports
+`access_denied`, choose **Connection options → Reauthorize** and grant the requested access at the
+provider. Reauthorization keeps the saved OAuth App client secret.
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+  'Authorize the OAuth App': '/img/mcp-client/mcp_client-10-oauth-signin.webp',
+  'Choose tools after sign-in': '/img/mcp-client/mcp_client-11-oauth-connected-show-tools.webp',
+}} />
+
+**Clear saved credentials** removes OAuth tokens but retains the saved client secret for a
+new sign-in. Removing or reconfiguring a connection clears the client secret. Revoking access at
+the provider is a separate action in your GitHub account settings.
+
+## Choose tools for a conversation
+
+Select **Tools** on a connected server to see names, descriptions and input schemas. Search the
+catalog, tick individual tools, or use **Select all results** to select every tool matching the
+current search. The selection controls which remote definitions are offered to the model in that
+conversation.
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+  'Filter the remote catalog': '/img/mcp-client/mcp_client-04-connected-filter-tools.webp',
+  'Select all matching tools': '/img/mcp-client/mcp_client-05-connected-select-tools.webp',
+}} />
+
+Each connection has a group such as `mcp_github`. Remote tool aliases have stable generated suffixes;
+use the names shown by llms.py rather than assembling an alias yourself. A conversation's **All**
+selection includes local tools by default. Remote connections join it only when the host sets
+`includeInAll` for that connection; otherwise choose its group or individual tools.
+
+The top **refresh** button reloads displayed connection status. **Connect all** reconnects every
+enabled connection with saved credentials and refreshes its tools. **Connection options → Disable**
+excludes one server from Connect all and tool discovery without deleting credentials;
+**Enable & connect** restores it. A server that requires browser sign-in must be connected
+individually.
+
+<Screenshot src="/img/mcp-client/mcp_client-08-connection-options.webp" alt="Refresh, disable, or clear an MCP connection" />
+
+## Review tool calls
+
+A personal MCP tool call normally pauses for approval. The request shows the connection, tool,
+input schema and proposed JSON arguments. You can edit the arguments, then select **Approve and
+run** or **Reject**.
+
+<Screenshot src="/img/mcp-client/mcp_client-07-approve-new-request.webp" alt="Review and edit a GitHub MCP tool call before approving" />
+
+**Always approve this tool** lets that tool run without another prompt for this account and
+connection, regardless of its future arguments. The Tools list labels always-approved tools;
+select the label's **×** to revoke the grant. Shared host connections may define a different
+approval policy. A server's read-only annotation does not itself waive approval.
+
+Tool responses remain in the conversation. Text and structured JSON are displayed directly;
+supported image and audio results stay with the user's thread rather than being published to a
+shared cache.
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+  'The remote call in chat': '/img/mcp-client/mcp_client-06-github-request.webp',
+  'Inspect the response': '/img/mcp-client/mcp_client-08-view-response.webp',
+}} />
+
+If a remote call was sent but its response was lost, llms.py reports an **uncertain outcome**.
+It will not replay the operation. Check the remote service, then choose **I checked — continue
+without replay** to let the conversation proceed. This acknowledgment does not repeat the call
+or establish whether it succeeded remotely.
+
+## Configuration and ownership
+
+Connections live in extension-scoped files under llms.py's user directory:
+
+| File | Owner |
+| --- | --- |
+| `~/.llms/user/default/mcp_client/config.json` | The single user in an unauthenticated installation, or the host's shared connections when authentication is enabled |
+| `~/.llms/user/<username>/mcp_client/config.json` | That signed-in user's personal connections |
+
+The UI saves personal connections to these files. To provide a shared anonymous connection on an
+authenticated host, an administrator can use:
+
+```json
+{
+  "servers": [
+    {
+      "id": "knowledge",
+      "displayName": "Company Knowledge",
+      "endpoint": "https://knowledge.example.com/mcp",
+      "auth": { "mode": "anonymous" },
+      "allowedTools": ["search", "read_document"],
+      "deniedTools": [],
+      "includeInAll": false
+    }
+  ]
+}
+```
+
+Shared connections are labeled in the UI, but their settings remain host-controlled. Personal
+connections cannot override a shared ID or set host-secret references, audience rules, approval
+bypasses, limits or network exceptions. An empty `allowedTools` list exposes no tools; `"*"`
+allows all discovered tools, and `deniedTools` takes precedence. That host policy is separate
+from the tools a user selects for a conversation. New personal connections allow discovered
+tools by default while still requiring approval for calls.
+
+Connection edits are read on subsequent requests without a server restart. Saves are atomic and
+revision-checked, so a stale browser tab cannot silently replace another change. Credentials
+are stored separately from JSON. If you run multiple llms.py instances, share the connection
+directory and MCP database.
+
+### Enablement and credential storage
+
+`mcp_client` loads by default, including on a fresh installation with no servers. To turn off
+both its routes and Tools-page section, set:
+
+```json
+{
+  "mcp_client": { "enabled": false }
+}
+```
+
+Standalone llms.py stores Bearer tokens, OAuth client secrets, OAuth tokens and pending sign-in
+state as plaintext JSON in the owner-scoped MCP SQLite database. Keep the database private to the
+host account. An embedding host can configure both `protect` and `unprotect` hooks to protect these
+values at rest; without hooks, they are stored unchanged. Both OAuth and Bearer-token connections
+work in llms.py's default single-user mode. The MCP callback is
+derived from the configured GitHub sign-in URL or the local loopback address; remote deployments
+using other sign-in methods should set `mcp_client.oauthRedirectUri` explicitly.
+
+Host policy such as the OAuth callback, limits and network access can be set in the `mcp_client`
+section of `llms.json`; an embedding host can provide `app.mcp_client_config` and authorization
+hooks instead. These host settings require a restart. By default, outbound destinations must use
+HTTPS on port 443 with normal certificate validation. Private destinations, HTTP and other ports
+require explicit host network-policy allowances; personal connection forms cannot relax them.
+
+## Troubleshooting
+
+| Symptom | What to check |
+| --- | --- |
+| **MCP Connections is missing** | Ensure you are running a version of llms.py with the bundled extension, and that `mcp_client.enabled` has not been set to `false`. |
+| **Invalid MCP configuration** | Check the URL, host network policy and authentication mode. OAuth needs host sign-in or single-user mode, a callback URL, client ID and protected-resource metadata that advertises the sign-in provider. Local loopback HTTP callbacks are supported; remote callbacks need HTTPS. |
+| **Connection saved, but could not connect** | Verify the server URL, certificate and credentials. Re-enter a rotated PAT, or inspect the connection status for an OAuth error. |
+| **Connected but no tools are shown** | Select **Tools**, refresh the catalog, check `allowedTools`, and choose tools for the conversation. An older personal config with an empty allow-list can use **Show discovered tools**. |
+| **Sign-in could not finish** | The callback page shows a safe error code when callback validation or token exchange fails. Check the registered callback URL, OAuth App client ID and saved client secret, then start a new sign-in. Authorization codes are single-use. |
+| **Signed in, but tools could not load** | The token was saved, but MCP tool discovery failed. Return to the Tools page and choose **Connection options → Refresh tools**; the callback page and host log show a safe error code. You do not need to reauthorize just to retry discovery. |
+| **OAuth tool reports `access_denied`** | Choose **Connection options → Reauthorize** and grant the requested provider access. The saved OAuth App client secret is retained. |
+| **The remote result is uncertain** | Inspect the remote service, then continue without replay. llms.py will not automatically repeat the dispatched call. |
+
+The built-in client supports remote Streamable HTTP tools with JSON and SSE responses. Local stdio
+processes, legacy SSE transport, MCP prompts/resources browsing, sampling and elicitation are
+outside this extension's current scope. For local command-based MCP servers, see
+[`fast_mcp`](/docs/mcp/fast_mcp).

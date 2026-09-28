@@ -27,6 +27,38 @@ To reset your configuration to the latest [llms.json](https://github.com/Service
 
 <ShellCommand>llms --reset all</ShellCommand>
 
+## September 28, 2026
+
+### Connect to MCP tools with Bearer tokens or OAuth
+
+Bring GitHub and other remote services into your conversations with the new built-in
+[MCP Connections](/docs/features/mcp_client) feature. Open **Tools → MCP Connections**, enter a
+name and server URL, then connect with a personal access token or OAuth. Search the discovered
+tools, select only those you want for a conversation, and review the arguments before each new
+remote call runs.
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+  'Connect GitHub with a personal access token': '/img/mcp-client/mcp_client-02-add-connection-bearer-token.webp',
+  'Or register an OAuth connection': '/img/mcp-client/mcp_client-09-add-connection-oauth.webp',
+}} />
+
+Once connected, you can filter a server's catalog and **Select all results** in one click. MCP
+calls show their input schema and editable JSON arguments, with **Approve and run** or an optional
+**Always approve this tool** grant. You can disable a connection without removing its saved
+credentials, then use **Connect all** to reconnect your enabled services.
+
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+  'Choose the tools for your chat': '/img/mcp-client/mcp_client-05-connected-select-tools.webp',
+  'Review a remote call before it runs': '/img/mcp-client/mcp_client-07-approve-new-request.webp',
+}} />
+
+Unlike the separate [`fast_mcp`](/docs/mcp/fast_mcp) extension, **`mcp_client` ships with llms.py
+and is enabled by default**. It needs no separate install or additional framework dependencies:
+it uses llms.py's existing runtime packages to connect to remote Streamable HTTP MCP servers.
+`fast_mcp` remains available for its FastMCP-based, command-run server workflow. See the
+[MCP Connections guide](/docs/features/mcp_client) for GitHub PAT and OAuth setup, configuration,
+tool approvals, and troubleshooting.
+
 ## September 2, 2026
 
 ### Gemini is now a Native, Dependency-Free Extension
