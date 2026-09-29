@@ -42,7 +42,7 @@ Quickly find past conversations with built-in search:
 ## Model Selector UI
 
 With over 530 models from 24 providers now available, discovering and selecting the right model required a complete overhaul. 
-The Model Selector has been completely redesigned as a full-featured dialog offering:
+Open it from the model chip at the top of the chat prompt. The Model Selector is a full-featured dialog offering:
 
 - **🔍 Smart Search & Discovery** - Instantly search across model names, IDs, and providers
 - **🎯 Advanced Filtering** - Filter by name, providers & input and output modalities
@@ -127,14 +127,15 @@ llms --serve 8000 --root /path/to/ui
 
 ## Storage
 
-Data primarily stored in SQLite databases:
+Data is stored on the server in SQLite databases under `~/.llms/user/<user>/`
+(`~/.llms/user/default/` when you're not signed in):
 
-- **Conversations**: All chat threads and messages
-- **Activity Logs**: Request history for analytics
-- **Settings**: UI preferences
-- **User Profile**: If using OAuth
+- **Conversations**: all chat threads and messages, grouped by [project](/docs/features/projects)
+- **Activity Logs**: request history for analytics
+- **Projects**: `projects/projects.json` and each project's folder
 
-Data is tied to the browser origin (`http://localhost:PORT`), so running on different ports creates separate databases.
+Your browser also keeps some UI preferences (such as theme and layout) and your unsent chat drafts, so
+those are per browser.
 
 ## Privacy
 

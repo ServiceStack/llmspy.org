@@ -3,6 +3,62 @@ title: Chat UI
 description: A built-in chat interface for interactive conversations with your LLM agents, supporting rich media
 ---
 
+## 🗂️ Chats & Projects
+
+The sidebar groups your chats into [project](/docs/features/projects) folders. Each folder shows its five
+most recent chats and **Show more** loads more on demand, while chats without a project are kept under
+**Recents**. Hover a chat to see when it was last active, its model, messages, tokens and cost, or to
+delete it. Hover a folder to start a new chat in it, or open its `…` menu to edit or hide the project.
+
+<ScreenshotsGalleryView alt="Chats grouped into project folders" images={{
+  'Chats grouped into project folders': '/img/chat-threads/sidebar.webp',
+  'Hover a chat for its details': '/img/chat-threads/chat-thread-popover.webp',
+}} />
+
+## 💬 The Prompt
+
+The prompt floats above the conversation and grows as you type (**Enter** sends, **Shift+Enter** adds a
+new line). Its top row shows the chat's **project**, [agent profile](/docs/features/agents) and
+[model](/docs/features/model-selector), each one click away:
+
+<ScreenshotsGalleryView alt="Chat prompt" images={{
+  'Choose, change or create a project': '/img/chat-threads/chat-projects.webp',
+  'Switch agent profiles': '/img/chat-threads/chat-profiles.webp',
+  'Pick a model and see its costs and limits': '/img/chat-threads/chat-model.webp',
+}} />
+
+Attach files with **+**, paste them, or **drop** images, audio and documents anywhere on the chat. Images
+show as thumbnails in the prompt, and any attachment can be removed before sending.
+
+<ScreenshotsGalleryView alt="Drop files anywhere on the chat" images={{
+  'Drop files anywhere on the chat': '/img/chat-threads/chat-drag-image.webp',
+  'Attachments preview in the prompt': '/img/chat-threads/chat-drop-image.webp',
+}} />
+
+### Drafts
+
+Every chat keeps its own **draft**: switch between chats and your unsent text, attachments and edits are
+exactly where you left them, even after reloading the page. Unsent new chats show in the sidebar with a
+**Draft** badge. Drafts are stored in your browser and are never sent to the server until you send them.
+Files that were still uploading when the page reloaded need to be attached again.
+
+### Chat Titles
+
+A new chat is titled from the start of its first message straight away, then gets a short generated title
+shortly after. Generating it never slows down the response, and a chat you've renamed keeps your title.
+Titles use the `defaults.summarize` request in `llms.json`. Its default model, `openai/gpt-oss-120b`, is
+used when one of your providers offers it (e.g. Groq or OpenRouter). Point it at any configured model
+(including a local one), or set it to `null` to keep the first-message titles:
+
+```json
+"defaults": {
+    "summarize": {
+        "model": "openai/gpt-oss-120b",
+        ...
+    }
+}
+```
+
 ## 📝 Rich Markdown & Syntax Highlighting
 
 Full markdown rendering with syntax highlighting for popular programming languages:

@@ -36,9 +36,10 @@ To disable loading of built-in profiles, set `enabled: false` in a custom profil
 
 ## List of Agent Profiles
 
-The application lists all available agent profiles in the **Agent Profile Selector** dropdown, which is accessible when creating a new conversation thread or from the chat header of an active thread.
+All available agent profiles are listed in the **Agent Profile Selector**, the profile chip at the top of
+the chat prompt, next to the project and model.
 
-<Screenshot src="/img/profiles/profiles-menu.webp" alt="List of Agent Profiles" />
+<Screenshot src="/img/chat-threads/chat-profiles.webp" alt="List of Agent Profiles" />
 
 ### Built-in Profiles
 
@@ -48,9 +49,7 @@ The application lists all available agent profiles in the **Agent Profile Select
 
 ## Profile Manager
 
-The **Profile Manager** provides a full UI for inspecting, overriding, and creating agent profiles - no manual file editing required. Open it by clicking **Manage Profiles** at the bottom of the **Agent Profile Selector** dropdown.
-
-<Screenshot src="/img/profiles/manage-profiles-button.webp" alt="Manage Profiles button in the Agent Profile Selector dropdown" />
+The **Profile Manager** provides a full UI for inspecting, overriding, and creating agent profiles - no manual file editing required. Open it by clicking **Manage Profiles** at the bottom of the **Agent Profile Selector** menu (shown above).
 
 The left sidebar lists every profile (built-in and custom). Select one to view and edit its configuration on the right. A lock icon (🔒) marks built-in profiles, and a blue dot (●) indicates the currently active profile.
 
@@ -68,7 +67,9 @@ Click the **Selected Model** dropdown to pick a different default model for the 
 
 #### Override Theme
 
-Use the **Theme** dropdown to choose a different UI theme for the profile. The dropdown shows all available light and dark themes.
+Use the **Theme** dropdown to give the profile its own UI theme, applied while the profile is selected.
+The dropdown shows all available light and dark themes. Profiles without a theme keep the theme you chose,
+and switching back from a themed profile restores it.
 
 <Screenshot src="/img/profiles/profile-themes.webp" alt="Theme override selector for a profile" />
 
@@ -178,7 +179,7 @@ The `config.json` file controls the default preferences and restrictions of the 
 |---|---|---|---|
 | `name` | `string` | No | A custom display name for the agent (defaults to the folder name capitalized). |
 | `enabled` | `boolean` | No | Defaults to `true`. Set to `false` to disable loading of the agent. |
-| `theme` | `string` | No | The [theme](/docs/features/themes) to load when this agent is active (e.g. `nord`, `dark`, `light_slate`). |
+| `theme` | `string` | No | A [theme](/docs/features/themes) to apply while this agent is selected (e.g. `nord`, `dark`, `light_slate`). Omit it to keep the user's theme. The built-in Chat, Coder and Planner profiles don't set one. |
 | `model` | `string` | No | The default LLM model to select when starting conversations with this agent. |
 | `onlyTools` | `array` | No | Restricts the tools the agent is permitted to use to the listed tool names. Set to `[]` to exclude all tools. If omitted (or `null`), all tools are allowed. |
 | `onlySkills` | `array` | No | Restricts the skills the agent is permitted to use to the listed skill names. Set to `[]` to exclude all skills. If omitted (or `null`), all skills are allowed. |
