@@ -3,7 +3,7 @@ title: Agent Browser
 description: An agent browser workspace for building and running automated browser scripts with AI assistance, live previews, debug log, and an interactive element inspector
 ---
 
-The built-in [browser](https://github.com/ServiceStack/llms/tree/main/llms/extensions/browser) extension provides an integrated environment for creating, editing, and running automated browser scripts powered by Vercel's [agent-browser](https://agent-browser.dev).
+The [browser](https://github.com/llmspy/browser) extension provides an integrated environment for creating, editing, and running automated browser scripts powered by Vercel's [agent-browser](https://agent-browser.dev).
 
 - 🖥️ **Live Browser Preview** - Clickable real-time screenshot with full mouse, keyboard, and scroll interaction
 - 📋 **Element Inspector** - Auto-refreshing snapshot giving scripts and AI a precise map of interactive elements
@@ -13,6 +13,20 @@ The built-in [browser](https://github.com/ServiceStack/llms/tree/main/llms/exten
 - 💾 **Saved Scripts Library** - Build a library of reusable browser automations accessible from the sidebar
 
 <YouTube id="7HubpAx4fxM" title="Agent Browser Overview" splash="/img/features/browser-script-edit-ai.webp" width="776" height="977"/>
+
+## Installation
+
+Install using the `llms` CLI:
+
+```bash
+llms --add browser
+```
+
+Or clone directly into your extensions directory:
+
+```bash
+git clone https://github.com/llmspy/browser.git ~/.llms/extensions/browser
+```
 
 ## Requirements
 
@@ -134,7 +148,7 @@ You can configure which model is used for script generation with the `BROWSER_MO
 BROWSER_MODEL="moonshotai/kimi-k2.5"
 ```
 
-The comprehensive [generate-script.txt](https://github.com/ServiceStack/llms/blob/main/llms/extensions/browser/ui/generate-script.txt) (derived from Vercel's [Agent Browser Skill](https://github.com/vercel-labs/agent-browser/blob/main/skills/agent-browser/SKILL.md)) is used as the system prompt providing detailed instructions and examples to guide AI in its script generation.
+The comprehensive [generate-script.txt](https://github.com/llmspy/browser/blob/main/ui/generate-script.txt) (derived from Vercel's [Agent Browser Skill](https://github.com/vercel-labs/agent-browser/blob/main/skills/agent-browser/SKILL.md)) is used as the system prompt providing detailed instructions and examples to guide AI in its script generation.
 
 You can also customize the system prompt by copying the `generate-script.txt` file into your profile directory at `~/.llms/users/default/browser/generate-script.txt` and modifying it as needed to tailor the AI's script generation behavior to your specific use cases or preferences
 

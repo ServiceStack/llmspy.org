@@ -35,6 +35,28 @@ listed under **Recents**.
 - **Browse a project's chats**: each folder shows its five most recent chats; **Show more** loads more.
   A folder's `…` menu can start a new chat, edit the project, or hide the folder from the sidebar.
 
+### Creating Git-backed projects
+
+Select **New project** from the sidebar or the prompt's project picker. With Git installed and the
+`git` extension enabled, choose an empty **New project** or **Clone repository**.
+
+<Screenshot src="/img/projects/clone-project.webp" alt="New project dialog with an existing Git repository URL and editable project name and folder" />
+
+- Empty projects start with **Initialize Git repository** checked. Uncheck it for a plain folder.
+  New repositories use `main` and start without generated files or an automatic commit.
+- Clones accept HTTPS or SSH URLs, derive editable name/folder defaults, and preserve history and the
+  source remote. **More options** accepts an optional branch; otherwise the remote default is used.
+- The destination is shown below the folder input. Existing folders are never overwritten.
+- Progress supports cancellation. Closing the dialog leaves creation running; reopening restores its
+  active operation. Failure offers Retry or Edit details. **Open project** lets you explicitly open a
+  project completed after you switched to a different chat.
+
+Repository scripts, submodules, dependencies, and Git LFS content are not automatically installed or
+checked out. Local mode uses your configured Git helpers/SSH identities; SSH hosts must already be
+trusted. Hosted mode initially permits public HTTPS clones on GitHub, GitLab, and Bitbucket, configurable
+through `git_clone_hosts`. It does not reuse the operator's credentials, and GitHub application login
+alone does not authorize repository access.
+
 ### Managing Projects
 
 Open the project manager from the **Projects** heading in the sidebar: `…` opens the manager and `+`
@@ -42,15 +64,50 @@ creates a new project. You can also use a folder's `…` menu → **Edit project
 
 <Screenshot src="/img/projects/projects-editor.webp" alt="Project Manager" />
 
+- **Repository URL**: cloned projects show their original source with copy/open actions. This is the
+  saved clone URL, rather than a live lookup of the current remote.
 - **Project Name & Folder**: provide a unique name; the folder defaults to its kebab-case slug.
 - **Description**: optional summary of the project.
 - **Show folder in sidebar**: hide folders you don't use. Hidden projects are still available in the
   prompt's project picker, and selecting one in the project manager shows it again.
 - **Publish Build Directory**: optional path, relative to the project folder, to [publish](/docs/features/publishing)
   (e.g. `dist`); leave empty for the project root.
+- **Published folder**: shows the static export as `~/user/project`, with **Open site** when a URL is
+  available. Folder and ai.llmspy.org publication results are kept separately.
 - **Select Project**: opens an unsent draft in the project, ready for your first message.
 - **Delete Project**: its chats move to **Recents** and keep their messages. A project can't be deleted
   while one of its chats has an agent running.
+
+### Share Project Output
+
+Open a project chat or select the project, then choose **Share → Folder** to export its build without
+an account. llms.py defaults to `./p/<user>/<project-folder>/`; a static server can serve the result
+without llms running. **Share → ai.llmspy.org → Publish Project** uses the independent **share_llmspy**
+extension and a connected publisher account for remote hosting.
+
+The **Folder** tab hides when the open chat has no project. If no other sharing tabs are available,
+the Share icon hides too. See [Publishing](/docs/features/publishing) for configuration, links, and
+C# web-root defaults.
+
+### Reorder and archive
+
+Select **Reorder** in the manager, then drag folder rows into your preferred order. Touch and arrow
+keys on a focused handle work too. Order saves immediately and is shared with the chat sidebar and
+project pickers; **Done** hides the handles.
+
+<Screenshot src="/img/projects/projects.webp" alt="Project manager with reorder handles, saved repository URL, and archive actions" />
+
+Use **Archive project** in the manager or a sidebar folder's menu to remove it from active lists and
+project pickers. Its files, chats, drafts, and captured run workspaces stay attached to the same ID.
+**Archived Projects** opens a searchable list; **Unarchive** appends a project to the active list and
+restores its previous sidebar visibility. Archiving keeps the project and its chats; deleting moves
+its chats to Recents.
+
+### Inspect and version your workspace
+
+Open the top-right [Workspace Explorer](/docs/features/workspace-explorer) to browse project files and
+preview source or images. Its [Git tab](/docs/features/git) adds staged/working diffs, history, commits,
+AI commit subjects, stashes, and fast-forward remote synchronization.
 
 ### Technical Configuration Details
 
@@ -77,3 +134,7 @@ file by hand, since chats refer to their project by `id`.
 
 Chats created before projects were saved with each chat have no project and appear under **Recents**; you
 can move them into a project from the prompt's project chip.
+
+Array order controls project display order. Archived records retain `archived: true`,
+`showInSidebar: false`, and `archivedSidebarVisibility` for restoration. Keep archived records when
+editing configuration by hand so their conversations and stable identities remain connected.

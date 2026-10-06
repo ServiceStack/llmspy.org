@@ -71,3 +71,30 @@ export LLMS_DISABLE="xmas,duckduckgo"
 - [pdf](https://github.com/ServiceStack/llms/tree/main/llms/extensions/pdf) - [PDF Studio](/docs/features/pdf) for code-first PDF design using Typst, real-time preview & AI assistance
 - [system_prompts](https://github.com/ServiceStack/llms/tree/main/llms/extensions/system_prompts) - Configures a library of over [200+ curated system prompts](/docs/features/system-prompts) accessible from the UI
 - [tools](https://github.com/ServiceStack/llms/tree/main/llms/extensions/tools) - Provides [Tools UI](/docs/extensions/tools) and Exposes registered tool definitions via an API endpoint
+
+### Sharing Extensions
+
+- [share_static](https://github.com/ServiceStack/llms/tree/main/llms/extensions/share_static): the default
+  **Folder** destination for [static project exports](/docs/features/publishing#publishing-to-a-static-folder).
+  Requires no publisher account; exports under `./p/<user>/<project>/` in llms.py.
+- [share_llmspy](https://github.com/ServiceStack/llms/tree/main/llms/extensions/share_llmspy): the
+  **ai.llmspy.org** destination for public threads, projects, media, and Decision Studio recipes.
+  Requires a connected publisher account to publish.
+
+They run independently and use the core Share panel. Folder appears only with a selected project or a
+project chat; the Share icon is hidden when no destinations are available. Add either or both names to
+`disable_extensions` to disable them. See [sharing configuration](/docs/features/publishing#enable-or-disable-sharing)
+and [`ctx.setShareOptions`](/docs/extensions/ui#sharing-options) for custom tabs.
+
+### Workspace and Decision Extensions
+
+- **projects**: [Git-backed creation, ordering, and archiving](/docs/features/projects), plus the
+  [read-only file explorer](/docs/features/workspace-explorer).
+- **git**: [Diffs, staging, commits, stashes, and remote synchronization](/docs/features/git). Requires
+  the Git executable and disables itself when it is unavailable.
+- **jev**: [Decision Studio](/docs/features/decision-studio), with portable recipes, recorded examples,
+  history, public sharing, and collection imports. Running decisions requires OpenRouter.
+- **openai_auth**: [Per-user ChatGPT sign-in](/docs/authentication/chatgpt) and eligible subscription chat.
+- **gemini**: [Gemini RAG](/docs/features/gemini), including portable saved imports and website crawls.
+
+These ship with llms.py and require no separate extension install or additional Python framework.

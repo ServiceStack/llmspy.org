@@ -1,0 +1,141 @@
+---
+title: C# AI.Chat
+description: Host the llms.py interface in a ServiceStack application with Identity Auth and OrmLite storage
+---
+
+**ServiceStack.AI.Chat** brings the llms.py interface to C# applications. The frontend is copied verbatim
+from llms-py; a C# backend integrates it with ServiceStack, ASP.NET Identity, OrmLite, and the host's
+`App_Data` directory. The migration includes Decision Studio, workspace browsing, Git, projects, Gemini
+RAG, profiles, skills, publishing, and subscription settings.
+
+See the [AI.Chat source and host guide](https://github.com/ServiceStack/ServiceStack/tree/main/ServiceStack/src/ServiceStack.AI.Chat)
+for the implementation and integration requirements. Package/release availability should be checked
+there before choosing a deployment version.
+
+## Register the plugin
+
+Register an OrmLite `IDbConnectionFactory` for chat storage and add the plugin before ServiceStack's
+startup loader runs:
+
+```csharp
+services.AddPlugin(new ChatFeature());
+services.AddServiceStack(typeof(MyServices).Assembly);
+```
+
+Provider keys come from the host's environment or configured variables. Browse to `/chat`.
+
+```csharp
+services.AddPlugin(new ChatFeature {
+    RoutePrefix = "/chat",
+    RequireAuth = true,
+    AuthType = ChatAuthType.OAuth,
+    SignInUrl = "/Account/Login",
+    EnableProviders = ["groq"],
+    ToolsConfig = new() {
+        EnableCodeExecution = false,
+        EnableFilesystemTools = false,
+        AllowedDirectories = [],
+    },
+});
+```
+
+## Identity and storage
+
+Identity Auth cookies supply the default sign-in flow and authenticated username used to partition
+storage. `ChatAuthType.ApiKey` uses `ApiKeysFeature`. The OpenAI-compatible chat-completions endpoint
+supports Identity cookies or bearer API keys when the corresponding host features are registered.
+
+With `RequireAuth = false`, data belongs to the `default` user. File-backed configuration, cached media,
+projects, Jev recipes, and per-user grants live under `App_Data/chat`; threads, requests, and media use
+OrmLite. Back up the database and matching App_Data before upgrading.
+
+## Shared UI, explicit host capabilities
+
+The frontend modules, styles, recipes, prompts, themes, and profiles are shared with llms-py. Backend
+capabilities still depend on the host: Identity replaces Python's application authentication, execution
+and filesystem tools are opt-in, and the Python browser extension is not ported. Anthropic uses an API
+key rather than borrowing a local Claude Code subscription.
+
+Git's hosted transport rules differ from local llms-py, and subscription credential lifecycle behavior
+must be checked against the C# host guide. Identical UI does not imply identical deployment permissions.
+
+## Sharing Projects
+
+**share_static** is enabled by default; **share_llmspy** is disabled by default. Static publishing
+requires no remote account. Its **Folder** tab appears for a selected project or a chat belonging to
+one. Enable remote publishing explicitly before registering the plugin:
+
+```csharp
+var chat = new ChatFeature();
+chat.ShareLlmspy.Enabled = true;
+services.AddPlugin(chat);
+```
+
+Remove `share_llmspy` from any configured `DisableExtensions` or `disable_extensions` list as well.
+To disable static sharing entirely, set `chat.ShareStatic.Enabled = false`. With no available sharing
+tabs, the toolbar omits the Share icon.
+
+The default export directory is `<WebContentDirectory>/p/<user>/<project-folder>/`, typically
+`wwwroot/p/<user>/<project-folder>/`. When `BaseUrl` is empty or null, links use the current browser
+origin and `BasePath`, for example `https://example.com/p/alice/my-project/` when Chat is at `/chat`.
+The UI displays the destination as `~/alice/my-project`; project links open in a new window.
+
+Configure globally in `App_Data/chat/user/default/share_static/config.json`. The file is optional;
+omitting `directory` uses the host web content directory's `p` folder:
+
+```json
+{
+  "enabled": true,
+  "basePath": "/p/",
+  "baseUrl": ""
+}
+```
+
+Or supply a typed code override:
+
+```csharp
+var chat = new ChatFeature();
+chat.ShareStatic.StaticPublish = new StaticPublishConfig {
+    // Omit Directory to use the host web content directory's p folder.
+    BasePath = "/p/",
+    BaseUrl = "", // Use the current browser origin.
+};
+services.AddPlugin(chat);
+```
+
+The code override replaces the file configuration, with class defaults for omitted fields.
+An explicit relative `Directory` resolves from the host's working directory. Set `BaseUrl` to a
+public HTTP(S) URL including its mount path to use another domain; its path overrides `BasePath`.
+Restart after changing file configuration. Named-user settings do not override these host settings.
+
+Serve default exports through the host's normal static-file middleware before routing, especially
+with a root-mounted Chat UI:
+
+```csharp
+app.UseDefaultFiles();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseServiceStack(new AppHost(), options => options.MapEndpoints());
+```
+
+A custom export directory needs a corresponding static-file mapping or independent static server.
+See [Publishing](/docs/features/publishing) for build-directory selection, HTML preparation, status,
+and remote account setup. Remote grants use `user/<user>/share_llmspy/config.json` under App_Data.
+
+## Keep shared assets synchronized
+
+From the `ServiceStack.AI.Chat` library checkout:
+
+```sh
+./sync.sh --dry-run
+./sync.sh
+./sync.sh --check
+```
+
+Full sync copies owned shared assets into the library's `chat/` directory and records their hashes in
+`chat/shared-assets.json`. It preserves C# Identity/credentials UI, host customizations, deployed
+App_Data, and upstream files. A parity check is read-only. Syncing does not implement new backend APIs;
+build and run `ServiceStack.AiTests` after updating embedded assets.
+
+See the [source guide's sync contract](https://github.com/ServiceStack/ServiceStack/tree/main/ServiceStack/src/ServiceStack.AI.Chat#syncsh)
+for prerequisites and supported targeted sync options.

@@ -4,6 +4,7 @@
   "pages": [
     "index",
     "install",
+    "desktop",
     "docker",
     "custom-build"
   ]

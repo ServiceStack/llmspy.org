@@ -27,6 +27,164 @@ To reset your configuration to the latest [llms.json](https://github.com/Service
 
 <ShellCommand>llms --reset all</ShellCommand>
 
+## October 6, 2026
+
+### From conversations to decisions, code, and connected workspaces
+
+This update gives your AI work a home beyond the chat window. Turn repeatable judgments into reusable
+**Decision Studio** recipes, inspect and commit what your agents build with the new **workspace and Git
+panels**, bring existing repositories into **Projects**, and keep your Gemini knowledge sources current
+with portable saved imports. You can also connect your personal ChatGPT account for eligible
+subscription chat—and host the same interface in C# with **ServiceStack.AI.Chat**.
+
+#### Decision Studio: small questions, useful answers
+
+Sentiment, support routing, content relevance, and business-news classification become recipes you can
+run again and again. Define an input form, ask yes/no, choice, or ordered-scale questions, then see typed
+answers with probability distributions. Create or improve recipes with AI, inspect the generated JSON,
+and save successful runs as named examples you can compare later.
+
+<Screenshot src="/img/decision-studio/decision-studio.webp" alt="Decision Studio with a reusable company-news recipe and typed probability results" />
+
+*Illustrative sample input and results.*
+
+Keep a personal recipe library with search, stars, and tags. Browse community recipes in **Import
+recipe → Collection**, or import JSON to make an editable copy. Share a saved recipe and successful
+worked example as a public link that readers can inspect without running a model. Local edits stay
+local until you explicitly update the share.
+
+Explore [Decision Studio](/docs/features/decision-studio) and
+[recipe publishing](/docs/features/publishing#publishing-decision-recipes).
+
+#### See the files. Review the diff. Ship the commit.
+
+The top-right **Workspace Explorer** opens your project's files beside highlighted source and image
+previews. Expand folders, follow breadcrumbs, toggle line wrapping, inspect SVG source or its rendering,
+and return to a selected file through reload or browser history.
+
+<Screenshot src="/img/workspace-explorer/workspace-files.webp" alt="Workspace Explorer with an expanded project file tree and syntax-highlighted Python source" />
+
+The **Git** tab shows working changes, staged changes, and expandable commit history. Review colored
+diffs, stage only what you want, then write a commit message—or ask AI to suggest one from the staged
+patch. Commit, undo a local commit, stash work, or pull and push with explicit controls. On a clean tree,
+**Sync Changes** fetches, fast-forwards, and pushes in one action.
+
+<Screenshot src="/img/git/git-review.webp" alt="Reviewing a staged diff alongside Git commit, changes, and history controls" />
+
+*Example repository data.*
+
+Learn [workspace browsing](/docs/features/workspace-explorer) and the
+[Git workflow](/docs/features/git), including local credentials and hosted-mode limits.
+
+#### Bring your repositories, organize your projects
+
+**New project** now offers an empty Git repository or **Clone repository**. Paste a repository URL,
+choose a name and folder, and bring its history into the workspace. Progress supports cancellation and
+recovery, and cloning does not automatically run repository scripts or install dependencies.
+
+<Screenshot src="/img/projects/clone-project.webp" alt="Creating a project by cloning a Git repository" />
+
+Drag projects into your preferred order and archive completed work without deleting files, chats, or
+drafts. A searchable **Archived Projects** view makes it easy to bring work back. The same order appears
+in your chat sidebar and project pickers. See [Projects](/docs/features/projects).
+
+<Screenshot src="/img/projects/projects.webp" alt="Project manager with reorder handles, saved repository URL, and archive actions" />
+
+#### Connect ChatGPT to your workspace
+
+The new **OpenAI Subscription** card in Settings connects your personal ChatGPT account through the
+public **Sign in with ChatGPT** flow. Authorize plan usage, paste the complete callback URL, and pick a
+model available to your account. Subscription text requests use that authorization, with account limits
+controlled by OpenAI; failed or expired grants do not silently switch to API-key billing.
+
+See [ChatGPT Sign-In](/docs/authentication/chatgpt) for setup, eligibility, manual callbacks,
+reconnecting older grants, and disconnecting.
+
+#### Gemini sources you can save, edit, and synchronize
+
+Folder imports and website crawls now share **Saved imports** and a portable `import.json`. Load an
+existing manifest, edit filters and ignores, preview changes, then run when ready. Saving settings
+does not spend on embeddings. **Sync Store** reloads enabled saved imports, refreshes website crawls,
+and imports changed sources while avoiding completed uploads for unchanged content.
+
+<Screenshot src="/img/gemini/gemini-imports.webp" alt="Editing a saved Gemini folder import with file filters, ignore paths, metadata, preview, run, and save actions" />
+
+Explorer makes queue state clearer and offers **Resume uploads** for a document, folder, or store.
+Repeated runs reuse document identities, and remote-removal failures stay visible for recovery.
+See [saved imports](/docs/features/gemini#saved-imports) and
+[upload recovery](/docs/features/gemini#recover-from-interrupted-uploads).
+
+#### Publish projects to your own static server
+
+The new [**share_static** extension](/docs/features/publishing#publishing-to-a-static-folder) exports a
+project's build from **Share → Folder**, without an ai.llmspy.org account. In llms.py, output defaults to
+`./p/<user>/<project>/` from the directory where llms starts. Serve it with any static file server;
+the exported site keeps working after llms stops. Publishing prepares the copied `index.html` for its
+URL mount and leaves the source files unchanged.
+
+Configure the export directory, URL path, and optional `baseUrl` in `user/default/share_static/config.json`.
+Status reads **Published 15m ago to ~/user/project**, with the full date and time in the tooltip and a
+project link opening in a new window when `baseUrl` is configured. Errors stay in the sharing panel
+with details about the failed operation.
+
+Remote publishing now belongs to [**share_llmspy**](/docs/features/publishing), registering the
+**ai.llmspy.org** tab independently. Enable either sharing extension, both, or neither. **Folder** only
+appears for a selected project or a chat belonging to one; the Share icon disappears when no tabs are
+available. Extensions can add their own ordered tabs with
+[`ctx.setShareOptions`](/docs/extensions/ui#sharing-options).
+
+In [**C# AI.Chat**](/docs/features/ai-chat#sharing-projects), static exports default to the web content
+directory's `p` folder, typically `wwwroot/p`. Without `baseUrl`, links use the Chat UI's current domain.
+Static sharing is enabled by default; remote sharing is an explicit opt-in.
+
+#### The same UI, now for C# applications
+
+**ServiceStack.AI.Chat** ports the backend to ServiceStack with Identity Auth, OrmLite persistence, and
+App_Data storage while sharing the llms.py frontend verbatim. Projects, Git, Decision Studio, Gemini,
+profiles, and publishing keep the same interface. Host permissions and backend capabilities remain
+explicit. Read the [C# AI.Chat integration guide](/docs/features/ai-chat).
+
+#### Small improvements throughout the workspace
+
+[Agent Profiles](/docs/features/agents#override-model) and Decision Studio use a searchable model-card
+picker with provider filters and sorting. [Skills](/docs/extensions/skills#browsing-skill-files) gains
+nested directory navigation, clickable breadcrumbs, and browser-history restoration. Forms have more
+consistent focus styling, and the [Share panel](/docs/features/publishing#1-open-the-share-panel) closes
+with a quiet X that leaves more attention on your content.
+
+The bundled [provider catalog](/docs/features/providers#refresh-the-provider-catalog) adds models and
+refreshes metadata. macOS desktop release builds also use ad hoc signing when Apple credentials are
+absent; this does not replace Developer ID signing or notarization. See
+[Desktop App](/docs/deployment/desktop#macos-signing).
+
+## September 30, 2026
+
+### Faster starts, more room to create
+
+The latest llms.py update makes opening your workspace feel faster, with a polished animated loading
+indicator that appears immediately while the app gets ready. Heavier features like **PDF Studio**,
+**Analytics** and the **code editor** now load when you open them, keeping the initial download smaller
+and letting you get to your conversations sooner.
+
+#### Less to download, faster return visits
+
+Compressed UI assets and API responses reduce transfer sizes, while smarter browser caching reuses
+unchanged files and checks for updates. Shared UI modules also start downloading earlier. Together,
+these improvements make a difference on slower connections without adding new runtime dependencies.
+
+The new loading indicator adapts to light and dark themes and respects your reduced-motion preferences.
+It's built into the page, so there's no extra image download before it can appear.
+
+#### A cleaner workspace for your tools
+
+**Skills, Analytics, PDF Studio, Gallery, Run Code and Calculator** now give their own interfaces more
+room by hiding the shared header icons. The Run Code toolbar lines up with the sidebar title, and the
+**Run** button stays the same size while executing, keeping the editor steady as you work.
+
+Upgrade to get the faster startup and refreshed tool pages:
+
+<ShellCommand>pip install llms-py --upgrade</ShellCommand>
+
 ## September 29, 2026
 
 ### Chats organized by project, with a new floating prompt
@@ -267,17 +425,17 @@ Check out the full [PDF Studio Documentation](/docs/features/pdf) for the comple
 
 ### Publish and Share Anything
 
-The new [Publishing](/docs/features/publishing) extension lets you share your AI creations with the
+The [share_llmspy](/docs/features/publishing) extension lets you share your AI creations with the
 world - straight from your workspace. Generate public, read-only links for chat threads, static
 projects, and individual media files, all hosted on [ai.llmspy.org/m](https://ai.llmspy.org/m) and
 available instantly.
 
-Click the **Share** icon in the toolbar to open the publishing panel. Connecting a publisher account
+Click the **Share** icon in the toolbar and select **ai.llmspy.org**. Connecting a publisher account
 is completely **free** and **anonymous** - no email or personal details required - and you can disconnect at any time.
 
 <Screenshot src="/img/publish/share-panel.webp" alt="Publish Share Panel" />
 
-Everything you publish is hosted on the new [ai.llmspy.org](https://ai.llmspy.org) website - a public
+Content published through **share_llmspy** is hosted on [ai.llmspy.org](https://ai.llmspy.org) - a public
 showcase where you can browse and discover the best AI-generated content shared by the community.
 Switch between the **Images**, **Audio**, and **Projects** galleries to explore what's been created:
 
@@ -683,7 +841,7 @@ See the [Themes docs](/docs/features/themes) for details on the available themes
 
 ### Agent Browser Editor
 
-The [browser](https://github.com/ServiceStack/llms/tree/main/llms/extensions/browser) extension provides an integrated environment for creating, editing, and running automated browser scripts powered by Vercel's [agent-browser](https://agent-browser.dev).
+The [browser](https://github.com/llmspy/browser) extension provides an integrated environment for creating, editing, and running automated browser scripts powered by Vercel's [agent-browser](https://agent-browser.dev).
 
 - 🖥️ **Live Browser Preview** - Clickable real-time screenshot with full mouse, keyboard, and scroll interaction
 - 📋 **Element Inspector** - Auto-refreshing snapshot giving scripts and AI a precise map of interactive elements
@@ -694,7 +852,7 @@ The [browser](https://github.com/ServiceStack/llms/tree/main/llms/extensions/bro
 
 <YouTube id="7HubpAx4fxM" title="Agent Browser Overview" splash="/img/features/browser-script-edit-ai.webp" width="776" height="977"/>
 
-See [browser docs](/docs/features/browser) for more details.
+See [browser docs](/docs/extensions/browser) for more details.
 
 ## Feb 15, 2026
 

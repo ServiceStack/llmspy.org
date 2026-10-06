@@ -2,11 +2,18 @@
 title: Publishing
 ---
 
-Share your conversations, projects, and media with the world - straight from your workspace.
+Share your conversations, projects, decision recipes, and media with the world - straight from your workspace.
 
-The [publish](https://github.com/ServiceStack/llms/tree/main/llms/extensions/publish) extension lets you generate public, read-only links for chat threads, static projects
-(games, apps, dashboards), and individual media files (images and audio). Everything is hosted on
-[ai.llmspy.org/m](https://ai.llmspy.org/m) and available instantly.
+Sharing has two independent extensions:
+
+- [share_static](https://github.com/ServiceStack/llms/tree/main/llms/extensions/share_static) exports
+  project builds to a local folder that any static file server can serve. No publisher account is needed.
+- [share_llmspy](https://github.com/ServiceStack/llms/tree/main/llms/extensions/share_llmspy) publishes
+  chat threads, projects, decision recipes, images, and audio to [ai.llmspy.org](https://ai.llmspy.org).
+  Remote publishing requires a connected publisher account.
+
+The core **Share** panel presents the available destinations as tabs: **Folder** first, then
+**ai.llmspy.org**. Each extension can be enabled independently; you can use either, both, or neither.
 
 ---
 
@@ -14,13 +21,21 @@ The [publish](https://github.com/ServiceStack/llms/tree/main/llms/extensions/pub
 
 ### 1. Open the Share Panel
 
-Click the **Share** icon in the top toolbar to open the publishing panel.
+Click the **Share** icon in the top toolbar to open the publishing panel. Its subtle **X** closes
+the panel without disconnecting your publisher account.
+
+**Folder** appears only when a project is selected or the open chat belongs to a project. When the
+open chat has no project, **ai.llmspy.org** becomes the selected tab if remote sharing is enabled.
+The Share icon is hidden when no tabs are available, and an open panel closes if its last tab disappears.
+
+To export a project without an account, use [Folder publishing](#publishing-to-a-static-folder).
+The connection steps below apply to **ai.llmspy.org**.
 
 <Screenshot src="/img/publish/share-panel.webp" alt="Publish Share Panel" />
 
 ### 2. Register & Connect
 
-If you haven't connected a publisher account yet, you'll see a registration form alongside
+Select **ai.llmspy.org**. If you haven't connected a publisher account yet, you'll see a registration form alongside
 a short list of benefits:
 
 - ✅ Completely **free** and **anonymous** - no email or personal identification required
@@ -28,8 +43,9 @@ a short list of benefits:
 - ✅ Retain full formatting of code, tables, and prompts
 - ✅ Revoke links or disconnect your account at any time
 
-Fill in your details in the embedded form. Registration takes less than a minute.
-Once complete, your API key is saved automatically and you'll see a green **Connected** badge.
+The embedded connection form identifies the requesting host and asks you to explicitly authorize it.
+Once connected, the publisher key is saved for your llms.py account on the server and a green
+**Connected** badge appears. It is separate from your model-provider keys.
 
 <Screenshot src="/img/publish/register-form.webp" alt="Register Form" />
 
@@ -42,6 +58,100 @@ panel. Click it to view your API key, user info, or to **Disconnect** your accou
 
 ---
 
+## Enable or Disable Sharing
+
+Both extensions ship with llms.py. Disable either by adding its name to `disable_extensions` in
+`~/.llms/llms.json`. For account-free folder publishing only:
+
+```json
+{
+  "disable_extensions": ["share_llmspy"]
+}
+```
+
+Use `["share_static"]` for remote sharing only, or `["share_static", "share_llmspy"]` to disable both.
+Merge these names into any existing disable list. Remove a name from the list to enable that extension
+again, and restart llms. The `LLMS_DISABLE` environment variable can also disable extensions.
+
+In **C# AI.Chat**, `share_static` is enabled and `share_llmspy` is disabled by default. Enable remote
+sharing with `chat.ShareLlmspy.Enabled = true` before registering the plugin, and remove it from any
+host disable lists. See [C# sharing configuration](/docs/features/ai-chat#sharing-projects).
+
+## Publishing to a Static Folder
+
+Use **Folder** to export HTML, CSS, JavaScript, and other build output for a static server:
+
+1. Select a project, or open a chat belonging to it, then open **Share → Folder**.
+2. Choose the **Build Directory** relative to the project folder, such as `dist` or `build`.
+   The saved project setting or detected `dist/` folder is pre-filled; **Browse** selects another folder.
+   Leave the field empty to export the project root.
+3. Click **Publish folder**. After changes, click **Update folder** to replace the export.
+
+No account, API key, or internet connection is needed. The export lives at
+`<export-root>/<local-user>/<project-folder>/`; unauthenticated installations use `default` as the user.
+The UI abbreviates the export root to `~/`, for example:
+
+```text
+Published 15m ago to ~/alice/my-project
+http://127.0.0.1:8080/p/alice/my-project/
+```
+
+The timestamp's tooltip includes the full date and time. A project link opens in a new window.
+Publishing errors appear in the Folder panel with details about the failed operation and a dismiss button.
+Folder and remote publication status are separate, so publishing to one preserves the other result.
+
+### Static Sharing Configuration
+
+In llms.py, configure `~/.llms/user/default/share_static/config.json` (or the equivalent under your
+configured data root). The file is optional; with no file, these defaults apply:
+
+```json
+{
+  "enabled": true,
+  "directory": "./p",
+  "basePath": "/p/",
+  "baseUrl": ""
+}
+```
+
+| Setting | Purpose |
+|---|---|
+| `enabled` | Set to `false` to remove the Folder tab. |
+| `directory` | Export root. Python defaults to `./p`, relative to the directory where llms starts. Explicit relative paths use the startup working directory. |
+| `basePath` | Static server URL mount, default `/p/`. Used when `baseUrl` is empty or null. |
+| `baseUrl` | Public HTTP(S) URL including the mount path, such as `http://127.0.0.1:8080/p` or `https://example.com/p`. Its path overrides `basePath`. |
+
+Restart the host after configuration changes. These are global host settings; named-user account
+settings do not override them. With a configured `baseUrl`, the panel shows the full project link.
+With an empty or null `baseUrl`, Python shows the URL path, such as `/p/alice/my-project/`.
+
+**C# AI.Chat** uses `App_Data/chat/user/default/share_static/config.json`. Omit `directory` to default
+to `<WebContentDirectory>/p`, typically `wwwroot/p`. An empty or null `baseUrl` produces a link on the
+Chat UI's current domain, such as `https://example.com/p/alice/my-project/`, independent of `/chat`.
+Code configuration is also supported through the typed `ShareStatic.StaticPublish` property;
+see the [C# guide](/docs/features/ai-chat#sharing-projects).
+
+### Serve the Export
+
+For a local Python example, run llms from `/srv/www`, set `baseUrl` to `http://127.0.0.1:8080/p`, and
+serve that directory independently:
+
+```sh
+python -m http.server 8080 --directory /srv/www
+```
+
+Open `http://127.0.0.1:8080/p/alice/my-project/` after publishing. llms can stop; the static server serves
+the exported files without llms-py. In C#, exports under `wwwroot/p` can use the host's normal static-file
+middleware. Custom export directories need a matching static server or middleware mapping.
+
+Publishing injects a missing `<base href="/p/alice/my-project/">` into the copied root `index.html`
+(using the configured URL mount) and makes root-relative HTML `src` and `href` attributes relative.
+Existing base elements, external URLs, scripts, and comments are preserved. Source files remain
+unchanged. Build paths inside CSS/JavaScript and SPA history routing must support the chosen mount.
+Updates remove stale exported files; failed copy, rewrite, or metadata updates restore the previous export.
+
+---
+
 ## Publishing Chat Threads
 
 Share an entire conversation - including code blocks, tables, and rich formatting - as a
@@ -50,7 +160,7 @@ permanent, styled web page.
 ### How to Publish
 
 1. Open the **Share** panel while you have an active conversation.
-2. Make sure the **Publish Chat Thread** tab is selected.
+2. Select **ai.llmspy.org**, connect an account if needed, then select **Publish Chat Thread**.
 3. You'll see the thread title and model displayed in a summary card.
 4. Click **Publish Thread** (or **Update Thread** if previously published).
 5. A public URL is generated and displayed. Click the link to open it, or click the copy icon
@@ -79,7 +189,7 @@ if you prefer a more minimal presentation.
 
 ### Browse the Showcase
 
-Everything you publish is hosted on the new [ai.llmspy.org](https://ai.llmspy.org) website - a public
+Content shared through **share_llmspy** is hosted on [ai.llmspy.org](https://ai.llmspy.org) - a public
 showcase where you can browse and discover the best AI-generated content shared by the community.
 Switch between the **Images**, **Audio**, and **Projects** galleries to explore what others have created:
 
@@ -107,14 +217,14 @@ Hit **Update Thread** to push any new messages or edits to the same URL.
 
 ## Publishing Projects
 
-Deploy a static project - a game, web app, or any folder of HTML/JS/CSS - to a live public URL
-with a single click.
+Use **share_llmspy** to deploy a static project - a game, web app, or any folder of HTML/JS/CSS -
+to a live public URL on ai.llmspy.org. For an account-free export, use [Folder](#publishing-to-a-static-folder).
 
 ### How to Publish
 
 1. Open a chat that belongs to the [project](/docs/features/projects) (the project tab only appears
    for a chat in a project; with no chat open it uses the project last selected in the project manager).
-2. Open the **Share** panel and select the **Publish Project** tab.
+2. Open **Share → ai.llmspy.org**, connect an account if needed, and select **Publish Project**.
 3. The extension auto-detects your project's build/dist folder. You can change it manually or
    use the **Browse** button to pick a different folder.
 4. Click **Publish Project**.
@@ -198,23 +308,51 @@ Share generated audio clips from the audio player.
 
 ---
 
+## Publishing Decision Recipes
+
+[Decision Studio](/docs/features/decision-studio) uses **share_llmspy** to publish a saved recipe together
+with a matching successful local run. Enable the extension, select **Share** in the recipe header,
+connect your publisher account, choose the
+run, and review Preview or JSON before publishing. The definition, input, compiled prompt, normalized
+results, and saved usage examples become public; other history and raw provider responses stay local.
+
+Public recipe links display the recorded result without requiring a model call. **Update shared recipe**
+explicitly replaces the snapshot and retains its URL. **Stop sharing** withdraws future public access;
+imported/downloaded copies remain usable. Deleting a local recipe does not delete its public share.
+
+Use **Import recipe → Collection** to discover shared recipes with tags and sorting, or **From JSON**
+for a file/export URL. Imports are editable copies with one link to the original. Signed-in readers can
+star recipes in the collection or public gallery. Publishing and importing make no provider calls.
+
 ## Quick Reference
 
 | Content Type | Where to Find It | Action |
 |---|---|---|
-| **Chat Thread** | Share panel → *Publish Chat Thread* tab | Publish / Update Thread |
-| **Project** | Share panel → *Publish Project* tab | Publish Project |
+| **Project folder** | Share panel → *Folder* | Publish / Update folder |
+| **Chat Thread** | Share panel → *ai.llmspy.org* → *Publish Chat Thread* | Publish / Update Thread |
+| **Remote project** | Share panel → *ai.llmspy.org* → *Publish Project* | Publish Project |
 | **Image** | Gallery lightbox footer | Share Image |
 | **Audio** | Audio player actions | share |
+| **Decision recipe** | Decision Studio → recipe header | Share / Update shared recipe |
 
 ## Disconnecting
 
 To unlink your publisher account:
 
-1. Open the **Share** panel.
+1. Open **Share → ai.llmspy.org**.
 2. Click **Connected: @username** in the top-right.
 3. Click **Disconnect** in the dropdown.
 
 Your API key will be removed locally. Previously published content remains accessible at its
 public URL until you remove it from the hosting platform.
 
+
+## Upgrading Sharing Configuration
+
+Use `share_llmspy` as the remote extension ID in disable lists, extension scopes, and extension API paths
+(`/ext/share_llmspy/...`). Static exports belong to `share_static`; move any former top-level
+`staticPublish` settings into `user/default/share_static/config.json`.
+
+Remote account settings are stored in `user/<username>/share_llmspy/config.json`. Legacy
+`user/<username>/publish/config.json` account files remain readable, migrate on the next save, and are
+removed on disconnect. Named users do not inherit another account's publisher credentials.

@@ -8,6 +8,10 @@
     "chat-ui",
     "agents",
     "projects",
+    "workspace-explorer",
+    "git",
+    "decision-studio",
+    "ai-chat",
     "publishing",
     "analytics",
     "core-tools",
@@ -21,7 +25,6 @@
     "model-selector",
     "system-prompts",
     "providers",
-    "voice-input",
-    "browser"
+    "voice-input"
   ]
 }

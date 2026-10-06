@@ -505,3 +505,14 @@ Shows:
   <Card title="Configuration" href="/docs/configuration" />
   <Card title="CLI Reference" href="/docs/features/cli" />
 </Cards>
+
+## Refresh the Provider Catalog
+
+The bundled catalog adds OpenRouter model entries and refreshes pricing, context, and output metadata.
+To fetch the latest provider definitions for an existing installation, run:
+
+<ShellCommand>llms --update-providers</ShellCommand>
+
+Provider availability and pricing can change; check the provider's current terms before using a model.
+When several providers offer the same model, an explicitly selected provider is prioritized. Account-
+specific subscription choices come from [ChatGPT Sign-In](/docs/authentication/chatgpt).

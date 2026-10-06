@@ -164,6 +164,55 @@ Which results in opening a festive Top Panel when clicked that opens a direct li
 
 Smart generation models like Nano Banana's `gemini-2.5-flash-image` perform exceptionally well here as they're able to answer your kids questions with rich, detailed responses and image outputs.
 
+## Sharing Options
+
+Use `ctx.setShareOptions(options)` to add a tab to the shared top **Share** panel. Core owns the icon,
+panel, and tab selection; each extension owns its component and error messages. No separate
+`setTopIcons` call is needed.
+
+```js
+const MySharePanel = {
+    template: `<p>Export the current conversation from this panel.</p>`,
+}
+
+export default {
+    install(ctx) {
+        ctx.setShareOptions({
+            my_share: {
+                name: 'Export',
+                component: MySharePanel,
+                order: 50,
+                isVisible: ctx => !!ctx.threads.currentThread?.value,
+            },
+        })
+    },
+}
+```
+
+| Option | Description |
+|---|---|
+| Map key | Unique option ID, normally the extension name. Registering it again replaces the option. |
+| `name` | Tab label; defaults to the humanized option ID. |
+| `component` | Required Vue component, mounted only while its tab is selected. |
+| `order` | Finite numeric sort order, ascending; defaults to `100`. |
+| `props` | Optional object passed to the selected component. |
+| `isVisible(ctx)` | Optional reactive visibility predicate receiving `AppContext`. |
+
+The first available tab by order is selected initially. When a selected tab disappears, the panel
+falls back to the first available tab. The icon hides when every option is hidden; the panel closes
+when no tabs remain. With no registered options, core removes the Share icon.
+
+The built-in **share_static** option is **Folder**, with order `10` and visibility limited to a
+selected project or project chat. **share_llmspy** registers **ai.llmspy.org**, with order `100`.
+The example's order `50` places it between those tabs. Remove an option with:
+
+```js
+ctx.setShareOptions({ my_share: null })
+```
+
+`ExtensionScope.setShareOptions(options)` delegates to the same registration API.
+See [Publishing](/docs/features/publishing) for independently enabling the built-in destinations.
+
 ## Chat & Thread Integration
 
 The xmas extension achieves this by intercepting chat requests and injecting a Santa system prompt to modify the chat behavior to create custom Santa persona.
@@ -437,6 +486,7 @@ The global application context, typically accessed as `ctx`.
 | `events` | `EventBus` | Event bus for publishing and subscribing to global events. |
 | `prefs` | `Object` (Reactive) | User preferences, persisted to local storage. |
 | `layout` | `Object` (Reactive) | UI layout configuration (e.g., visibility of sidebars). |
+| `shareOptions` | `Object` (Reactive) | Registered sharing tabs, keyed by option ID. |
 
 ### Global Helpers (Vue)
 
@@ -489,6 +539,11 @@ Navigates to a specific route.
 #### `setTopIcons(icons)`
 Registers icons for the top header bar.
 *   **icons**: `Object` - Map of icon definitions.
+
+#### `setShareOptions(options)`
+Registers or replaces sharing tabs by ID; pass `null` to unregister one. Options support `name`,
+`component`, `order`, `props`, and `isVisible(ctx)`. Core manages the icon and panel based on visible tabs.
+See [Sharing Options](#sharing-options) for the full contract and an example.
 
 #### `setLeftIcons(icons)`
 Registers icons for the left sidebar.
@@ -637,3 +692,35 @@ Helper to create a standardized JSON result object from a response.
 
 #### `createErrorResult(e)`
 Helper to create a standardized error result object from an exception.
+## Workspace Panels
+
+Register a tab in the right workspace sidebar with `ctx.setRightIcons()`:
+
+```javascript
+ctx.setRightIcons({
+  notes: {
+    name: 'Notes',
+    title: 'Workspace notes',
+    component: NotesIcon,
+    panel: NotesPanel,
+    // preview: NotesPreview,
+    isVisible: ({ workspace, projectId }) => !!workspace,
+  },
+})
+```
+
+`panel` receives `workspace` (validated roots and selected directory), `projectId`, and `refreshKey`.
+It owns loading/error/empty states, ignores or cancels stale requests, and emits `busy` while loading.
+Emit `file` with `{ path }` for the shared file preview, or `{ path, preview: 'notes', directoryPath }`
+when registering a custom `preview` component. Optional `aliases` support older tab IDs. Visibility
+predicates may receive a null workspace while it loads.
+
+The host manages URL selection and clears stale previews on page/project changes. Server routes must
+independently validate the authenticated workspace rather than trusting browser paths. See
+[Workspace Explorer](/docs/features/workspace-explorer) for user-facing navigation.
+
+## Settings Cards
+
+Use `ctx.setSettings({ MySettingsCard })`, or the same method on an extension scope, to contribute a
+component to Settings. Keep account-owned state and requests with their originating user; never expose
+credentials through a UI card or browser storage.

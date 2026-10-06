@@ -61,7 +61,11 @@ Built-in profiles (**Chat**, **Coder**, **Planner**) are shown as **Read-only** 
 
 #### Override Model
 
-Click the **Selected Model** dropdown to pick a different default model for the profile. A full model selector opens where you can search, filter by provider, and browse all available models. Click **Clear Override** to revert to the server default.
+Click **Selected Model** to pick a profile default with the shared model-card picker. Search by name,
+ID, or provider; filter providers; sort by release date, price, context limit, or name. It initially
+shows the newest 20 models and loads another 20 as you scroll, with pricing, context, and available
+model metadata on each card. **Clear Override** restores the profile's default. Decision Studio uses
+this picker for recipe writing; the main chat's existing model selector remains separate.
 
 <Screenshot src="/img/profiles/profile-models.webp" alt="Model override selector for a profile" />
 

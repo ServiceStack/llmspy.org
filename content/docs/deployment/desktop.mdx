@@ -1,0 +1,33 @@
+---
+title: Desktop App
+description: Run the llms.py workspace in a native desktop window and understand macOS release signing
+---
+
+The desktop app wraps the existing llms.py interface in a native Tauri window with a bundled Python
+sidecar. See the [desktop source and release guide](https://github.com/ServiceStack/llms/tree/main/desktop)
+for build instructions and available release artifacts.
+
+## macOS signing
+
+Release builds without Apple signing credentials now sign the complete application **ad hoc** instead
+of leaving the bundle unsigned. This is not Developer ID signing or notarization. For an unnotarized
+app downloaded from a source you trust, macOS may still require explicit approval through **System
+Settings → Privacy & Security → Open Anyway**.
+
+If an installed app is reported as damaged, check the signature before assuming the warning is only
+quarantine:
+
+```sh
+codesign --verify --deep --strict --verbose=2 /Applications/llms.app
+spctl --assess --type execute --verbose=4 /Applications/llms.app
+```
+
+Production distributors should configure Apple Developer ID signing and notarization credentials as
+described in the release guide. Ad hoc signing does not replace notarization. Signed in-app updates also
+require the Tauri updater key pair; with no updater keys, release builds still create installers but
+leave in-app updates disabled.
+
+## Choose your host
+
+Use [pip](/docs/getting-started) for the CLI/server, [Docker](/docs/deployment/docker) for a containerized
+host, or [C# AI.Chat](/docs/features/ai-chat) to integrate the same UI into a ServiceStack application.
