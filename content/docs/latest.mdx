@@ -93,11 +93,16 @@ in your chat sidebar and project pickers. See [Projects](/docs/features/projects
 #### Connect ChatGPT to your workspace
 
 The new **OpenAI Subscription** card in Settings connects your personal ChatGPT account through the
-public **Sign in with ChatGPT** flow. Authorize plan usage, paste the complete callback URL, and pick a
-model available to your account. Subscription text requests use that authorization, with account limits
-controlled by OpenAI; failed or expired grants do not silently switch to API-key billing.
+public **Sign in with ChatGPT** flow. Authorize plan usage, let local sign-in complete automatically,
+and pick a model available to your account. Subscription text requests use that authorization, with
+account limits controlled by OpenAI; failed or expired grants do not silently switch to API-key billing.
 
-See [ChatGPT Sign-In](/docs/authentication/chatgpt) for setup, eligibility, manual callbacks,
+<ScreenshotsGallery className="mb-8" gridClass="grid grid-cols-1 md:grid-cols-2 gap-4" images={{
+    'Continue with ChatGPT': '/img/openai_auth/openai-sub-start.webp',
+    'Connected': '/img/openai_auth/openai-sub-connected.webp',
+}} />
+
+See [ChatGPT Sign-In](/docs/authentication/chatgpt) for setup, eligibility, local callbacks,
 reconnecting older grants, and disconnecting.
 
 #### Gemini sources you can save, edit, and synchronize

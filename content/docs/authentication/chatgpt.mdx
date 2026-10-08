@@ -14,16 +14,25 @@ which requires permission to use the plan in addition to signing in.
 ## Connect your account
 
 1. Open **Settings → OpenAI Subscription**.
-2. Select **Sign in with ChatGPT**. If the browser cannot open, use **Copy sign-in link** and open it
+2. Select **Continue with ChatGPT**. If the browser cannot open, use **Copy link** and open it
    in your preferred browser.
 3. Sign into your account and authorize ChatGPT plan usage.
-4. Copy the **complete callback URL** from that browser's address bar and paste it into the card's
-   callback field. Keep all query parameters; a bare code is insufficient.
-5. Complete the connection and select an available OpenAI model for chat.
+4. Sign-in completes automatically and the settings card updates. Select an available OpenAI model.
 
-llms.py uses a manual callback workflow, including when self-hosted remotely. The callback page may
-fail to load because no loopback listener is running; copy its full address anyway and return to
-llms.py. A sign-in attempt expires after ten minutes; start a fresh attempt if it expires.
+<Screenshot src="/img/openai_auth/openai-sub-start.webp" alt="OpenAI Subscription card in Settings with Continue with ChatGPT and Copy link actions" />
+
+Once connected, the card shows the signed-in account, confirms the OpenAI API key is disabled for
+your user, and offers **Disconnect**:
+
+<Screenshot src="/img/openai_auth/openai-sub-connected.webp" alt="Connected OpenAI Subscription card showing the ChatGPT account, API key disabled, and Disconnect button" />
+
+Local sign-in starts a callback listener before opening the browser. It uses port 1455 when available,
+or selects another port when occupied. The browser and llms.py must run on the same computer.
+A sign-in attempt expires after ten minutes; start a fresh attempt if it expires.
+
+For a remote browser, the host can explicitly enable manual completion with
+`Options(automatic_callback=False)`. In that mode, paste the **complete callback URL** into the card;
+keep all query parameters, including state and the issued client ID.
 
 If you signed in without granting plan usage, the verified identity is retained but subscription chat
 stays disabled. Sign in again and authorize it. Model choices come from your connected account rather
@@ -36,10 +45,13 @@ This is not unlimited usage: OpenAI applies account and app limits. Review and m
 [ChatGPT Settings → Usage](https://chatgpt.com/#settings/Usage); see
 [OpenAI's accounts and sessions guide](https://developers.openai.com/siwc/token-sharing-open-source/profiles-and-sessions).
 
-Subscription requests do not silently switch to an API-key provider after an expired, invalid, or
-failed grant. Sign in again when instructed. Without a personal grant, a configured API key can still
-provide ordinary OpenAI access. Explicit non-text output modalities can use their configured API-key
-provider and its billing; connecting a subscription does not promise image/audio generation coverage.
+Connecting a ChatGPT subscription disables OpenAI API-key access for that user, including image/audio
+generation. Expired, invalid, or failed grants never fall back to API-key billing. Disconnect the
+subscription to restore the configured API key and its model catalog; other users are unaffected.
+
+The subscription model list comes from OpenAI's public `/v1/models` endpoint using your OAuth token.
+Only entries marked `visibility: "list"` appear in the picker, in OpenAI's order; the list is cached for
+five minutes. See [OpenAI's model catalog guide](https://developers.openai.com/siwc/token-sharing-open-source/models-and-inference).
 
 Responses stream with `store=false`; incomplete streams and provider failures are shown as failures,
 not successful answers. No uncertain inference is automatically restarted through a different provider.
@@ -76,8 +88,8 @@ user. On Windows, protect the data directory through the host filesystem's acces
 
 | Situation | Action |
 | --- | --- |
-| Callback page will not load | Copy its complete address into Settings; there is no automatic loopback callback listener |
-| Callback rejected or expired | Start a fresh sign-in and use the matching complete URL in the same llms.py account |
+| Callback page will not load | Restart llms.py and start a fresh sign-in on the same computer as the server |
+| Callback rejected or expired | Start a fresh sign-in in the same llms.py account |
 | Signed in but cannot chat | Authorize plan usage and check OpenAI account eligibility and available models |
 | Requires reconnect | Complete a new public sign-in; old private grants cannot be reused automatically |
 | Subscription stream fails | Review the error and account limits; llms.py does not switch billing providers automatically |
