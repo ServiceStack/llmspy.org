@@ -3,8 +3,7 @@ import Image from 'next/image';
 import { CopyBlock } from './copy-block';
 import { ConsoleCarousel } from './console-carousel';
 import { consoleScreens } from './console-screens';
-import { ScreenshotCarousel } from './screenshot-carousel';
-import { screenshotScreens } from './screenshot-screens';
+import { AiGallery } from './ai-gallery';
 import { TabbedImages } from './tabbed-images';
 import { LightboxImage } from './lightbox-image';
 import { ThemeCarousel } from './theme-carousel';
@@ -328,9 +327,11 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Screenshot Carousel Section */}
+      {/* AI Chat Gallery Section */}
       <div className="w-full my-12 px-4">
-        <ScreenshotCarousel screens={screenshotScreens} className="max-w-[1200px] mx-auto" />
+        <div className="max-w-[1200px] mx-auto">
+          <AiGallery />
+        </div>
       </div>
 
       {/* What's New */}
@@ -1337,15 +1338,6 @@ export default function HomePage() {
                 className="w-full h-auto"
               />
             </div>
-          </div>
-          <div className="rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-700 dark:bg-white">
-            <LightboxImage
-              src="/img/tools/tools-chat-tetris.webp"
-              alt="Interactive HTML results from MCP tools"
-              width={1200}
-              height={600}
-              className="w-full h-auto"
-            />
           </div>
         </div>
       </div>
