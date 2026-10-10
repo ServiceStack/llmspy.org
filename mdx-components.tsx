@@ -12,6 +12,7 @@ import { ScreenshotsGalleryView } from '@/components/screenshots-gallery-view';
 import { ScreenshotTabs } from '@/components/screenshot-tabs';
 import { SystemPrompts } from '@/components/system-prompts';
 import { ThemeCarousel } from '@/app/(home)/theme-carousel';
+import { Installer } from '@/app/(home)/installer';
 
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
@@ -29,6 +30,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     ScreenshotTabs,
     SystemPrompts,
     ThemeCarousel,
+    Installer,
     ...components,
   };
 }

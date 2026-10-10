@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { CopyBlock } from './copy-block';
+import { Installer } from './installer';
 import { ConsoleCarousel } from './console-carousel';
 import { consoleScreens } from './console-screens';
 import { AiGallery } from './ai-gallery';
@@ -28,8 +29,8 @@ export default function HomePage() {
             </svg>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            The self-hosted, OpenAI-compatible AI gateway for <span className="text-slate-900 dark:text-slate-100 font-semibold">text, image &amp; audio</span>
-            {' '}- a lightweight CLI, server and OSS Open WebUI alternative for Local and Cloud LLMs
+            The lightweight self-hosted, multi-user OpenAI-compatible AI gateway for <span className="text-slate-900 dark:text-slate-100 font-semibold">text, image &amp; audio</span>
+            {' '}- a CLI, server and OSS Open WebUI alternative for Local and Cloud LLMs
           </p>
         </div>
 
@@ -66,18 +67,11 @@ export default function HomePage() {
           </Link>
         </p>
 
+        <Installer />
+
         {/* Hero Poster */}
-        <div className="pt-4">
-          <Link href="/docs/latest" className="block">
-            <Image
-              src="/img/latest/llmspy-v4.webp"
-              alt="llms.py v4 - Text, Image, Audio, Speech & Projects"
-              width={1376}
-              height={768}
-              priority
-              className="mx-auto w-full max-w-4xl h-auto rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl"
-            />
-          </Link>
+        <div className="pt-4 mx-auto max-w-6xl">
+          <AiGallery />
         </div>
       </div>
 
@@ -287,14 +281,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Quick Install */}
-      <div className="mt-8 w-full px-4">
-        <div className="max-w-3xl mx-auto rounded-lg bg-muted p-6">
-          <h3 className="font-semibold mb-4 text-center text-slate-900 dark:text-slate-100">Quick Install</h3>
-          <CopyBlock>pip install llms-py</CopyBlock>
-        </div>
-      </div>
-
       {/* Console Carousel Section */}
       <div className="mt-8 w-full px-4">
         <div className="w-full max-w-4xl mx-auto">
@@ -324,13 +310,6 @@ export default function HomePage() {
             </p>
           </div>
           <ThemeCarousel />
-        </div>
-      </div>
-
-      {/* AI Chat Gallery Section */}
-      <div className="w-full my-12 px-4">
-        <div className="max-w-[1200px] mx-auto">
-          <AiGallery />
         </div>
       </div>
 
@@ -658,7 +637,7 @@ export default function HomePage() {
           </div>
           <div className="rounded-xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 dark:bg-white">
             <Image
-              src="/img/model-selector.webp"
+              src="/img/pages/chat/screenshots/chat-02-models.webp"
               alt="Model Selector with search and filtering"
               width={1200}
               height={800}
