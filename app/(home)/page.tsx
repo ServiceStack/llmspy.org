@@ -29,8 +29,9 @@ export default function HomePage() {
             </svg>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            The lightweight self-hosted, multi-user OpenAI-compatible AI gateway for <span className="text-slate-900 dark:text-slate-100 font-semibold">text, image &amp; audio</span>
-            {' '}- a CLI, server and OSS Open WebUI alternative for Local and Cloud LLMs
+            Open Source lightweight self-hosted, multi-user ChatGPT + OpenRouter + OpenWebUI alternative for 
+            <span className="ml-1 text-slate-900 dark:text-slate-100 font-semibold">
+            text, image &amp; audio</span> from Local and Cloud LLMs
           </p>
         </div>
 
@@ -77,7 +78,7 @@ export default function HomePage() {
 
       {/* Stats Band */}
       <div className="w-full mt-12 px-4 border-y border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40">
-        <div className="max-w-6xl mx-auto py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="max-w-6xl mx-auto py-10 grid grid-cols-2 md:grid-cols-5 gap-8">
           <div className="text-center">
             <div className="text-4xl sm:text-5xl font-black text-blue-600 dark:text-blue-400">530+</div>
             <div className="mt-1 text-sm font-medium text-slate-600 dark:text-slate-400">Models</div>
@@ -93,6 +94,10 @@ export default function HomePage() {
           <div className="text-center">
             <div className="text-4xl sm:text-5xl font-black text-blue-600 dark:text-blue-400">100%</div>
             <div className="mt-1 text-sm font-medium text-slate-600 dark:text-slate-400">Open Source &amp; Self-Hosted</div>
+          </div>
+          <div className="col-span-2 md:col-span-1 text-center">
+            <div className="text-4xl sm:text-5xl font-black text-blue-600 dark:text-blue-400">1</div>
+            <div className="mt-1 text-sm font-medium text-slate-600 dark:text-slate-400">Python Dependency <br/> <code className="font-mono">(aiohttp)</code></div>
           </div>
         </div>
       </div>
