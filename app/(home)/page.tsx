@@ -10,7 +10,7 @@ import { LightboxImage } from './lightbox-image';
 import { ThemeCarousel } from './theme-carousel';
 import { ScreenshotTabs } from '@/components/screenshot-tabs';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Star, Sparkles, Code2, Image as ImageIcon, Music, Calculator, Puzzle, Search, GalleryHorizontal, Sigma, Plug, Wand2, Mic, Palette, ShieldCheck, Bot, FolderOpen, Server, MessageSquare, Check, Globe, Gamepad2, FileText } from 'lucide-react';
+import { Star, Sparkles, Code2, Image as ImageIcon, Music, Calculator, Puzzle, Search, GalleryHorizontal, Sigma, Plug, Wand2, Mic, Palette, ShieldCheck, Bot, FolderOpen, Server, MessageSquare, Check, Globe, Gamepad2, FileText, Network, GitBranch, KeyRound, ToggleLeft, ListChecks, Gauge } from 'lucide-react';
 import { YouTube } from '@/components/youtube';
 
 export default function HomePage() {
@@ -332,6 +332,54 @@ export default function HomePage() {
 
           {/* Feature Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <Link href="/docs/features/decision-studio" className="block">
+              <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
+                    <Network className="w-5 h-5 text-indigo-500" />
+                    Decision Studio
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-700 dark:text-slate-300">
+                    Reusable recipes for typed AI decisions with yes/no, choice and scale answers and probability distributions
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/docs/features/git" className="block">
+              <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
+                    <GitBranch className="w-5 h-5 text-orange-500" />
+                    Workspace Explorer & Git
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-700 dark:text-slate-300">
+                    Browse project files, review colored diffs, stage changes and commit with AI-suggested messages
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/docs/authentication/chatgpt" className="block">
+              <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-slate-100">
+                    <KeyRound className="w-5 h-5 text-emerald-500" />
+                    ChatGPT Sign-In
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-700 dark:text-slate-300">
+                    Connect your personal ChatGPT account to use your subscription plan for chat
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
             <Link href="/docs/v3#switch-to-modelsdev-provider-model-configuration" className="block">
               <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer h-full">
                 <CardHeader>
@@ -900,6 +948,71 @@ export default function HomePage() {
               />
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Decision Studio Section */}
+      <div id="decision-studio" className="w-full my-16 px-4 bg-gradient-to-b from-transparent via-indigo-50/50 to-transparent dark:via-indigo-950/20 py-16">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              Decision Studio
+            </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+              Turn recurring judgments like sentiment, support triage and content relevance into reusable recipes
+              that return typed answers with probability distributions
+            </p>
+            <div className="flex items-center justify-center gap-4 mt-2">
+              <Link href="/docs/features/decision-studio" className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline">
+                Decision Studio Docs →
+              </Link>
+            </div>
+          </div>
+
+          <div className="rounded-xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 dark:bg-white mb-8">
+            <LightboxImage
+              src="/img/decision-studio/decision-studio.webp"
+              alt="Decision Studio with a reusable company-news recipe and typed probability results"
+              width={1600}
+              height={900}
+              className="w-full h-auto"
+            />
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm">
+              <div className="flex items-center gap-2 font-semibold text-slate-900 dark:text-slate-100 mb-2">
+                <ToggleLeft className="w-5 h-5 text-indigo-500" />
+                Yes / No
+              </div>
+              <p className="text-slate-600 dark:text-slate-400">
+                Ask a focused question with criteria for yes and no, and get the probability of yes between 0 and 1
+              </p>
+            </div>
+            <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm">
+              <div className="flex items-center gap-2 font-semibold text-slate-900 dark:text-slate-100 mb-2">
+                <ListChecks className="w-5 h-5 text-indigo-500" />
+                Choose One
+              </div>
+              <p className="text-slate-600 dark:text-slate-400">
+                Define named alternatives with criteria, and get the selected option with probabilities for every choice
+              </p>
+            </div>
+            <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm">
+              <div className="flex items-center gap-2 font-semibold text-slate-900 dark:text-slate-100 mb-2">
+                <Gauge className="w-5 h-5 text-indigo-500" />
+                Ordered Scale
+              </div>
+              <p className="text-slate-600 dark:text-slate-400">
+                Describe 2–10 ordered levels, and get a fractional score with probabilities for every level
+              </p>
+            </div>
+          </div>
+
+          <p className="text-center text-slate-600 dark:text-slate-400 mt-8 max-w-3xl mx-auto">
+            Create or improve recipes with AI, save successful runs as worked examples, import recipes from the
+            community collection, and share a recipe with its results as a public link.
+          </p>
         </div>
       </div>
 
