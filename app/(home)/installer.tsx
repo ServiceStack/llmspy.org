@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Container, Download, Monitor, Package } from 'lucide-react';
 import { CopyBlock } from './copy-block';
 
-const version = '4.0.23';
+const version = '4.0.24';
 const releaseUrl = `https://github.com/ServiceStack/llms/releases/tag/v${version}`;
 const downloadUrl = `https://github.com/ServiceStack/llms/releases/download/v${version}`;
 
