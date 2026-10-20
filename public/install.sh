@@ -200,12 +200,11 @@ fi
 
 # ---------------------------------------------------- initialise config dir --
 
-# On Linux a uid other than 1000 can't write to the bind-mounted config dir
-# unless we run the container as the invoking user.
+# On Linux use the invoking user's IDs for the bind-mounted config directory.
 DOCKER_USER_ARGS=""
 if [ "$OS" = "Linux" ]; then
     MY_UID="$(id -u)"; MY_GID="$(id -g)"
-    if [ "$MY_UID" != "1000" ]; then
+    if [ "$MY_UID" != "1000" ] || [ "$MY_GID" != "1000" ]; then
         DOCKER_USER_ARGS="--user $MY_UID:$MY_GID"
     fi
 fi
@@ -257,6 +256,8 @@ services:
   llms:
     image: $LLMS_IMAGE
     container_name: $LLMS_CONTAINER
+    # Defaults match the installing user on Linux; override in .env if needed.
+    user: "\${PUID:-${MY_UID:-1000}}:\${PGID:-${MY_GID:-1000}}"
     ports:
       - "$LLMS_BIND:$LLMS_PORT:8000"
     env_file:

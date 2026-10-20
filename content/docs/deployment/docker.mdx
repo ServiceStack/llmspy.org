@@ -30,6 +30,7 @@ The rest of this page covers running the image directly.
 
 ```bash
 docker pull ghcr.io/servicestack/llms:latest
+mkdir -p ~/.llms
 
 docker run -d --name llms \
   -p 127.0.0.1:8000:8000 \
@@ -58,16 +59,40 @@ ZHIPU_API_KEY=...
 MISTRAL_API_KEY=...
 ```
 
-2. Start the service:
+2. On Linux, create the bind-mount directory before starting Docker:
+
+```bash
+mkdir -p ~/.llms
+id -u
+id -g
+```
+
+Add `PUID` and `PGID` to `.env` using those numeric IDs. For example:
+
+```dotenv
+PUID=1000
+PGID=1000
+```
+
+The bundled Compose files use `user: "${PUID:-1000}:${PGID:-1000}"`, defaulting
+to 1000:1000 when unset. The selected user must have write access to the host
+data directory; these settings do not change directory ownership.
+
+3. Start the service:
 
 ```bash
 docker compose up -d
 ```
 
-3. Access the UI at http://localhost:8000
+4. Access the UI at http://localhost:8000
 
 `docker-compose.yml` uses `env_file: .env`, so every key in that file is passed
 through without needing an entry per provider.
+
+The installer's generated Compose file uses the detected Linux UID/GID as its
+defaults and also supports `PUID`/`PGID` overrides. The local-build Compose file
+uses a named volume initialized for UID/GID 1000:1000; keep those defaults unless
+the volume's permissions have been prepared for another user.
 
 ## API Key Environment Variables
 
@@ -415,12 +440,32 @@ docker logs llms
 
 ### Permission Issues (Linux)
 
-The container runs as UID 1000. If your UID is different, bind-mounted config
-won't be writable — run the container as yourself:
+The image runs as the non-root `llms` user (UID/GID 1000:1000). A bind mount
+replaces the image directory's ownership and permissions with those on the host.
+If the host directory doesn't exist, Docker may create it as root, causing
+errors such as `Permission denied: '/home/llms/.llms/extensions'`.
+
+For Compose, pre-create the directory and set `PUID`/`PGID` in `.env` to its
+owner's IDs as described above, then run `docker compose up -d` to recreate the
+container. For direct Docker use with a directory owned by your account:
 
 ```bash
 docker run --user $(id -u):$(id -g) -v ~/.llms:/home/llms/.llms ...
 ```
+
+If a dedicated data directory was already created as root, stop the service
+and correct its ownership and owner permissions. For the default Compose user:
+
+```bash
+docker compose down
+sudo chown -R 1000:1000 ~/.llms
+sudo chmod -R u+rwX ~/.llms
+docker compose up -d
+```
+
+Use your configured `PUID:PGID` and actual data directory if they differ. For
+rootless Docker, user namespace remapping, or SELinux, also check the host's
+mount permissions and labeling requirements.
 
 ### Port Already in Use
 

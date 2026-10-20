@@ -33,7 +33,23 @@ GROQ_API_KEY=gsk_...
 GOOGLE_FREE_API_KEY=AIza...
 ```
 
-3. Start the service:
+3. Create the host data directory before Docker mounts it:
+
+<ShellCommand>mkdir -p ~/.llms</ShellCommand>
+
+On Linux, add `PUID` and `PGID` to `.env` using the values from `id -u` and
+`id -g` for the account that owns the data directory. For example:
+
+```dotenv
+PUID=1000
+PGID=1000
+```
+
+Compose defaults to 1000:1000 when these variables are unset. The selected user
+must be able to write to the directory. See [Docker permissions](/docs/deployment/docker#permission-issues-linux)
+if the directory already exists with different ownership.
+
+4. Start the service:
 
 <ShellCommand>docker compose up -d</ShellCommand>
 
