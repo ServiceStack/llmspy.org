@@ -13,6 +13,32 @@ for specialized workflows, provider-hosted **Server Tools**, and a huge wave of 
 
 <Installer />
 
+## November 25, 2026
+
+### Google Antigravity (`agy`) CLI provider & media support for CLI subscriptions
+
+**Google** now defaults to `@ai-sdk/google-cli`, using your local **Antigravity CLI (`agy`)** so you can
+chat with your existing Google subscription—just like `@ai-sdk/anthropic-cli` uses `claude` for Claude Code
+subscriptions.
+
+- **Automatic model discovery & streaming**: Runs `agy models` on startup to populate the models available
+  to your subscription, streams responses live, maps reasoning effort (`--effort`) and JSON schemas
+  (`--json-schema`), and isolates each turn in a temporary working directory.
+- **Image, audio, and file attachments**: Both `@ai-sdk/google-cli` (`agy`) and `@ai-sdk/anthropic-cli`
+  (`claude`) now advertise and support image and audio inputs (plus PDF/file attachments), sending native
+  image/document blocks where supported and materializing media files into a per-request temp directory for
+  CLI inspection.
+- **C# `ServiceStack.AI.Chat` parity**: `GoogleCliProvider` and `AnthropicCliProvider` are now built into
+  **ServiceStack.AI.Chat**, using local `agy` and `claude` binaries when present in `PATH` and falling back
+  automatically to `GOOGLE_GENERATIVE_AI_API_KEY` and `ANTHROPIC_API_KEY` on hosted servers.
+
+### Switch ChatGPT subscriptions cleanly on disconnect
+
+Disconnecting an **OpenAI Subscription** in Settings now clears the saved workspace registration alongside
+local tokens in both **llms.py** and **ServiceStack.AI.Chat**. Clicking **Continue with ChatGPT** afterward
+starts a fresh registration so you can switch to a different ChatGPT account or workspace without manual
+cleanup.
+
 ## October 20, 2026
 
 ### Gemini document chats can use function tools
