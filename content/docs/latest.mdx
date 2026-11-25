@@ -39,6 +39,17 @@ local tokens in both **llms.py** and **ServiceStack.AI.Chat**. Clicking **Contin
 starts a fresh registration so you can switch to a different ChatGPT account or workspace without manual
 cleanup.
 
+### Sarvam AI joins the provider lineup
+
+[**Sarvam AI**](https://docs.sarvam.ai/api/token-factory/models) (Token Factory v2) is now supported in
+**llms.py** and **ServiceStack.AI.Chat** (contributed in [PR #53](https://github.com/ServiceStack/llms/pull/53)).
+Its OpenAI-compatible API (`https://api.sarvam.ai/v2`) brings 7 models to the picker, including
+**Sarvam-105B**, **Sarvam-105B Conversations**, **GLM-5.3**, **GLM-5.3-Flash**, **DeepSeek V4.1 Flash**,
+and **Gemma 4 31B IT**, complete with tool calling and reasoning support.
+
+Set `SARVAM_API_KEY` in the environment before starting llms.py, then select **sarvam** in the model
+picker's provider filters. See [Models & Providers](/docs/features/providers) for provider setup.
+
 ## October 20, 2026
 
 ### Gemini document chats can use function tools
